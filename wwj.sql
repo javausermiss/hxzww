@@ -209,4 +209,3 @@ ALTER TABLE `sys_app_order`
 ADD COLUMN `CTYPE`  varchar(50) NULL COMMENT 'sdk类型' AFTER `REGGOLD`,
 ADD COLUMN `CHANNEL`  varchar(50) NULL COMMENT '渠道类型' AFTER `CTYPE`;
 
-/* 2018 02 28*/
