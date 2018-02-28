@@ -121,7 +121,7 @@
                                     <th class="center" style="width:50px;">序号</th>
                                     <th class="center">用户名</th>
                                     <th class="center">姓名</th>
-                                    <th class="center">等级</th>
+                                    <th class="center">客户来源</th>
                                     <th class="center"><i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>创建日期
                                     </th>
                                     <th class="center">手机号码</th>
@@ -146,7 +146,7 @@
                                                     <td class='center' style="width: 30px;">${vs.index+1}</td>
                                                     <td class="center">${user.NICKNAME }</td>
                                                     <td class="center">${user.NAME }</td>
-                                                    <td class="center">${user.ROLE_NAME }</td>
+                                                    <td class="center">${user.CHANNEL_CODE }</td>
                                                     <td class="center">${user.CREATETIME }</td>
                                                     <td class="center">${user.PHONE }</td>
                                                     <td class="center">${user.STATUS}</td>

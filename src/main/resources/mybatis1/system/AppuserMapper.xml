@@ -106,7 +106,8 @@
         u.EMAIL,
         u.CREATETIME,
         u.IMAGE_URL,
-        u.BALANCE
+        u.BALANCE,
+        u.CHANNEL_CODE
         FROM
         <include refid="tableName"/>
         u
