@@ -1,27 +1,29 @@
 package com.fh.controller.wwjapp;
 
-import com.fh.entity.system.AppUser;
-import com.fh.service.system.appuser.AppuserManager;
-import com.fh.util.wwjUtil.RespStatus;
-import net.sf.json.JSONObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.fh.entity.system.AppUser;
+import com.fh.service.system.appuser.AppuserManager;
+import com.fh.util.wwjUtil.RespStatus;
+
+import net.sf.json.JSONObject;
 
 /**
  * 抓娃娃排行榜
  */
 @Controller
-@RequestMapping(value = "/rank")
-public class RankListController {
+@RequestMapping(value = "/app/rank")
+public class AppRankListController {
 
     @Resource(name = "appuserService")
     private AppuserManager appuserService;

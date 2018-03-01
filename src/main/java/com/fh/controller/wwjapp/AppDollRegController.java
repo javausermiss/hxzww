@@ -20,8 +20,8 @@ import javax.annotation.Resource;
  * 2017/11/07
  */
 @Controller
-@RequestMapping(value = "/doll")
-public class DollLoginController {
+@RequestMapping(value = "/app/dollReg")
+public class AppDollRegController {
     @Resource(name = "dollService")
     private DollManager dollService;
 

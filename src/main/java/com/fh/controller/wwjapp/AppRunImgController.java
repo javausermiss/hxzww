@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @Controller
-@RequestMapping("/app")
-public class RunImgController extends BaseController {
+@RequestMapping("/app/runimg")
+public class AppRunImgController extends BaseController {
     @Resource(name="runimageService")
     private RunImageManager runimageService;
 

@@ -41,8 +41,8 @@ import com.fh.util.wwjUtil.TokenVerify;
 import net.sf.json.JSONObject;
 
 @Controller
-@RequestMapping(value = "/pay")
-public class AppUserBalanceController extends BaseController {
+@RequestMapping(value = "/app/pay")
+public class AppPayController extends BaseController {
 
     //  private final String ckey = "y3WfBKF1FY4=";
     @Resource(name = "appuserService")

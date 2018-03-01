@@ -30,8 +30,8 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/app")
-public class SignController {
+@RequestMapping("/app/sign")
+public class AppSignController {
     @Resource(name = "signService")
     private SignManager signService;
 

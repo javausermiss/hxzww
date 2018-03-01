@@ -24,8 +24,8 @@ import com.fh.util.wwjUtil.RespStatus;
 import net.sf.json.JSONObject;
 
 @Controller
-@RequestMapping("/api")
-public class AppUserController {
+@RequestMapping("/api/user")
+public class ApiUserController {
 
     @Resource(name = "appuserService")
     private AppuserManager appuserService;

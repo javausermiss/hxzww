@@ -33,7 +33,7 @@ import com.fh.util.wwjUtil.TokenVerify;
 import net.sf.json.JSONObject;
 @Controller
 @RequestMapping("/app")
-public class TencentloginForH5 extends BaseController {
+public class AppTencentloginForH5 extends BaseController {
 	
     @Resource(name = "appuserService")
     private AppuserManager appuserService;

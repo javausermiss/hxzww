@@ -38,7 +38,7 @@ import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/app")
-public class TencentloginController extends BaseController {
+public class AppTencentloginController extends BaseController {
 
     @Resource(name = "appuserService")
     private AppuserManager appuserService;

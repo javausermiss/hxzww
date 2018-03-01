@@ -33,7 +33,7 @@ import java.util.*;
  * @author wjy
  */
 @Controller
-@RequestMapping("/sms")
+@RequestMapping("/app/sms")
 public class AppLoginController {
 
     @Resource(name = "appuserService")

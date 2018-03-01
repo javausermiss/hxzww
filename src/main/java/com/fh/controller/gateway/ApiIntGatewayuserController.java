@@ -28,8 +28,8 @@ import java.util.UUID;
   * 05  FKEY验证失败
  */
 @Controller
-@RequestMapping(value="/gatewayuser")
-public class IntGatewayuserController extends BaseController {
+@RequestMapping(value="/api/gatewayuser")
+public class ApiIntGatewayuserController extends BaseController {
     
 	@Resource(name="appuserService")
 	private AppuserManager appuserService;

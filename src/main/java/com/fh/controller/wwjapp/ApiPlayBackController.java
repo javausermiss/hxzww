@@ -1,36 +1,36 @@
 package com.fh.controller.wwjapp;
 
-import com.fh.entity.system.*;
-import com.fh.service.system.appuser.AppuserManager;
-import com.fh.service.system.betgame.BetGameManager;
-import com.fh.service.system.doll.DollManager;
-import com.fh.service.system.playback.PlayBackManage;
-import com.fh.service.system.playback.impl.PlayBackService;
-import com.fh.service.system.playdetail.PlayDetailManage;
-import com.fh.service.system.playdetail.impl.PlayDetailService;
-import com.fh.service.system.pond.PondManager;
-import com.fh.util.wwjUtil.RedisUtil;
-import com.fh.util.wwjUtil.RespStatus;
-import com.sun.org.apache.xml.internal.utils.StringBufferPool;
-import net.sf.json.JSONObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.fh.entity.system.AppUser;
+import com.fh.entity.system.PlayBack;
+import com.fh.entity.system.PlayDetail;
+import com.fh.service.system.appuser.AppuserManager;
+import com.fh.service.system.betgame.BetGameManager;
+import com.fh.service.system.doll.DollManager;
+import com.fh.service.system.playback.PlayBackManage;
+import com.fh.service.system.playdetail.PlayDetailManage;
+import com.fh.service.system.pond.PondManager;
+import com.fh.util.wwjUtil.RespStatus;
+
+import net.sf.json.JSONObject;
 
 /**
  * 视频回放记录存储&游戏记录&竞猜结算
  */
 @Controller
-@RequestMapping(value = "/play")
-public class PlayBackController {
+@RequestMapping(value = "/api/play")
+public class ApiPlayBackController {
 
     @Resource(name = "appuserService")
     private AppuserManager appuserService;

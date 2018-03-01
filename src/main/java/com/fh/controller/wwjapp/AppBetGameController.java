@@ -27,8 +27,8 @@ import java.util.Map;
  * 竞猜接口
  */
 @Controller
-@RequestMapping("/app")
-public class BetGameController {
+@RequestMapping("/app/betgame")
+public class AppBetGameController {
 
     @Resource(name = "betGameService")
     private BetGameManager betGameService;

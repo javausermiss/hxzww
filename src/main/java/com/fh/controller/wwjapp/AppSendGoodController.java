@@ -1,13 +1,11 @@
 package com.fh.controller.wwjapp;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.fh.service.system.doll.DollToyManager;
-import com.fh.util.DateUtil;
-import com.fh.vo.system.DollToyVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.Conversion;
-import com.fh.entity.system.Payment;
 import com.fh.entity.system.PlayBack;
 import com.fh.entity.system.PlayDetail;
 import com.fh.entity.system.SendGoods;
@@ -24,28 +21,21 @@ import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.betgame.BetGameManager;
 import com.fh.service.system.conversion.ConversionManager;
 import com.fh.service.system.doll.DollManager;
+import com.fh.service.system.doll.DollToyManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playback.PlayBackManage;
 import com.fh.service.system.playdetail.PlayDetailManage;
 import com.fh.service.system.sendgoods.SendGoodsManager;
+import com.fh.util.DateUtil;
 import com.fh.util.wwjUtil.RespStatus;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 @Slf4j
-@RequestMapping("/app")
+@RequestMapping("/app/goods")
 @Controller
-public class SendGoodController {
+public class AppSendGoodController {
     @Resource(name = "appuserService")
     private AppuserManager appuserService;
     @Resource(name = "playBackService")
