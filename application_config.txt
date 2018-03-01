@@ -2,9 +2,12 @@
 ####################################################config.properties begin##################
 
 #jdbc#
-jdbc.url=jdbc:mysql://10.66.175.18:3306/wwj?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+jdbc.url=jdbc:mysql://172.17.0.6:3306/dyzww?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+jdbc.password=Pooh4database!@#
+
+#jdbc.url=jdbc:mysql://10.66.175.18:3306/wwj?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
 jdbc.username=root
-jdbc.password=A8jjzww@sd16T6
+#jdbc.password=A8jjzww@sd16T6
 jdbc.driverClassName=com.mysql.jdbc.Driver
 jdbc.filters=stat
 jdbc.maxActive=20
@@ -24,16 +27,21 @@ jdbc.removeAbandonedTimeout=1800
 jdbc.logAbandoned=true
 
 #redis#
-redis.ip=10.66.109.21
+redis.ip=172.17.0.7
 redis.port=6379
-redis.pwd=A8jjzww@sd16T6
+redis.pwd=Pooh4redis
 redis.maxIdle=300
 redis.maxActive=600
 redis.maxWait=1000
 redis.testOnBorrow=true
 
-#dubbo#
-dubbo.registry.address=zookeeper://10.133.200.0:2181?backup=10.105.74.102:2181,10.105.72.88:2181
+
+
+
+#dubbo#172.19.155.250
+#dubbo.registry.address=zookeeper://47.100.32.153:2181
+#dubbo.registry.address=zookeeper://172.19.155.250:2181
+dubbo.registry.address=zookeeper://172.17.0.5:2181?backup=172.17.0.7:2181,172.17.0.14:2181
 
 ####################################################config.properties end#######################
 
@@ -47,7 +55,7 @@ charset = UTF-8
 http.tracker_http_port = 8080
 http.anti_steal_token = no
 http.secret_key = FastDFS1234567890
-tracker_server = 10.133.200.0:22122
+tracker_server = 172.17.0.7:22122
 
 ####################################################fdfs_client.conf end#######################
 
@@ -57,24 +65,23 @@ tracker_server = 10.133.200.0:22122
 #################################################################################################
 ####################################################config.properties begin######################
 
-#srs server#
-srs.server.address.host=180.167.56.142
+srs.server.address.host=106.14.171.182
 srs.server.rtmp.port=1935
 srs.server.api.port=1985
 
 #fastdfs server url#
-fastdfs.server.url=http://115.159.58.231:8888/
-user.default.header.url=group1/M00/00/00/CoXIAFpS5E-ANuelAAAgnQZ3bM0916.png
+server.url=http://111.231.139.61:8888/
+
+user.default.header.url=group1/M00/00/00/rBEAB1qU09SAWJ8JAAAgnQZ3bM0892.png
 
 
-api.app.sdk.url=http://sdk3.api.1862.cn/userVisit?
+api.app.sdk.url=http://domestic.apitest.hxwolf.com:7002/userVisit?
 
-api.app.sdk.ckey=y3WfBKF1FY4=
-api.app.skd.cid=6f456783a0fe44e28771c08ab63a52f7
+api.app.sdk.ckey=rcWhucD6efT=
+api.app.skd.cid=aed34f22d80e430a868c083da0e4de07
 
-
-api.i5.sdk.ckey=EE8ZRhz3Db8=
-api.i5.skd.cid=000000005ffc27bc01602646ee090006
+api.i5.sdk.ckey=rcWhucD6efT=
+api.i5.skd.cid=aed34f22d80e430a868c083da0e4de07
 
 api.app.w8sdk.ckey=1517824976071554
 api.app.w8sdk.cid=04BgZOnKvyR8l7DtGRTTDQadKHwg9gEx
