@@ -43,16 +43,11 @@
 					/srs/** = anon
 					/app**/** = anon
 					/gateway**/** = anon
-					/weixin/** = anon
-					/sms/** = anon
 					/uploadFiles/DollImage/** = anon
 					/uploadFiles/appUserImage/** = anon
 					/uploadFiles/paycard/** = anon
-					/doll/** = anon
 					/api/** = anon
-					/pay/** = anon
-					/rank/** = anon
-					/play/** = anon
+					/app/** = anon
 					/** = authc
 				</value>
 			</property>
