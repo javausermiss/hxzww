@@ -407,5 +407,15 @@ public class AppuserService implements AppuserManager{
 	public PageData getAppUesrRechargeToTal(String userId)throws Exception{
 		return (PageData)dao.findForObject("AppuserMapper.getAppUesrRechargeToTal",userId);
 	}
+	
+    /**
+     * 查询渠道的总注册用户数量
+     * @param channelCode
+     * @return
+     * @throws Exception
+     */
+    public Integer getSysAppUserCountByChannelCode(String channelCode)throws Exception{
+    	return (int)dao.findForObject("AppuserMapper.getSysAppUserCountByChannelCode",channelCode);
+    }
 }
 

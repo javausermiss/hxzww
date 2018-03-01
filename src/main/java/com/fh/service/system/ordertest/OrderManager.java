@@ -6,7 +6,7 @@ import com.fh.entity.Page;
 import com.fh.entity.system.Order;
 import com.fh.util.PageData;
 
-public interface OrderTestManager {
+public interface OrderManager {
     /**
      * 创建订单记录
      * @param order
@@ -38,4 +38,13 @@ public interface OrderTestManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> getUserRegDetailList(Page page)throws Exception;
+	
+	
+    /**
+     * 查询渠道的订单统计
+     * @param channelCode
+     * @return
+     * @throws Exception
+     */
+    public PageData getOrderTotalByChannelCode(String channelCode) throws Exception;
 }

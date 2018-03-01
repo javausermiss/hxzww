@@ -75,6 +75,17 @@
 											<td><input type="email" name="EMAIL" id="EMAIL"  value="${pd.EMAIL }" maxlength="32" placeholder="这里输入邮箱" title="邮箱" onblur="hasE('${pd.USERNAME }')" style="width:98%;"/></td>
 										</tr>
 										<tr>
+											<td style="width:79px;text-align: right;padding-top: 13px;">所属渠道:</td>
+											<td>
+												<select class="chosen-select form-control" name="CHANNEL_CODE" id="CHANNEL_CODE" data-placeholder="请选择渠道" style="vertical-align:top;width: 120px;">
+													<option value=""></option>
+														<c:forEach items="${channelList}" var="channel">
+															<option value="${channel.CHANNEL_CODE }" <c:if test="${pd.CHANNEL_CODE==channel.CHANNEL_CODE}">selected</c:if>>${channel.CHANNEL_NAME }</option>
+														</c:forEach>
+												  	</select>
+											</td>
+										</tr>
+										<tr>
 											<td style="width:79px;text-align: right;padding-top: 13px;">备注:</td>
 											<td><input type="text" name="BZ" id="BZ"value="${pd.BZ }" placeholder="这里输入备注" maxlength="64" title="备注" style="width:98%;"/></td>
 										</tr>

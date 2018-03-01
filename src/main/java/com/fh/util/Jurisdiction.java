@@ -136,6 +136,21 @@ public class Jurisdiction {
 		return getSession().getAttribute(Const.DEPARTMENT_IDS).toString();
 	}
 	
+	
+	/**获取用户的角色名称
+	 * @return
+	 */
+	public static String getRoleName(){
+		return getSession().getAttribute(Const.SESSION_ROLENAME).toString();
+	}
+	
+	/**获取用户所属渠道
+	 * @return
+	 */
+	public static String getChannelCode(){
+		return getSession().getAttribute(Const.SESSION_CHANNEL_CODE).toString();
+	}
+	
 	/**获取用户的最高组织机构权限
 	 * @return
 	 */

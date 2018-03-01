@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
-import com.fh.service.system.ordertest.impl.OrderTestService;
+import com.fh.service.system.ordertest.impl.OrderService;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.util.DateUtil;
 import com.fh.util.Jurisdiction;
@@ -32,8 +32,8 @@ public class ReportController extends BaseController {
 	@Resource(name="paymentService")
 	private PaymentManager paymentService;
 	
-	@Resource(name="orderTestService")
-	private OrderTestService orderTestService;
+	@Resource(name="orderService")
+	private OrderService orderService;
 	
 
 	/**显示APP_USER 充值统计
@@ -121,7 +121,7 @@ public class ReportController extends BaseController {
 				pd.put("keywords", keywords.trim());
 			}
 			page.setPd(pd);
-			List<PageData> varlist=orderTestService.getUserRegDetailList(page);
+			List<PageData> varlist=orderService.getUserRegDetailList(page);
 			mv.addObject("varlist", varlist);
 			mv.addObject("pd", pd);
 			mv.addObject("QX",Jurisdiction.getHC());	//按钮权限

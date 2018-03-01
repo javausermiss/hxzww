@@ -37,7 +37,6 @@ public class ShiroRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection pc) {
-		System.out.println("========2");
 		return null;
 	}
 

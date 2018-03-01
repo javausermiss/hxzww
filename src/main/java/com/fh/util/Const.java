@@ -25,6 +25,8 @@ public class Const {
 	public static final String SESSION_userpds = "userpds";			
 	public static final String SESSION_USERROL = "USERROL";					//用户对象
 	public static final String SESSION_USERNAME = "USERNAME";			//用户名
+	public static final String SESSION_ROLENAME = "ROLENAME";			//角色名
+	public static final String SESSION_CHANNEL_CODE="CHANNEL_CODE";		//所属渠道
 	public static final String DEPARTMENT_IDS = "DEPARTMENT_IDS";			//当前用户拥有的最高部门权限集合
 	public static final String DEPARTMENT_ID = "DEPARTMENT_ID";				//当前用户拥有的最高部门权限
 	public static final String TRUE = "T";
@@ -44,7 +46,7 @@ public class Const {
 	public static final String FILEPATHFILE = "uploadFiles/file/";			//文件上传路径
 	public static final String FILEPATHFILEOA = "uploadFiles/uploadFile/";	//文件上传路径(oa管理)
 	public static final String FILEPATHTWODIMENSIONCODE = "uploadFiles/twoDimensionCode/"; //二维码存放路径
-	public static final String NO_INTERCEPTOR_PATH = ".*/((/login)|(/logout)|(/api)|(/code)|(app)|(static)|(main)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
+	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(sms)|(/api/)|(/gateway/)|(code)|(/app/)|(weixin)|(static)|(paycard)|(main)|(DollImage)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
 	public static ApplicationContext WEB_APP_CONTEXT = null; //该值会在web容器启动时由WebAppContextListener初始化
 	
 	/**

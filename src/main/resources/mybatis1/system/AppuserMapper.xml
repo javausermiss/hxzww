@@ -219,6 +219,7 @@
         <if test="PASSWORD != null and PASSWORD != ''">
             ,PASSWORD = #{PASSWORD}
         </if>
+       
         where
         USER_ID = #{USER_ID}
     </update>
@@ -606,5 +607,10 @@
 			SELECT IFNULL(SUM(REGAMOUNT),0) as REGAMOUNT FROM SYS_APP_ORDER WHERE USER_ID=au.USER_ID AND `STATUS`='1'
 		) as REGAMOUNT
 		FROM SYS_APP_USER au WHERE  au.USER_ID=#{userId}
+		</select>
+		
+		
+		<select id="getSysAppUserCountByChannelCode" parameterType="String" resultType="java.lang.Integer">
+			SELECT COUNT(1) from SYS_APP_USER WHERE CHANNEL_CODE=#{ChannelCode}
 		</select>
 </mapper>

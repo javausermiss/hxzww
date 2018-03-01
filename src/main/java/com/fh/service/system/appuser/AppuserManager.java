@@ -311,5 +311,14 @@ public interface AppuserManager {
 	 * @throws Exception
 	 */
 	public PageData getAppUesrRechargeToTal(String userId)throws Exception;
+	
+
+    /**
+     * 查询渠道的总注册用户数量
+     * @param channelCode
+     * @return
+     * @throws Exception
+     */
+    public Integer getSysAppUserCountByChannelCode(String channelCode)throws Exception;
 }
 

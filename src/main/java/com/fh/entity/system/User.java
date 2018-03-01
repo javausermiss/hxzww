@@ -25,6 +25,7 @@ public class User {
 	private Role role;			//角色对象
 	private Page page;			//分页对象
 	private String SKIN;		//皮肤
+	private String CHANNEL_CODE; //所属渠道
 	
 	public String getSKIN() {
 		return SKIN;
@@ -102,5 +103,11 @@ public class User {
 	public void setPage(Page page) {
 		this.page = page;
 	}*/
-	
+	public String getCHANNEL_CODE() {
+		return CHANNEL_CODE;
+	}
+	public void setCHANNEL_CODE(String CHANNEL_CODE) {
+		this.CHANNEL_CODE = CHANNEL_CODE;
+	}
+
 }

@@ -6,10 +6,12 @@ import com.fh.entity.system.Role;
 import com.fh.entity.system.User;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.buttonrights.ButtonrightsManager;
+import com.fh.service.system.channel.ChannelManageManager;
 import com.fh.service.system.fhbutton.FhbuttonManager;
 import com.fh.service.system.fhlog.FHlogManager;
 import com.fh.service.system.loginimg.LogInImgManager;
 import com.fh.service.system.menu.MenuManager;
+import com.fh.service.system.ordertest.OrderManager;
 import com.fh.service.system.role.RoleManager;
 import com.fh.service.system.user.UserManager;
 import com.fh.util.*;
@@ -45,20 +47,33 @@ public class LoginController extends BaseController {
 
 	@Resource(name="userService")
 	private UserManager userService;
+	
 	@Resource(name="menuService")
 	private MenuManager menuService;
+	
 	@Resource(name="roleService")
 	private RoleManager roleService;
+	
 	@Resource(name="buttonrightsService")
 	private ButtonrightsManager buttonrightsService;
+	
 	@Resource(name="fhbuttonService")
 	private FhbuttonManager fhbuttonService;
+	
 	@Resource(name="appuserService")
 	private AppuserManager appuserService;
+	
 	@Resource(name="fhlogService")
 	private FHlogManager FHLOG;
+	
 	@Resource(name="loginimgService")
 	private LogInImgManager loginimgService;
+	
+	@Resource(name="orderService")
+	private OrderManager orderService;
+	
+	@Resource(name="channelManageService")
+	private ChannelManageManager channelManageService;
 	
 	/**访问登录页
 	 * @return
@@ -167,10 +182,14 @@ public class LoginController extends BaseController {
 					user = userr;
 				}
 				String USERNAME = user.getUSERNAME();
+				String CHANNEL_CODE=user.getCHANNEL_CODE();
 				Role role = user.getRole();													//获取用户角色
 				String roleRights = role!=null ? role.getRIGHTS() : "";						//角色权限(菜单权限)
+				String roleName=role!=null ? role.getROLE_NAME() : "";		
 				session.setAttribute(USERNAME + Const.SESSION_ROLE_RIGHTS, roleRights); 	//将角色权限存入session
 				session.setAttribute(Const.SESSION_USERNAME, USERNAME);						//放入用户名到session
+				session.setAttribute(Const.SESSION_ROLENAME, roleName);						//放入角色名到session
+				session.setAttribute(Const.SESSION_CHANNEL_CODE, CHANNEL_CODE);	
 				List<Menu> allmenuList = new ArrayList<Menu>();
 				allmenuList = this.getAttributeMenu(session, USERNAME, roleRights);			//菜单缓存
 				List<Menu> menuList = new ArrayList<Menu>();
@@ -290,8 +309,30 @@ public class LoginController extends BaseController {
 		PageData pd = new PageData();
 		pd.put("userCount", Integer.parseInt(userService.getUserCount("").get("userCount").toString())-1);				//系统用户数
 		pd.put("appUserCount", Integer.parseInt(appuserService.getAppUserCount("").get("appUserCount").toString()));	//会员数
+	
+		String roleName=Jurisdiction.getRoleName(); //获取用户角色名称
+		if("MCHNT_ADMIN".equals(roleName)){
+			pd.put("userName", Jurisdiction.getUsername()); //用户名
+			
+			/***渠道信息**/
+			PageData chanelParamPd = new PageData();
+			chanelParamPd.put("CHANNEL_CODE", Jurisdiction.getChannelCode());
+			PageData channelManage=channelManageService.findById(chanelParamPd);
+			pd.put("channelManage", channelManage); 
+			
+			/***渠道用户统计**/
+			Integer channelUserTotal=appuserService.getSysAppUserCountByChannelCode(Jurisdiction.getChannelCode());
+			pd.put("channelUserTotal", channelUserTotal); //
+			
+			/***渠道充值统计**/
+			PageData orderPd=orderService.getOrderTotalByChannelCode(Jurisdiction.getChannelCode());
+			pd.put("orderPd", orderPd); //
+			
+			mv.setViewName("system/index/channelDefault");
+		}else{
+			mv.setViewName("system/index/default");
+		}
 		mv.addObject("pd",pd);
-		mv.setViewName("system/index/default");
 		return mv;
 	}
 	

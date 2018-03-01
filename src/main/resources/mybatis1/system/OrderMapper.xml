@@ -71,4 +71,15 @@
          </if>
 
 	</select>
+	
+	
+	<select id="getOrderTotalByChannelCode" parameterType="String" resultType="pd">
+ 		SELECT 
+			IFNULL(SUM(o1.REGAMOUNT),0)/100 as SUCREGAMOUNT,
+			COUNT(1) as SUCCOUNT 
+			from sys_app_order o1  , sys_app_user u1 
+			WHERE o1.USER_ID=u1.USER_ID
+		  	AND u1.CHANNEL_CODE=#{channelCode}
+			AND o1.`STATUS`='1' 
+    </select>
 </mapper>

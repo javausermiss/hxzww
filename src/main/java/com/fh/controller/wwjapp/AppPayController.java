@@ -26,7 +26,7 @@ import com.fh.entity.system.Paycard;
 import com.fh.entity.system.Payment;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.doll.DollManager;
-import com.fh.service.system.ordertest.OrderTestManager;
+import com.fh.service.system.ordertest.OrderManager;
 import com.fh.service.system.paycard.PaycardManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playback.PlayBackManage;
@@ -63,8 +63,8 @@ public class AppPayController extends BaseController {
     @Resource(name = "paymentService")
     private PaymentManager paymentService;
 
-    @Resource(name = "orderTestService")
-    private OrderTestManager orderTestService;
+    @Resource(name = "orderService")
+    private OrderManager orderService;
 
     @Resource(name = "paycardService")
     private PaycardManager paycardService;
@@ -113,7 +113,7 @@ public class AppPayController extends BaseController {
 
     public JSONObject getOrderInfo(String id) {
         try {
-            Order o = orderTestService.getOrderById(id);
+            Order o = orderService.getOrderById(id);
             return JSONObject.fromObject(o);
         } catch (Exception e) {
             return null;
@@ -191,7 +191,7 @@ public class AppPayController extends BaseController {
                     order.setREGGOLD(glodNum);//充值的金币数量
                     order.setCHANNEL(channel);
                     order.setCTYPE(ctype);
-                    orderTestService.regmount(order);
+                    orderService.regmount(order);
                     Map<String, Object> map = new HashMap<>();
                     map.put("Order", getOrderInfo(order.getORDER_ID()));
                     return RespStatus.successs().element("data", map);
@@ -206,7 +206,7 @@ public class AppPayController extends BaseController {
                     order.setREGGOLD(glodNum);//充值的金币数量
                     order.setCHANNEL(channel);
                     order.setCTYPE(ctype);
-                    orderTestService.regmount(order);
+                    orderService.regmount(order);
                     Map<String, Object> map = new HashMap<>();
                     map.put("Order", getOrderInfo(order.getORDER_ID()));
                     return RespStatus.successs().element("data", map);
@@ -222,7 +222,7 @@ public class AppPayController extends BaseController {
                 order.setREGGOLD(glodNum); //充值的金币数量
                 order.setCHANNEL(channel);
                 order.setCTYPE(ctype);
-                orderTestService.regmount(order);
+                orderService.regmount(order);
                 Map<String, Object> map = new HashMap<>();
                 map.put("Order", getOrderInfo(order.getORDER_ID()));
                 return RespStatus.successs().element("data", map);
@@ -288,14 +288,14 @@ public class AppPayController extends BaseController {
             @RequestParam("sign") String sign
     ) {
         try {
-            Order o = orderTestService.getOrderById(out_trade_no);
+            Order o = orderService.getOrderById(out_trade_no);
             String ckey = PropertiesUtils.getCurrProperty("api.app.sdk.ckey");
             if (o == null) {
                 return "there is no order";
             }
             if (trade_status.equals("FAILURE")) {
                 o.setSTATUS("-1");
-                orderTestService.update(o);
+                orderService.update(o);
                 return "SUCCESS";
             }
             o.setORDER_NO(order_no);
@@ -359,7 +359,7 @@ public class AppPayController extends BaseController {
                     o.setORDER_NO(order_no);
                     o.setREGGOLD(String.valueOf(reggold));
                     o.setSTATUS("1");
-                    orderTestService.update(o);
+                    orderService.update(o);
                     return "SUCCESS";
                 }
                 int gold = Integer.valueOf(paycard.getGOLD());
@@ -389,10 +389,10 @@ public class AppPayController extends BaseController {
                 o.setREGGOLD(String.valueOf(gold));
                 o.setORDER_NO(order_no);
                 o.setSTATUS("1");
-                orderTestService.update(o);
+                orderService.update(o);
             } else {
                 o.setSTATUS("-1");//支付失败
-                orderTestService.update(o);
+                orderService.update(o);
             }
             return "SUCCESS";
         } catch (Exception e) {
@@ -455,14 +455,14 @@ public class AppPayController extends BaseController {
             @RequestParam("sign") String sign
     ) {
         try {
-            Order o = orderTestService.getOrderById(out_trade_no);
+            Order o = orderService.getOrderById(out_trade_no);
             String ckey = PropertiesUtils.getCurrProperty("api.i5.sdk.ckey");
             if (o == null) {
                 return "there is no order";
             }
             if (trade_status.equals("FAILURE")) {
                 o.setSTATUS("-1");
-                orderTestService.update(o);
+                orderService.update(o);
                 return "SUCCESS";
             }
             o.setORDER_NO(order_no);
@@ -526,7 +526,7 @@ public class AppPayController extends BaseController {
                     o.setORDER_NO(order_no);
                     o.setREGGOLD(String.valueOf(reggold));
                     o.setSTATUS("1");
-                    orderTestService.update(o);
+                    orderService.update(o);
                     return "SUCCESS";
                 }
                 int gold = Integer.valueOf(paycard.getGOLD());
@@ -556,10 +556,10 @@ public class AppPayController extends BaseController {
                 o.setREGGOLD(String.valueOf(gold));
                 o.setORDER_NO(order_no);
                 o.setSTATUS("1");
-                orderTestService.update(o);
+                orderService.update(o);
             } else {
                 o.setSTATUS("-1");//支付失败
-                orderTestService.update(o);
+                orderService.update(o);
             }
             return "SUCCESS";
         } catch (Exception e) {
@@ -617,7 +617,7 @@ public class AppPayController extends BaseController {
             }
             
             //step2 订单查询
-            Order o = orderTestService.getOrderById(remarks);
+            Order o = orderService.getOrderById(remarks);
             
             if(o==null){
             	return "order is null";
@@ -686,7 +686,7 @@ public class AppPayController extends BaseController {
                 o.setORDER_NO(orderid);
                 o.setREGGOLD(String.valueOf(gold));
                 o.setSTATUS("1");
-                orderTestService.update(o);
+                orderService.update(o);
                 
             return "SUCCESS";
         } catch (Exception e) {

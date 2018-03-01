@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
 import com.fh.entity.system.Role;
+import com.fh.service.system.channel.ChannelManageManager;
 import com.fh.service.system.fhlog.FHlogManager;
 import com.fh.service.system.menu.MenuManager;
 import com.fh.service.system.role.RoleManager;
@@ -55,12 +56,18 @@ public class UserController extends BaseController {
 	String menuUrl = "user/listUsers.do"; //菜单地址(权限用)
 	@Resource(name="userService")
 	private UserManager userService;
+	
 	@Resource(name="roleService")
 	private RoleManager roleService;
+	
 	@Resource(name="menuService")
 	private MenuManager menuService;
+	
 	@Resource(name="fhlogService")
 	private FHlogManager FHLOG;
+	
+	@Resource(name="channelManageService")
+	private ChannelManageManager channelManageService;
 	
 	/**显示用户列表
 	 * @param page
@@ -123,11 +130,17 @@ public class UserController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("ROLE_ID", "1");
+		
+		/**角色列表*/
 		List<Role> roleList = roleService.listAllRolesByPId(pd);//列出所有系统用户角色
+		/**渠道列表*/
+		List<PageData> channelList= channelManageService.listAll(null);
+		
 		mv.setViewName("system/user/user_edit");
 		mv.addObject("msg", "saveU");
 		mv.addObject("pd", pd);
 		mv.addObject("roleList", roleList);
+		mv.addObject("channelList", channelList);
 		return mv;
 	}
 	
@@ -238,10 +251,16 @@ public class UserController extends BaseController {
 		List<Role> roleList = roleService.listAllRolesByPId(pd);	//列出所有系统用户角色
 		mv.addObject("fx", "user");
 		pd = userService.findById(pd);								//根据ID读取
+		
+		/**渠道列表*/
+		List<PageData> channelList= channelManageService.listAll(null);
+		
 		mv.setViewName("system/user/user_edit");
 		mv.addObject("msg", "editU");
 		mv.addObject("pd", pd);
 		mv.addObject("roleList", roleList);
+		mv.addObject("channelList", channelList);
+		
 		return mv;
 	}
 	
