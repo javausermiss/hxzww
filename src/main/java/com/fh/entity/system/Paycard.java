@@ -12,5 +12,8 @@ public class Paycard {
     private String GOLD;
     private String DISCOUNT;
     private String IMAGEURL;
+    private String RECHARE;
+    private String AWARD;
+
 
 }

@@ -142,19 +142,21 @@ public class AppPayController extends BaseController {
     }
 
     /**
-     * 获取订单信息
-     *
+     * 订单新接口，以编号获取相应的金币数
      * @param userId
      * @param accessToken
-     * @param amounr      金额
+     * @param pid
+     * @param ctype
+     * @param channel
      * @return
      */
-    @RequestMapping(value = "/getTradeOrder", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+
+    @RequestMapping(value = "/getTradeOrder_new", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject getTradeOrder(
+    public JSONObject getTradeOrder_new(
             @RequestParam("userId") String userId,
-            @RequestParam("accessToken") String accessToken,
-            @RequestParam("amount") String amount,
+            @RequestParam(value = "accessToken",required = false) String accessToken,
+            @RequestParam("pid") String pid,
             @RequestParam(value="ctype" ,required = false) String ctype,
             @RequestParam(value = "channel" ,required = false) String channel
 
@@ -166,33 +168,13 @@ public class AppPayController extends BaseController {
                 return null;
             }
             String datetime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-            boolean a = RedisUtil.getRu().exists("tradeOrder");
-            
-            //获取金币数量 临时解决方案  begin 请注意 坑................
-            Paycard paycard = paycardService.getGold(String.valueOf(Integer.parseInt(amount) / 100));
-            String glodNum = "";
-            switch (Integer.parseInt(paycard.getAMOUNT())) {
-                case 6:
-                	glodNum = "65";
-                    break;
-                case 30:
-                	glodNum = "335";
-                    break;
-                case 68:
-                	glodNum = "800";
-                    break;
-                case 128:
-                	glodNum = "1600";
-                    break;
-                case 328:
-                	glodNum = "4375";
-                    break;
-                case 648:
-                	glodNum = "9260";
-                    break;
+            Paycard paycard =  paycardService.getPayCardById(pid);
+            if (paycard==null){
+                return null;
             }
-            //获取金币数量 临时解决方案  end 请注意 坑................
-            
+            String glodNum = paycard.getGOLD();//金币数量
+            int amount = Integer.valueOf(paycard.getAMOUNT());//金额
+            boolean a = RedisUtil.getRu().exists("tradeOrder");
             if (a) {
                 String tradeOrder = RedisUtil.getRu().get("tradeOrder");
                 String x = tradeOrder.substring(0, 8);//取前八位进行判断
@@ -204,7 +186,7 @@ public class AppPayController extends BaseController {
                     Order order = new Order();
                     order.setUSER_ID(userId);
                     order.setREC_ID(MyUUID.getUUID32());
-                    order.setREGAMOUNT(amount);
+                    order.setREGAMOUNT(String.valueOf(amount*100));//充值金额
                     order.setORDER_ID(newOrder);
                     order.setREGGOLD(glodNum);//充值的金币数量
                     order.setCHANNEL(channel);
@@ -219,7 +201,7 @@ public class AppPayController extends BaseController {
                     Order order = new Order();
                     order.setUSER_ID(userId);
                     order.setREC_ID(MyUUID.getUUID32());
-                    order.setREGAMOUNT(amount);
+                    order.setREGAMOUNT(String.valueOf(amount*100));
                     order.setORDER_ID(newOrder);
                     order.setREGGOLD(glodNum);//充值的金币数量
                     order.setCHANNEL(channel);
@@ -235,7 +217,7 @@ public class AppPayController extends BaseController {
                 Order order = new Order();
                 order.setUSER_ID(userId);
                 order.setREC_ID(MyUUID.getUUID32());
-                order.setREGAMOUNT(amount);
+                order.setREGAMOUNT(String.valueOf(amount*100));
                 order.setORDER_ID(newOrder);
                 order.setREGGOLD(glodNum); //充值的金币数量
                 order.setCHANNEL(channel);
@@ -245,10 +227,12 @@ public class AppPayController extends BaseController {
                 map.put("Order", getOrderInfo(order.getORDER_ID()));
                 return RespStatus.successs().element("data", map);
             }
-        } catch (Exception e) {
+
+        }catch (Exception e){
             e.printStackTrace();
             return RespStatus.fail();
         }
+
 
     }
 
@@ -379,34 +363,9 @@ public class AppPayController extends BaseController {
                     return "SUCCESS";
                 }
                 int gold = Integer.valueOf(paycard.getGOLD());
-                String award = "";
-                String rechare = "";
-                switch (gold) {
-                    case 65:
-                        rechare = "60";
-                        award = "5";
-                        break;
-                    case 335:
-                        rechare = "300";
-                        award = "35";
-                        break;
-                    case 800:
-                        rechare = "680";
-                        award = "120";
-                        break;
-                    case 1600:
-                        rechare = "1280";
-                        award = "320";
-                        break;
-                    case 4375:
-                        rechare = "3280";
-                        award = "1095";
-                        break;
-                    case 9260:
-                        rechare = "6480";
-                        award = "2780";
-                        break;
-                }
+                String award = paycard.getAWARD();
+                String rechare = paycard.getRECHARE();
+
                 AppUser appUser = appuserService.getUserByID(o.getUSER_ID());
                 int a = Integer.valueOf(appUser.getBALANCE()) + gold;
                 appUser.setBALANCE(String.valueOf(a));
@@ -571,34 +530,9 @@ public class AppPayController extends BaseController {
                     return "SUCCESS";
                 }
                 int gold = Integer.valueOf(paycard.getGOLD());
-                String award = "";
-                String rechare = "";
-                switch (gold) {
-                    case 65:
-                        rechare = "60";
-                        award = "5";
-                        break;
-                    case 335:
-                        rechare = "300";
-                        award = "35";
-                        break;
-                    case 800:
-                        rechare = "680";
-                        award = "120";
-                        break;
-                    case 1600:
-                        rechare = "1280";
-                        award = "320";
-                        break;
-                    case 4375:
-                        rechare = "3280";
-                        award = "1095";
-                        break;
-                    case 9260:
-                        rechare = "6480";
-                        award = "2780";
-                        break;
-                }
+                String award = paycard.getAWARD();
+                String rechare = paycard.getRECHARE();
+
                 AppUser appUser = appuserService.getUserByID(o.getUSER_ID());
                 int a = Integer.valueOf(appUser.getBALANCE()) + gold;
                 appUser.setBALANCE(String.valueOf(a));
