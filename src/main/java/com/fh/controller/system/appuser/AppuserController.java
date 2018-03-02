@@ -65,6 +65,12 @@ public class AppuserController extends BaseController {
 			if(null != keywords && !"".equals(keywords)){
 				pd.put("keywords", keywords.trim());
 			}
+			
+			/***获取用户角色名称***/
+			String roleName=Jurisdiction.getRoleName();
+			if(Const.MCHNT_ADMIN_ROLE_NAME.equals(roleName)){
+				pd.put("CHANNEL_CODE", Jurisdiction.getChannelCode());
+			}
 			page.setPd(pd);
 			List<PageData>	userList = appuserService.listPdPageUser(page);		//列出会员列表
 			pd.put("ROLE_ID", "2");

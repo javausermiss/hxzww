@@ -49,6 +49,9 @@ public class Const {
 	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(sms)|(/api/)|(/gateway/)|(code)|(/app/)|(weixin)|(static)|(paycard)|(main)|(DollImage)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
 	public static ApplicationContext WEB_APP_CONTEXT = null; //该值会在web容器启动时由WebAppContextListener初始化
 	
+	
+	public static final String MCHNT_ADMIN_ROLE_NAME="MCHNT_ADMIN"; //代理商户角色名称
+	
 	/**
 	 * APP Constants
 	 */

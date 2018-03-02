@@ -112,6 +112,10 @@
         <include refid="tableName"/>
         u
         where 1 = 1
+         <if test="pd.CHANNEL_CODE != null and pd.CHANNEL_CODE != ''"><!-- 渠道检索 -->
+            and u.CHANNEL_CODE=#{pd.CHANNEL_CODE}
+        </if>
+        
         <if test="pd.keywords != null and pd.keywords!= ''"><!-- 关键词检索 -->
             and (
             u.USERNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')

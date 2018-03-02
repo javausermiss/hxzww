@@ -311,7 +311,7 @@ public class LoginController extends BaseController {
 		pd.put("appUserCount", Integer.parseInt(appuserService.getAppUserCount("").get("appUserCount").toString()));	//会员数
 	
 		String roleName=Jurisdiction.getRoleName(); //获取用户角色名称
-		if("MCHNT_ADMIN".equals(roleName)){
+		if(Const.MCHNT_ADMIN_ROLE_NAME.equals(roleName)){
 			pd.put("userName", Jurisdiction.getUsername()); //用户名
 			
 			/***渠道信息**/
