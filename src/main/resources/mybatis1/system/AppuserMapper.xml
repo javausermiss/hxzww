@@ -362,13 +362,15 @@
         PHONE,
         CREATETIME,
         USERNAME,
-        NICKNAME
+        NICKNAME,
+        IMAGE_URL
         ) values (
         #{USER_ID},
         #{PHONE},
         now(),
         #{PHONE},
-        #{NICKNAME}
+        #{NICKNAME},
+        #{IMAGE_URL}
         )
     </insert>
     <!--更改App用户信息-->

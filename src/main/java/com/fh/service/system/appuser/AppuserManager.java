@@ -126,7 +126,7 @@ public interface AppuserManager {
      * @return
      * @throws Exception
      */
-    public int reg(String phone) throws Exception;
+    public int reg(String phone,String url) throws Exception;
 
     /**
      * 通过手机号码查询用户信息

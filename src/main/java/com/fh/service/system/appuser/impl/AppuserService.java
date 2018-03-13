@@ -147,8 +147,8 @@ public class AppuserService implements AppuserManager{
 	 * @throws Exception
 	 */
 
-	public int reg(String phone) throws Exception {
-		return (int)dao.save("AppuserMapper.reg",new AppUser(MyUUID.createSessionId(),phone,null,phone,phone));
+	public int reg(String phone,String url) throws Exception {
+		return (int)dao.save("AppuserMapper.reg",new AppUser(MyUUID.createSessionId(),phone,null,phone,phone,url));
 	}
 
 	/**

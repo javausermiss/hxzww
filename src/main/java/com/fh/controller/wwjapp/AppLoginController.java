@@ -1,14 +1,19 @@
 package com.fh.controller.wwjapp;
 
 
+import com.fh.controller.base.BaseController;
 import com.fh.entity.system.AppUser;
+import com.fh.entity.system.AppuserLogin;
 import com.fh.entity.system.Doll;
 import com.fh.entity.system.Payment;
 import com.fh.service.system.appuser.AppuserManager;
 
+import com.fh.service.system.appuserlogininfo.AppuserLoginInfoManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
+import com.fh.util.Const;
 import com.fh.util.MD5;
+import com.fh.util.PropertiesUtils;
 import com.fh.util.wwjUtil.*;
 import com.iot.game.pooh.admin.srs.core.entity.httpback.SrsConnectModel;
 import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
@@ -34,7 +39,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/app/sms")
-public class AppLoginController {
+public class AppLoginController extends BaseController{
 
     @Resource(name = "appuserService")
     private AppuserManager appuserService;
@@ -44,6 +49,9 @@ public class AppLoginController {
 
     @Resource(name = "paymentService")
     private PaymentManager paymentService;
+
+    @Resource(name="appuserlogininfoService")
+    private AppuserLoginInfoManager appuserlogininfoService;
 
     /**
      * 个人信息
@@ -146,6 +154,13 @@ public class AppLoginController {
 
                 String sessionID = MyUUID.createSessionId();
                 String userId = appUser.getUSER_ID();
+
+                //登录日志
+                AppuserLogin appuserLogin = new AppuserLogin();
+                appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
+                appuserLogin.setUSER_ID(userId);
+                appuserlogininfoService.insertLoginLog(appuserLogin);
+
                 //SRS推流
                 SrsConnectModel sc = new SrsConnectModel();
                 long time = System.currentTimeMillis();
@@ -161,20 +176,30 @@ public class AppLoginController {
                 map.put("srsToken", sc);
                 return RespStatus.successs().element("data", map);
             } else {
-                int a1 = appuserService.reg(phone);
+                String face = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
+                int a1 = appuserService.reg(phone,face);
                 if (a1 != 1) {
                     return RespStatus.fail("注册失败");
 
                 }
                 AppUser appUserNew = appuserService.getUserByPhone(phone);
                 String userId = appUserNew.getUSER_ID();
+
+                //登录日志
+                AppuserLogin appuserLogin = new AppuserLogin();
+                appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
+                appuserLogin.setUSER_ID(userId);
+                appuserlogininfoService.insertLoginLog(appuserLogin);
+
+                logger.info("tencentLogin--> userId=" + userId + ",首次登陆，注册赠送金币...");
                 //增加赠送金币明细
                 Payment payment = new Payment();
-                payment.setREMARK("注册赠送");
-                payment.setGOLD("+60");
-                payment.setCOST_TYPE("9");
+                payment.setREMARK(Const.PlayMentCostType.cost_type13.getName());
+                payment.setGOLD("+3");
+                payment.setCOST_TYPE(Const.PlayMentCostType.cost_type13.getValue());
                 payment.setUSERID(userId);
                 paymentService.reg(payment);
+
                 //SRS推流
                 SrsConnectModel sc = new SrsConnectModel();
                 long time = System.currentTimeMillis();

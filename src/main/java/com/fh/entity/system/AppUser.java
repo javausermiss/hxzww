@@ -66,12 +66,13 @@ public class AppUser {
                 '}';
     }
 
-    public AppUser(String USER_ID, String PHONE, String CREATETIME, String USERNAME, String NICKNAME) {
+    public AppUser(String USER_ID, String PHONE, String CREATETIME, String USERNAME, String NICKNAME ,String IMAGE_URL) {
         this.USER_ID = USER_ID;
         this.PHONE = PHONE;
         this.CREATETIME = CREATETIME;
         this.USERNAME = USERNAME;
         this.NICKNAME = NICKNAME;
+        this.IMAGE_URL = IMAGE_URL;
     }
 
     public Integer getBET_NUM() {

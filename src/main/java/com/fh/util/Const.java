@@ -46,7 +46,7 @@ public class Const {
 	public static final String FILEPATHFILE = "uploadFiles/file/";			//文件上传路径
 	public static final String FILEPATHFILEOA = "uploadFiles/uploadFile/";	//文件上传路径(oa管理)
 	public static final String FILEPATHTWODIMENSIONCODE = "uploadFiles/twoDimensionCode/"; //二维码存放路径
-	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(sms)|(/api/)|(/gateway/)|(code)|(/app/)|(weixin)|(static)|(paycard)|(main)|(DollImage)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
+	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(sms)|(api)|(gateway)|(code)|(app)|(weixin)|(static)|(paycard)|(main)|(DollImage)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
 	public static ApplicationContext WEB_APP_CONTEXT = null; //该值会在web容器启动时由WebAppContextListener初始化
 	
 	
@@ -87,7 +87,8 @@ public class Const {
 		cost_type09("充值奖励","9"),
 		cost_type10("内调","10"),
 		cost_type11("邀请码兑换奖励","11"),
-		cost_type12("邀请码分享奖励","12");
+		cost_type12("邀请码分享奖励","12"),
+		cost_type13("注册赠送","13");
 		
 		private  String name;
 		private  String value;
