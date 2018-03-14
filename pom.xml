@@ -614,6 +614,23 @@
 		  <artifactId>java-emoji-converter</artifactId>  
 		  <version>0.1.1</version>  
 		</dependency>
+
+        <!--支付宝依赖-->
+        <dependency>
+            <groupId>alipay</groupId>
+            <artifactId>alipay</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/alipay-sdk-java20180309170622.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>alipay-com</groupId>
+            <artifactId>alipay-com</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/commons-logging-1.1.1.jar</systemPath>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>pooh-web</finalName>
