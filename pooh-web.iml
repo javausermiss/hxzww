@@ -302,5 +302,23 @@
     <orderEntry type="library" name="Maven: org.jodd:jodd-core:3.7" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.9" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: alipay:alipay:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/main/webapp/WEB-INF/lib/alipay-sdk-java20180309170622.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: alipay-com:alipay-com:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/main/webapp/WEB-INF/lib/commons-logging-1.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
