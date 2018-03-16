@@ -20,6 +20,7 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.fh.alipay.AlipayConfig;
+import com.fh.util.NumberUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -736,7 +737,8 @@ public class AppPayController extends BaseController {
             }
 
             String glodNum = paycard.getGOLD();//金币数量
-            amount = new DecimalFormat("#0.00").format(Double.valueOf(paycard.getAMOUNT()));//金额
+            amount = NumberUtils.RMBYuanToCent(paycard.getAMOUNT());
+            //amount = new DecimalFormat("#0.00").format(Double.valueOf(paycard.getAMOUNT()));//金额
             boolean a = RedisUtil.getRu().exists("tradeOrder");
             if (a) {
                 String tradeOrder = RedisUtil.getRu().get("tradeOrder");
@@ -746,44 +748,23 @@ public class AppPayController extends BaseController {
                     String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
                     newOrder = datetime + newsix;//新的订单编号
                     RedisUtil.getRu().set("tradeOrder", newOrder);
-                    Order order = new Order();
-                    order.setUSER_ID(userId);
-                    order.setREC_ID(MyUUID.getUUID32());
-                    order.setREGAMOUNT(amount);//充值金额
-                    order.setORDER_ID(newOrder);
-                    order.setREGGOLD(glodNum);//充值的金币数量
-                    order.setCHANNEL(channel);
-                    order.setCTYPE(ctype);
-                    orderService.regmount(order);
-
                 } else {
                     newOrder = datetime + "000001";//新的订单编号
                     RedisUtil.getRu().set("tradeOrder", newOrder);
-                    Order order = new Order();
-                    order.setUSER_ID(userId);
-                    order.setREC_ID(MyUUID.getUUID32());
-                    order.setREGAMOUNT(amount);
-                    order.setORDER_ID(newOrder);
-                    order.setREGGOLD(glodNum);//充值的金币数量
-                    order.setCHANNEL(channel);
-                    order.setCTYPE(ctype);
-                    orderService.regmount(order);
-
                 }
             } else {
                 newOrder = datetime + "000001";//新的订单编号
                 RedisUtil.getRu().set("tradeOrder", newOrder);
-                Order order = new Order();
-                order.setUSER_ID(userId);
-                order.setREC_ID(MyUUID.getUUID32());
-                order.setREGAMOUNT(amount);
-                order.setORDER_ID(newOrder);
-                order.setREGGOLD(glodNum); //充值的金币数量
-                order.setCHANNEL(channel);
-                order.setCTYPE(ctype);
-                orderService.regmount(order);
-
             }
+            Order order = new Order();
+            order.setUSER_ID(userId);
+            order.setREC_ID(MyUUID.getUUID32());
+            order.setREGAMOUNT(amount);//充值金额
+            order.setORDER_ID(newOrder);
+            order.setREGGOLD(glodNum);//充值的金币数量
+            order.setCHANNEL(channel);
+            order.setCTYPE(ctype);
+            orderService.regmount(order);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -799,7 +780,7 @@ public class AppPayController extends BaseController {
         model.setSubject("第一抓娃娃支付");
         model.setOutTradeNo(newOrder);
         model.setTimeoutExpress("10m");
-        model.setTotalAmount(amount);
+        model.setTotalAmount(NumberUtils.RMBCentToYuan(amount));
         model.setProductCode("QUICK_MSECURITY_PAY");
         request.setBizModel(model);
         request.setNotifyUrl(AlipayConfig.notify_url);
@@ -828,7 +809,7 @@ public class AppPayController extends BaseController {
         logger.info("支付宝回调开始================>>>>>>>>>>>>>>>>");
 
         String out_trade_no = "";
-        double amount = 0.00;
+        String amount = "";
         Map<String, String> params = new HashMap<String, String>();
         Map requestParams = request.getParameterMap();
         for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
@@ -858,11 +839,13 @@ public class AppPayController extends BaseController {
                     }
 
                     //实际收到的金额
-                    amount = Double.parseDouble(params.get("receipt_amount"));
-                    double tb_amount = Double.parseDouble(o.getREGAMOUNT());
-                    logger.info("实际收到的金额为:" + amount);
-                    logger.info("订单支付的金额为:" + tb_amount);
-                    if (amount - tb_amount != 0) {
+                    amount = params.get("receipt_amount");
+                    String am =  NumberUtils.RMBYuanToCent(String.valueOf(amount));
+                    String tb_amount = o.getREGAMOUNT();
+
+                    logger.info("实际收到的金额为:" + am+"分，分为单位");
+                    logger.info("订单支付的金额为:" + tb_amount+"分，分为单位");
+                    if (!am.equals(tb_amount)) {
                         return "failure";
                     }
                     //校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方
