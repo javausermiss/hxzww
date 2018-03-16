@@ -1,4 +1,4 @@
-package com.fh.alipay.api;
+package com.fh.alipay;
 
 /**
  * 支付宝基本配置
@@ -14,8 +14,8 @@ public class AlipayConfig {
         // 3.支付宝公钥
         public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgWCgo16rRtZiWug+FAazvJ8zFkcGXCORrv3xWqliDm308I0rwtRNFCXGmVpnMuewGJWivW46bS6asZrV7lxYrFETVSNyuaRi1UAzzzl/YM3GBdFit2iel91U4FIvBfqnV4iTiT0JjqjXkXaXnah6JPJLHlRgXikc0vJcq6QYJikw8W8IlbVOd64PiFzjRLN2PqmBsOknfd8JsgVBgpioJp39deSaXrjKKkck5fkVCHWuU1l4p7NJTz0g32N6tEYuw18taAEoizFjhc8yRySuAFr5pPiycxFyqILIkQ09ytETitCt4gJdnZHIWyXsxubnw6cv2nc7wNnrqViqmKzJWQIDAQAB";
 
-        // 4.服务器异步通知页面路径 需http://或者https://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-        public static String notify_url = "http://111.231.139.61:18081/pooh-web/app/alipay/authRedirectLogin.do";
+        // 4.服务器异步通知页面路径
+        public static String notify_url = "http://111.231.139.61:18081/pooh-web/app/pay/AlipayCallBack";
 
         // 6.请求网关地址
         public static String URL = "https://openapi.alipay.com/gateway.do";
