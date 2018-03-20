@@ -1,35 +1,34 @@
-package com.fh.service.system.trans;
+package com.fh.service.system.promote;
 
 import java.util.List;
 import com.fh.entity.Page;
-import com.fh.entity.system.TransLog;
 import com.fh.util.PageData;
 
 /** 
- * 说明： 订单表接口
+ * 说明： 推广加盟接口
  * 创建人：FH Q313596790
- * 创建时间：2017-12-26
+ * 创建时间：2018-03-07
  * @version
  */
-public interface TransLogManager{
+public interface PromoteAppUserManager{
 
 	/**新增
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void save(TransLog transLog)throws Exception;
+	public void save(PageData pd)throws Exception;
 	
 	/**删除
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void delete(TransLog transLog)throws Exception;
+	public void delete(PageData pd)throws Exception;
 	
 	/**修改
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void edit(TransLog transLog)throws Exception;
+	public void edit(PageData pd)throws Exception;
 	
 	/**列表
 	 * @param page
@@ -41,13 +40,13 @@ public interface TransLogManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public List<PageData> listAll(TransLog transLog)throws Exception;
+	public List<PageData> listAll(PageData pd)throws Exception;
 	
 	/**通过id获取数据
 	 * @param pd
 	 * @throws Exception
 	 */
-	public TransLog findById(String id)throws Exception;
+	public PageData findById(PageData pd)throws Exception;
 	
 	/**批量删除
 	 * @param ArrayDATA_IDS
@@ -55,11 +54,19 @@ public interface TransLogManager{
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
 	
-	/**修订单返回状态
+	
+	/**通过userId获取数据
 	 * @param pd
 	 * @throws Exception
 	 */
-	public void editOrderLogResp(TransLog transLog)throws Exception;
+	public PageData findByUserId(String userId)throws Exception;
+	
+	
+	/**通过推广码获取数据
+	 * @param pd
+	 * @throws Exception
+	 */
+	public PageData findByProCode(String proCode)throws Exception;
 	
 }
 

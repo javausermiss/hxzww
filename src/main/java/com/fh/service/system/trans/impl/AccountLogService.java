@@ -81,5 +81,14 @@ public class AccountLogService implements AccountLogManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("AccountLogMapper.deleteAll", ArrayDATA_IDS);
 	}
+	
+	
+	/**获取用户的账户日志
+	 * @param pd
+	 * @throws Exception
+	 */
+	public List<PageData> getAccountLogByTypelistAll(PageData pd)throws Exception{
+		return (List<PageData>)dao.findForList("AccountLogMapper.getAccountLogByTypelistAll", pd);
+	}
 }
 

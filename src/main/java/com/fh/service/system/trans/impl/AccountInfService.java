@@ -12,6 +12,7 @@ import com.fh.entity.system.AccountInf;
 import com.fh.service.system.trans.AccountInfManager;
 import com.fh.util.DateUtil;
 import com.fh.util.PageData;
+import com.fh.util.StringUtils;
 
 /** 
  * 说明： 账户信息
@@ -94,6 +95,20 @@ public class AccountInfService implements AccountInfManager{
 	 */
 	public AccountInf findByUserId(String userId)throws Exception{
 		return (AccountInf)dao.findForObject("AccountInfMapper.findByUserId", userId);
+	}
+	
+	/***
+	 * 查询用户的账户余额
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public String getAccountCountByUserId(String userId)throws Exception{
+		String accBal= (String)dao.findForObject("AccountInfMapper.getAccountCountByUserId", userId);
+		if(StringUtils.isEmpty(accBal)){
+			accBal="0"; 
+		}
+		return accBal;
 	}
 }
 

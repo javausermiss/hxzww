@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PromoteManageMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		SYS_WWJ_PROMOTE_MANAGE
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+	    PRO_MANAGE_NAME,
+		PAY_AMOUNT,	
+		PAY_GOLD,
+		CONVER_GOLD,	
+		IMG_URL,	
+		PRO_TYPE,	
+		RETURN_RATIO,	
+		CREATE_TIME,	
+		UPDATE_TIME,	
+		PRO_MANAGE_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{PRO_MANAGE_NAME},
+		#{PAY_AMOUNT},	
+		#{PAY_GOLD},
+		#{CONVER_GOLD},	
+		#{IMG_URL},	
+		#{PRO_TYPE},	
+		#{RETURN_RATIO},	
+		now(),	
+		#{UPDATE_TIME},	
+		#{PRO_MANAGE_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			PRO_MANAGE_ID = #{PRO_MANAGE_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			PRO_MANAGE_NAME=#{PRO_MANAGE_NAME},
+			PAY_AMOUNT = #{PAY_AMOUNT},
+			PAY_GOLD   =#{PAY_GOLD},
+			CONVER_GOLD = #{CONVER_GOLD},
+			IMG_URL = #{IMG_URL},
+			PRO_TYPE = #{PRO_TYPE},
+			RETURN_RATIO = #{RETURN_RATIO},
+			UPDATE_TIME = now()
+		where 
+		PRO_MANAGE_ID = #{PRO_MANAGE_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="java.lang.String" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			PRO_MANAGE_ID = #{PRO_MANAGE_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				<!--	根据需求自己加检索条件
+					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				-->
+				)
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll"  resultType="pd">
+		select
+		PRO_MANAGE_NAME,
+		PRO_MANAGE_ID,
+		PAY_AMOUNT,	
+		PAY_GOLD,
+		CONVER_GOLD,	
+		IMG_URL,	
+		PRO_TYPE,	
+		RETURN_RATIO
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			PRO_MANAGE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- fh313596790qq(青苔) -->
+</mapper>

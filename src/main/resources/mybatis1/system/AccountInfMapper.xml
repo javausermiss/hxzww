@@ -172,4 +172,9 @@
 		where 
 			USER_ID = #{userId}
 	</select>
+	
+		
+	<select id="getAccountCountByUserId" parameterType="String" resultType="String">
+		SELECT ACC_BAL from TB_ACCOUNT_INF WHERE USER_ID=#{USER_ID}
+	</select>
 </mapper>

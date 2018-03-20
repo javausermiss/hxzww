@@ -1,6 +1,5 @@
 package com.fh.service.system.trans;
 
-import com.fh.entity.system.AccountInf;
 import com.fh.entity.system.TransLog;
 import com.fh.util.resp.TxnResp;
 
@@ -18,7 +17,7 @@ public interface AccountOperManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public TxnResp openAccountInf(String userId) throws Exception;
+	public TxnResp openAccountInfByUser(String userId) throws Exception;
 	
 	
 	/**
@@ -44,7 +43,5 @@ public interface AccountOperManager {
 	 * @return
 	 */
 	public TxnResp deductAccountInf(String transId) throws Exception;
-	
-	
 	
 }

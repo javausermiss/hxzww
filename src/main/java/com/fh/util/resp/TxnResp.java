@@ -12,6 +12,12 @@ public class TxnResp {
 	private String resultCode;//结果返回状态
 	
 	private String msg; //错误信息
+	
+	private String priAccId; //当前的用户账户ID
+	
+	private String orderId;  //当前操作的订单ID
+	
+	private String userId;	//当前操作的用户ID
 
 	public boolean isRespCode() {
 		return respCode;
@@ -37,5 +43,28 @@ public class TxnResp {
 		this.msg = msg;
 	}
 
+	public String getPriAccId() {
+		return priAccId;
+	}
+
+	public void setPriAccId(String priAccId) {
+		this.priAccId = priAccId;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	
 }

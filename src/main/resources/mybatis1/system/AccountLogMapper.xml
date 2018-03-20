@@ -7,10 +7,12 @@
 		<result column="ACC_ID" property="accId"/>
 		<result column="LAST_TXN_DATE" property="lastTxnDate"/>
 		<result column="LAST_TXN_TIME" property="lastTxnTime"/>
-		<result column="TRANS_ID" property="transId"/>
+		<result column="TRANS_TYPE" property="transType"/>
 		<result column="TRANS_AMT" property="transAmt"/>
+		<result column="ORG_TRANS_AMT" property="orgTransAmt"/>
 		<result column="ACC_AMT" property="accAmt"/>
 		<result column="ACC_TOTAL_AMT" property="accTotalAmt"/>
+		<result column="LOG_TYPE" property="logType"/>
 		<result column="RES_COLUMN1" property="resColumn1"/>
 		<result column="RES_COLUMN2" property="resColumn2"/>
 		<result column="RES_COLUMN3" property="resColumn3"/>
@@ -32,10 +34,12 @@
 		ACC_ID,
 		LAST_TXN_DATE,
 		LAST_TXN_TIME,
-		TRANS_ID,
+		TRANS_TYPE,
 		TRANS_AMT,
+		ORG_TRANS_AMT,
 		ACC_AMT,
 		ACC_TOTAL_AMT,
+		LOG_TYPE,
 		RES_COLUMN1,
 		RES_COLUMN2,
 		RES_COLUMN3,
@@ -52,10 +56,12 @@
 		#{accId},
 		#{lastTxnDate},
 		#{lastTxnTime},
-		#{transId},
+		#{transType},
 		#{transAmt},
+		#{orgTransAmt},
 		#{accAmt},
 		#{accTotalAmt},
+		#{logType},
 		#{resColumn1},
 		#{resColumn2},
 		#{resColumn3},
@@ -91,7 +97,7 @@
 		<include refid="tableName"></include>
 		SET 
 			ACC_ID= #{accId},
-			TRANS_ID=#{transId},
+			TRANS_TYPE=#{transType},
 			RES_COLUMN1 =#{resColumn1},
 			RES_COLUMN2 =#{resColumn2},
 			RES_COLUMN3 =#{resColumn3},
@@ -139,6 +145,29 @@
 		<include refid="tableName"></include>
 	</select>
 	
+	
+	<select id="getAccountLogByTypelistAll" parameterType="pd" resultType="pd">
+		select
+		LOG_ID,
+		LAST_TXN_DATE,
+		LAST_TXN_TIME,
+		TRANS_TYPE,
+		TRANS_AMT,
+		ORG_TRANS_AMT,
+		ACC_AMT,
+		ACC_TOTAL_AMT,
+		LOG_TYPE,
+		RES_COLUMN1,
+		RES_COLUMN2,
+		RES_COLUMN3
+		from 
+		TB_ACCOUNT_LOG
+		where
+			ACC_ID=(SELECT ACC_ID FROM tb_account_inf t where t.user_ID=#{userId})
+			AND TRANS_TYPE=#{transType}
+		ORDER BY CREATE_DATE DESC
+	</select>
+	
 	<!-- 批量删除 -->
 	<delete id="deleteAll" parameterType="String">
 		delete from
@@ -149,6 +178,29 @@
                  #{item}
 		</foreach>
 	</delete>
+	
+	
+		<!-- 列表 -->
+	<select id="findAccountDetaillistPage" parameterType="page" resultType="pd">
+		select
+			LOG_ID,
+			LAST_TXN_DATE,
+			LAST_TXN_TIME,
+			TRANS_TYPE,
+			TRANS_AMT,
+			ORG_TRANS_AMT,
+			ACC_AMT,
+			ACC_TOTAL_AMT,
+			LOG_TYPE,
+			RES_COLUMN1,
+			RES_COLUMN2,
+			RES_COLUMN3
+			from 
+			TB_ACCOUNT_LOG
+			where
+				ACC_ID=(SELECT ACC_ID FROM tb_account_inf t where t.user_ID=#{pd.userId})
+		ORDER BY CREATE_DATE DESC
+	</select>
 	
 	<!-- fh313596790qq(青苔) -->
 </mapper>

@@ -17,6 +17,7 @@ import com.fh.util.EmojiUtil;
 import com.fh.util.NumberUtils;
 import com.fh.util.PageData;
 import com.fh.util.StrUtil;
+import com.fh.util.StringUtils;
 import com.fh.util.wwjUtil.MyUUID;
 
 
@@ -416,6 +417,43 @@ public class AppuserService implements AppuserManager{
      */
     public Integer getSysAppUserCountByChannelCode(String channelCode)throws Exception{
     	return (int)dao.findForObject("AppuserMapper.getSysAppUserCountByChannelCode",channelCode);
+    }
+    
+    /**
+     * 修改用户的所属推广用户信息
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public int updateProUserId(AppUser appUser)throws Exception{
+    	return (int)dao.update("AppuserMapper.updateProUserId",appUser);
+    }
+    
+    /**
+     * 获取用户信息 返回给前端
+     * @param userid
+     * @return
+     * @throws Exception
+     */
+    public PageData getAppUserForAppByUserId(String userid)throws Exception{
+    	PageData pd=(PageData) dao.findForObject("AppuserMapper.getAppUserForAppByUserId",userid);
+    	
+    	if(pd !=null && StringUtils.isNotEmpty(pd.getString("PHONE"))){
+    		pd.put("PHONE", pd.getString("PHONE").replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+    	}else{
+    		pd.put("PHONE","");
+    	}
+    	return pd;
+    }
+    
+    /**
+     * 修改用户手机号码
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public int updateAppUserPhone(AppUser appUser)throws Exception{
+    	return (int)dao.update("AppuserMapper.updateAppUserPhone",appUser);
     }
 }
 

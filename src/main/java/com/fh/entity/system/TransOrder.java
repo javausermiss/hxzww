@@ -5,25 +5,24 @@ import java.util.Date;
 /**
  * 交易流水实体类
  */
-public class TransLog implements java.io.Serializable {
+public class TransOrder implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3868626902078983436L;
 	
-	private String transId;
-	private String orgTransId;
+	private String orderId;
+	private String orgOrderId;
 	private String dmsRelatedKey;
 	private String orgDmsRelatedKey;
+	private String userId; //执行用户Id
 	private String transType;
 	private String orderSt;
-	private String transSt;
 	private String transCode;
-	private String respCode;
 	private String priAccId;
-	private String dmsUserId;
-	private String dmsUserUnionId;
+	private String dmsUserId;	//当前操作的用户Id
+	private String dmsUserUnionId; //当前账户的userId
 	private String transAmt;
 	private String orgTransAmt;
 	private String transCurrCd;
@@ -45,18 +44,7 @@ public class TransLog implements java.io.Serializable {
 	private String resColumn2;
 	private String resColumn3;
 	
-	public String getTransId() {
-		return transId;
-	}
-	public void setTransId(String transId) {
-		this.transId = transId;
-	}
-	public String getOrgTransId() {
-		return orgTransId;
-	}
-	public void setOrgTransId(String orgTransId) {
-		this.orgTransId = orgTransId;
-	}
+
 	public String getDmsRelatedKey() {
 		return dmsRelatedKey;
 	}
@@ -75,42 +63,21 @@ public class TransLog implements java.io.Serializable {
 	public void setOrderSt(String orderSt) {
 		this.orderSt = orderSt;
 	}
-	public String getTransSt() {
-		return transSt;
-	}
-	public void setTransSt(String transSt) {
-		this.transSt = transSt;
-	}
+
 	public String getTransCode() {
 		return transCode;
 	}
 	public void setTransCode(String transCode) {
 		this.transCode = transCode;
 	}
-	public String getRespCode() {
-		return respCode;
-	}
-	public void setRespCode(String respCode) {
-		this.respCode = respCode;
-	}
+
 	public String getPriAccId() {
 		return priAccId;
 	}
 	public void setPriAccId(String priAccId) {
 		this.priAccId = priAccId;
 	}
-	public String getDmsUserId() {
-		return dmsUserId;
-	}
-	public void setDmsUserId(String dmsUserId) {
-		this.dmsUserId = dmsUserId;
-	}
-	public String getDmsUserUnionId() {
-		return dmsUserUnionId;
-	}
-	public void setDmsUserUnionId(String dmsUserUnionId) {
-		this.dmsUserUnionId = dmsUserUnionId;
-	}
+
 	public String getTransAmt() {
 		return transAmt;
 	}
@@ -230,5 +197,35 @@ public class TransLog implements java.io.Serializable {
 	}
 	public void setTransType(String transType) {
 		this.transType = transType;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	public String getOrgOrderId() {
+		return orgOrderId;
+	}
+	public void setOrgOrderId(String orgOrderId) {
+		this.orgOrderId = orgOrderId;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getDmsUserId() {
+		return dmsUserId;
+	}
+	public void setDmsUserId(String dmsUserId) {
+		this.dmsUserId = dmsUserId;
+	}
+	public String getDmsUserUnionId() {
+		return dmsUserUnionId;
+	}
+	public void setDmsUserUnionId(String dmsUserUnionId) {
+		this.dmsUserUnionId = dmsUserUnionId;
 	}
 }

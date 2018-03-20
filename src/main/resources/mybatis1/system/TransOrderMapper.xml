@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="TransLogMapper">
-		<resultMap type="TransLog" id="TransLogResultMap">
-			<result column="TRANS_ID" property="transId"/>
-			<result column="ORG_TRANS_ID" property="orgTransId"/>
+<mapper namespace="TransOrderMapper">
+		<resultMap type="TransOrder" id="TransOrderResultMap">
+			<result column="ORDER_ID" property="orderId"/>
+			<result column="ORG_ORDER_ID" property="orgOrderId"/>
 			<result column="DMS_RELATED_KEY" property="dmsRelatedKey"/>
 			<result column="ORG_DMS_RELATED_KEY" property="orgDmsRelatedKey"/>
+			<result column="USER_ID" property="userId"/>
 			<result column="TRANS_TYPE" property="transType"/>
-			<result column="TRANS_ST" property="transSt"/>
+			<result column="ORDER_ST" property="orderSt"/>
 			<result column="TRANS_CODE" property="transCode"/>
-			<result column="RESP_CODE" property="respCode"/>
 			<result column="PRI_ACC_ID" property="priAccId"/>
 			<result column="DMS_USER_ID" property="dmsUserId"/>
 			<result column="DMS_USER_UNION_ID" property="dmsUserUnionId"/>
@@ -36,19 +36,19 @@
 	
 	<!--表名 -->
 	<sql id="tableName">
-		TB_TRANS_LOG
+		TB_TRANS_ORDER
 	</sql>
 	
 	<!-- 字段 -->
 	<sql id="Field">
-		TRANS_ID,
-		ORG_TRANS_ID,
+		ORDER_ID,
+		ORG_ORDER_ID,
 		DMS_RELATED_KEY,
 		ORG_DMS_RELATED_KEY,
+		USER_ID,
 		TRANS_TYPE,
-		TRANS_ST,	
+		ORDER_ST,	
 		TRANS_CODE,	
-		RESP_CODE,	
 		PRI_ACC_ID,	
 		DMS_USER_ID,	
 		DMS_USER_UNION_ID,	
@@ -75,14 +75,14 @@
 	
 	<!-- 字段值 -->
 	<sql id="FieldValue">
-		#{transId},
-		#{orgTransId},
+		#{orderId},
+		#{orgOrderId},
 		#{dmsRelatedKey},
 		#{orgDmsRelatedKey},
+		#{userId},
 		#{transType},
-		#{transSt},
+		#{orderSt},
 		#{transCode},
-		#{respCode},
 		#{priAccId},
 		#{dmsUserId},
 		#{dmsUserUnionId},
@@ -97,7 +97,7 @@
 		#{addInfo},
 		#{remarks},
 		#{createUser},
-		#{createDate},
+		now(),
 		#{updateUser},
 		#{updateDate},
 		0,
@@ -108,7 +108,7 @@
 	</sql>
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="TransLog" useGeneratedKeys="true" keyProperty="transId">
+	<insert id="save" parameterType="TransOrder" useGeneratedKeys="true" keyProperty="orderId">
 		insert into 
 	<include refid="tableName"></include>
 		(
@@ -123,21 +123,20 @@
 		delete from
 		<include refid="tableName"></include>
 		where 
-			TRANS_ID = #{transId}
+			ORDER_ID = #{orderId}
 	</delete>
 	
 	<!-- 修改 -->
-	<update id="edit" parameterType="TransLog">
+	<update id="edit" parameterType="TransOrder">
 		UPDATE
 		<include refid="tableName"></include>
 		SET 
-			ORG_TRANS_ID = #{orgTransId},
+			ORG_ORDER_ID = #{orgOrderId},
 			DMS_RELATED_KEY = #{dmsRelatedKey},
 			ORG_DMS_RELATED_KEY = #{orgDmsRelatedKey},
 			TRANS_TYPE = #{transType},
-			TRANS_ST = #{transSt},
+			ORDER_ST = #{orderSt},
 			TRANS_CODE = #{transCode},
-			RESP_CODE = #{respCode},
 			PRI_ACC_ID = #{priAccId},
 			DMS_USER_ID = #{dmsUserId},
 			DMS_USER_UNION_ID = #{dmsUserUnionId},
@@ -156,44 +155,44 @@
 			LOCK_VERSION = LOCK_VERSION+1,
 			MCHNT_ID = #{mchntId}
 		WHERE 
-		TRANS_ID = #{transId}
+		ORDER_ID = #{orderId}
 	</update>
 	
 	
-	<update id="editOrderLogResp" parameterType="TransLog">
+	<update id="editTransOrderSt" parameterType="TransOrder">
 		UPDATE
 		<include refid="tableName"></include>
 		SET 
-			TRANS_ST = #{transSt},
-			RESP_CODE = #{respCode},
-			UPDATE_DATE = now(),
+			<if test="dmsRelatedKey!= null and dmsRelatedKey != ''">
+				DMS_RELATED_KEY = #{dmsRelatedKey},
+			</if>
+			ORDER_ST = #{orderSt},
 			LOCK_VERSION = LOCK_VERSION+1
 		WHERE 
-		TRANS_ID = #{transId}
+		ORDER_ID = #{orderId}
 	</update>
 	
 	
 	<!-- 修改交易订单状态 -->
-	<update id="updateTransLogByST" parameterType="TransLog">
+	<update id="updateTransOrderByST" parameterType="TransOrder">
 		UPDATE
 		<include refid="tableName"></include>
 			SET 
-				TRANS_ST = #{transSt},
-				RESP_CODE = #{respCode},
+				ORDER_ST = #{orderSt},
 				UPDATE_DATE = now(),
 				LOCK_VERSION = LOCK_VERSION+1
 			WHERE 
-			TRANS_ID = #{transId}
+			ORDER_ID = #{orderId}
 	</update>
 	
 	<!-- 通过ID获取数据 -->
-	<select id="findById" parameterType="TransLog" resultMap="TransLogResultMap">
+	<select id="findById" parameterType="String" resultMap="TransOrderResultMap">
 		select 
 		<include refid="Field"></include>
 		from 
 		<include refid="tableName"></include>
 		where 
-			TRANS_ID = #{TRANS_ID}
+			ORDER_ID = #{ORDER_ID}
 	</select>
 	
 	<!-- 列表 -->
@@ -203,16 +202,32 @@
 		from 
 		<include refid="tableName"></include>
 		where 1=1
-		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+		<if test="pd.TRANS_TYPE != null and pd.TRANS_TYPE != ''"><!-- 关键词检索 -->
+			and TRANS_TYPE=#{pd.TRANS_TYPE}
+		</if>
+		<if test="pd.ORDER_ST != null and pd.ORDER_ST != ''"><!-- 关键词检索 -->
+			and ORDER_ST=#{pd.ORDER_ST}
+		</if>
+		<if test="pd.lastStart != null and pd.lastStart != ''">
+             and date_format(CREATE_DATE,'%Y-%m-%d') &gt;= str_to_date(#{pd.lastStart}, '%Y-%m-%d %H:%i:%s')
+         </if>
+         <if test="pd.lastEnd != null and pd.lastEnd != ''">
+             and date_format(CREATE_DATE,'%Y-%m-%d') &lt;= str_to_date(#{pd.lastEnd}, '%Y-%m-%d %H:%i:%s')
+         </if>
+		 <if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and
 				(
-				<!--	根据需求自己加检索条件
-					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				
+					ORDER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					 or 
-					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
-				-->
+					 USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					 DMS_RELATED_KEY LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				
 				)
 		</if>
+		
+		ORDER BY ORDER_ST ASC,CREATE_DATE DESC
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -228,11 +243,35 @@
 		delete from
 		<include refid="tableName"></include>
 		where 
-			TRANS_ID in
+			ORDER_ID in
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
                  #{item}
 		</foreach>
 	</delete>
+	
+	
+		<select id="findAccountOrderlistPage" parameterType="page" resultType="pd">
+		SELECT
+			ORDER_ID,
+			DMS_RELATED_KEY,
+			USER_ID,
+			TRANS_TYPE,
+			ORDER_ST,
+			PRI_ACC_ID,
+			DMS_USER_ID,
+			DMS_USER_UNION_ID,
+			TRANS_AMT,
+			ORG_TRANS_AMT,
+			RES_COLUMN1,
+			date_format(CREATE_DATE, '%Y%m%d%H%i%s') as CREATE_DATE
+			from tb_trans_order
+			where
+				USER_ID=#{pd.USER_ID}
+				 <if test="pd.TRANS_TYPE != null and pd.TRANS_TYPE != ''"><!-- 关键词检索 -->
+				 	TRANS_TYPE=#{TRANS_TYPE}
+				 </if>
+			ORDER BY CREATE_DATE DESC
+	</select>
 	
 	<!-- fh313596790qq(青苔) -->
 </mapper>
