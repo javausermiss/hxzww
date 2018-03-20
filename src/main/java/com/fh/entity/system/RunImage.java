@@ -10,4 +10,11 @@ public class RunImage {
     private String CONTENT;//内容
     private String TIME;
     private String HREF_ST;
+    private String LIVESTREAM;//流媒体名称
+    private String SERVER_NAME;//推流服务名称
+    private String RTMP_URL;//RTMP拉流地址
+    private String H5_URL;
+    private String DEVICE_STATE;//设备状态
+    private String STATE;//状态
+    
 }
