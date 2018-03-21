@@ -9,6 +9,9 @@ import org.springframework.context.ApplicationContext;
 public class Const {
 	
 	//redis sessionId key:sessionId:appUser:			
+	public static final String REDIS_APPUSER_PHONCE_TYPE="REDIS_SMS_PHONE_TYPE_";
+	
+	//redis sessionId key:sessionId:appUser:			
 	public static final String REDIS_APPUSER_SESSIONID="sessionId:appUser:";
 	
 	//redis sessionId key:sessionId:appUser:					 
@@ -73,6 +76,61 @@ public class Const {
 	 * @author JAVA_DEV
 	 *
 	 */
+	public enum AppPhoneSmsMenu{
+		
+		
+		PHONE_SMS_TYPE_1000("注册短信码","1000",60*30),
+		PHONE_SMS_TYPE_2000("绑定手机号","2000",60*30),
+		PHONE_SMS_TYPE_3000("修改银行卡信息","3000",60*30),
+		PHONE_SMS_TYPE_4000("提现短信码","4000",60*30);
+		
+		private  String name;
+		private  String code;
+		private  long expirytime; //失效时间
+
+		AppPhoneSmsMenu(String name, String code,long expirytime) {
+			this.name = name;
+			this.code = code;
+			this.expirytime=expirytime;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getCode() {
+			return code;
+		}
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public long getExpirytime() {
+			return expirytime;
+		}
+
+		public void setExpirytime(long expirytime) {
+			this.expirytime = expirytime;
+		}
+
+		public static AppPhoneSmsMenu findByCode(String code) {
+			for (AppPhoneSmsMenu t : AppPhoneSmsMenu.values()) {
+				if (t.code.equalsIgnoreCase(code)) {
+					return t;
+				}
+			}
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @author JAVA_DEV
+	 *
+	 */
 	public enum PlayMentCostType{
 		
 		cost_type00("游戏扣款","0"),
@@ -88,7 +146,9 @@ public class Const {
 		cost_type10("内调","10"),
 		cost_type11("邀请码兑换奖励","11"),
 		cost_type12("邀请码分享奖励","12"),
-		cost_type13("注册赠送","13");
+		cost_type13("推广收入","13"),
+		cost_type14("注册赠送","14"),
+		cost_type20("输入加盟码","20");
 		
 		private  String name;
 		private  String value;
@@ -215,6 +275,8 @@ public class Const {
 	}
 	
 	
+	
+	
 	/**
 	 * 
 	 * @author JAVA_DEV
@@ -256,5 +318,104 @@ public class Const {
 			}
 			return null;
 		}
+	}
+	
+	
+	/**
+	 * 
+	 * @author JAVA_DEV
+	 *
+	 */
+	public enum OrderPayType{
+		
+		R_TYPE("金币充值","R"),
+		P_TYPE("用户购买加盟权益","P");
+		
+		private  String name;
+		private  String value;
+
+		OrderPayType(String name, String value) {
+			this.name = name;
+			this.value = value;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public static OrderPayType findByCode(String value) {
+			for (OrderPayType t : OrderPayType.values()) {
+				if (t.value.equalsIgnoreCase(value)) {
+					return t;
+				}
+			}
+			return null;
+		}
+	}
+	
+	
+	public enum AccountTransType{
+		TRANS_OTHER("其他","0000"),
+		TRANS_1000("充值","1000"),
+		TRANS_1001("推广分成","1001"),
+		TRANS_2000("消费","2000"),
+		TRANS_3000("转账","3000"),
+		TRANS_4000("内扣","4000"),
+		TRANS_5000("提现","5000");
+		
+		private  String name;
+		private  String value;
+
+		AccountTransType(String name, String value) {
+			this.name = name;
+			this.value = value;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public static AccountTransType findByCode(String value) {
+			for (AccountTransType t : AccountTransType.values()) {
+				if (t.value.equalsIgnoreCase(value)) {
+					return t;
+				}
+			}
+			return TRANS_OTHER;
+		}
+	}
+	
+	/**
+	 * 获取redis 存储手机验证的kEY
+	 * @param userId
+	 * @param smsType
+	 * @return
+	 */
+	public static String getReidsSmsKey(String userId,String smsType){
+		return Const.REDIS_APPUSER_PHONCE_TYPE+userId+userId+smsType;
 	}
 }

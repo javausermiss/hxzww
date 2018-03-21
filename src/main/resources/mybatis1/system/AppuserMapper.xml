@@ -621,6 +621,7 @@
 		<select id="getSysAppUserCountByChannelCode" parameterType="String" resultType="java.lang.Integer">
 			SELECT COUNT(1) from SYS_APP_USER WHERE CHANNEL_CODE=#{ChannelCode}
 		</select>
+<<<<<<< HEAD
 
     <insert id="regAppUser" parameterType="com.fh.entity.system.AppUser">
         INSERT INTO SYS_APP_USER
@@ -647,4 +648,49 @@
 
     </insert>
 
+=======
+		
+		
+		    <select id="getAppUserForAppByUserId" parameterType="String" resultType="pd">
+       SELECT
+			USER_ID,
+			USERNAME,
+			`NAME`,
+			RIGHTS,
+			NICKNAME,
+			`STATUS`,
+			BZ,
+			PHONE,
+			IMAGE_URL,
+			ADDRESS,
+			BALANCE,
+			DOLLTOTAL,
+			CNEE_PHONE,
+			CNEE_ADDRESS,
+			CNEE_NAME,
+			BET_NUM,
+			SIGN_TAG
+		from sys_app_user where USER_ID=#{userId}
+    </select>
+
+
+	<update id="updateAppUserPhone" parameterType="com.fh.entity.system.AppUser">
+		UPDATE
+		sys_app_user
+		SET
+		phone = #{PHONE}
+		WHERE
+		USER_ID = #{USER_ID}
+	</update>
+	
+	<update id="updateProUserId" parameterType="com.fh.entity.system.AppUser">
+		UPDATE
+		sys_app_user
+		SET
+		PRO_USER_ID = #{PRO_USER_ID}
+		WHERE
+		USER_ID = #{USER_ID}
+	</update>
+	
+>>>>>>> 71430c5d5e012e6d5ce3bab4d34912c1b9bbd001
 </mapper>

@@ -1,5 +1,7 @@
 package com.fh.service.system.trans.impl;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import com.fh.service.system.trans.AccountLogManager;
 import com.fh.service.system.trans.AccountOperManager;
 import com.fh.service.system.trans.TransLogManager;
 import com.fh.util.AccountUtil;
+import com.fh.util.DateUtil;
 import com.fh.util.NumberUtils;
 import com.fh.util.resp.TxnResp;
 
@@ -23,26 +26,24 @@ import com.fh.util.resp.TxnResp;
 @Service("accountOperService")
 public class AccountOperService implements AccountOperManager{
 	
-
-	
 	/**
 	 * transLogManager 交易流水表
 	 */
-	@Autowired
-	private TransLogManager transLogManager;
+	@Resource(name = "translogService")
+	private TransLogManager translogService;
 	
 	
 	/**
 	 * accountLogManager 账户日志表
 	 */
-	@Autowired
-	private AccountLogManager accountLogManager;
+	@Resource(name = "accountLogService")
+	private AccountLogManager accountLogService;
 	
 	/**
 	 * accountInfManager 账户信息表
 	 */
-	@Autowired
-	private AccountInfManager accountInfManager;
+	@Resource(name = "accountInfService")
+	private AccountInfManager accountInfService;
 	
 
 	/**
@@ -52,22 +53,25 @@ public class AccountOperService implements AccountOperManager{
 	 * @return
 	 * @throws Exception
 	 */
-	public TxnResp openAccountInf(String userId) throws Exception {
+	public TxnResp openAccountInfByUser(String userId) throws Exception {
 		
 		TxnResp txnResp=new TxnResp();
 		txnResp.setRespCode(true);
 		
-		AccountInf accountInf= accountInfManager.findByUserId(userId);
+		AccountInf accountInf= accountInfService.findByUserId(userId);
 		if(accountInf ==null){
 			accountInf=new AccountInf();
 			accountInf.setUserId(userId);
-			accountInf.setAccState("10"); //账户状态
+			accountInf.setAccType("10");//10：用户，20：商户
+			accountInf.setAccState("0"); //账户状态
 			accountInf.setAccBal("0"); //账户余额
 			accountInf.setAccBalCode(AccountUtil.MD5SignAccBal(userId, accountInf.getAccBal()));//账户余额密文
 			accountInf.setFreezeAmt("0");//冻结资金
 			//保存账户信息
-			accountInfManager.save(accountInf);
+			accountInfService.save(accountInf);
 		}
+		
+		txnResp.setPriAccId(accountInf.getAccId()); //返回当前的主账户ID
 		txnResp.setResultCode("00"); //操作成功
 		return txnResp;
 	}
@@ -81,7 +85,7 @@ public class AccountOperService implements AccountOperManager{
 	public TxnResp addTransOrder(TransLog transLog) throws Exception{
 		TxnResp txnResp=new TxnResp();
 		txnResp.setRespCode(true);
-		transLogManager.save(transLog);
+		translogService.save(transLog);
 		txnResp.setResultCode("00"); //操作成功
 		txnResp.setMsg(transLog.getTransId()); //返回交易订单的Id
 		return txnResp;
@@ -98,7 +102,7 @@ public class AccountOperService implements AccountOperManager{
 		txnResp.setRespCode(true);
 		
 		//查找交易流水记录
-		TransLog transLog=transLogManager.findById(transId);
+		TransLog transLog=translogService.findById(transId);
 		if(transLog==null){
 			txnResp.setResultCode("10001"); //返回状态
 			txnResp.setMsg("交易流水不存在");
@@ -106,7 +110,7 @@ public class AccountOperService implements AccountOperManager{
 		}
 		
 		//查找账户信息
-		AccountInf accountInf=accountInfManager.findByUserId(transLog.getPriAccId());
+		AccountInf accountInf=accountInfService.findById(transLog.getPriAccId());
 		if(accountInf==null){
 			txnResp.setResultCode("10002"); //返回状态
 			txnResp.setMsg("账户信息不存在");
@@ -121,17 +125,23 @@ public class AccountOperService implements AccountOperManager{
 		}
 		accountInf.setAccBal(NumberUtils.add(accountInf.getAccBal(), transLog.getTransAmt()));
 		accountInf.setAccBalCode(AccountUtil.MD5SignAccBal(accountInf.getUserId(), accountInf.getAccBal()));
-		accountInfManager.edit(accountInf); //修改账户信息
+		accountInfService.edit(accountInf); //修改账户信息
 		
 		//记录账户日志记录
 		AccountLog accountLog=new AccountLog();
+		accountLog.setLastTxnDate(DateUtil.getDays());
+		accountLog.setLastTxnTime(DateUtil.getTimeHHmmss());
 		accountLog.setAccId(accountInf.getAccId());
-		accountLog.setTransId(transLog.getTransId());//交易类型
+		accountLog.setTransType(transLog.getTransType());//交易类型
 		accountLog.setTransAmt(transLog.getTransAmt()); //交易流水表 充值金币金额
+		accountLog.setOrgTransAmt(transLog.getOrgTransAmt());
 		accountLog.setAccAmt(accountLog.getTransAmt());
 		accountLog.setAccTotalAmt(accountInf.getAccBal()); //账户处理后的总金额
-		accountLogManager.save(accountLog);
+		accountLog.setLogType("1");//加款
+		accountLog.setResColumn1(transLog.getResColumn1());
+		accountLogService.save(accountLog);
 		txnResp.setResultCode("00"); //操作成功
+		
 		return txnResp;
 	}
 
@@ -145,7 +155,7 @@ public class AccountOperService implements AccountOperManager{
 		txnResp.setRespCode(true);
 		
 		//查找交易流水记录
-		TransLog transLog=transLogManager.findById(transId);
+		TransLog transLog=translogService.findById(transId);
 		if(transLog==null){
 			txnResp.setResultCode("10001"); //返回状态
 			txnResp.setMsg("交易流水不存在");
@@ -153,7 +163,7 @@ public class AccountOperService implements AccountOperManager{
 		}
 		
 		//查找账户信息
-		AccountInf accountInf=accountInfManager.findByUserId(transLog.getPriAccId());
+		AccountInf accountInf=accountInfService.findById(transLog.getPriAccId());
 		if(accountInf==null){
 			txnResp.setResultCode("10002"); //返回状态
 			txnResp.setMsg("账户信息不存在");
@@ -177,17 +187,21 @@ public class AccountOperService implements AccountOperManager{
 		
 		accountInf.setAccBal(NumberUtils.sub(accountInf.getAccBal(), transLog.getTransAmt()));  //扣钱
 		accountInf.setAccBalCode(AccountUtil.MD5SignAccBal(accountInf.getUserId(), accountInf.getAccBal()));
-		accountInfManager.edit(accountInf); //修改账户信息
+		accountInfService.edit(accountInf); //修改账户信息
 		
 		//记录账户日志记录
 		AccountLog accountLog=new AccountLog();
 		accountLog.setAccId(accountInf.getAccId());
-		accountLog.setTransId(transLog.getTransId());//交易类型
+		accountLog.setLastTxnDate(DateUtil.getDays());
+		accountLog.setLastTxnTime(DateUtil.getTimeHHmmss());
+		accountLog.setTransType(transLog.getTransType());//交易类型
 		accountLog.setTransAmt(transLog.getTransAmt()); //交易流水表 充值金币金额
+		accountLog.setOrgTransAmt(transLog.getOrgTransAmt()); //原交易金额
 		accountLog.setAccAmt(accountLog.getTransAmt());
 		accountLog.setAccTotalAmt(accountInf.getAccBal()); //账户处理后的总金额
-		accountLogManager.save(accountLog);
-		
+		accountLog.setLogType("2"); //减款
+		accountLog.setResColumn1(transLog.getResColumn1());
+		accountLogService.save(accountLog);
 		txnResp.setResultCode("00"); //操作成功
 		return txnResp;
 	}

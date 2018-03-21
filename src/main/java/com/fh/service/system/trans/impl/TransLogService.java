@@ -81,5 +81,13 @@ public class TransLogService implements TransLogManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("TransLogMapper.deleteAll", ArrayDATA_IDS);
 	}
+	
+	/**修订单返回状态
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void editOrderLogResp(TransLog transLog)throws Exception{
+		dao.update("TransLogMapper.editOrderLogResp", transLog);
+	}
 }
 

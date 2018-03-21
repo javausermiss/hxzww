@@ -49,7 +49,12 @@
                 and p.CREATE_TIME &lt;= str_to_date(#{pd.lastEnd}, '%Y-%m-%d %H:%i:%s')
             </if>
              <if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
-            and  u.CNEE_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            and  
+            	(
+            	u.CNEE_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            	or 
+            	u.NICKNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            	)
         </if>
         <if test="pd.COST_TYPE != null and pd.COST_TYPE != ''"><!-- 状态检索 -->
             and p.COST_TYPE = #{pd.COST_TYPE}
@@ -85,7 +90,11 @@
              and o.CREATETIME &lt;= str_to_date(#{pd.lastEnd}, '%Y-%m-%d %H:%i:%s')
          </if>
          <if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
-            and  u.CNEE_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            and  (
+            	u.CNEE_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            	or 
+            	u.NICKNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            	)
         </if>
         <if test="pd.STATUS != null and pd.STATUS != ''"><!-- 状态检索 -->
             and o.`STATUS` = #{pd.STATUS}
@@ -154,7 +163,7 @@
          </if>
 	  </select>
 	  
-	 <!-- 充值统计 -->
+	 <!-- 日充值统计 -->
 	 <select id="findRegTotallistPage" parameterType="page" resultType="pd">
 		SELECT
 		s1.CREATETIME, 
@@ -202,4 +211,50 @@
          
          ORDER BY s1.CREATETIME DESC
 	 </select>
+	 
+	 <!-- 月充值统计 -->
+	 <select id="findRegTotalMonthlistPage" parameterType="page" resultType="pd">
+		SELECT
+		s1.CREATETIME, 
+		IFNULL(s1.ALLREGAMOUNT,0)/100 AS ALLREGAMOUNT,
+		IFNULL(s1.ALLCOUNT,0) as ALLCOUNT,
+		IFNULL(s2.SUCREGAMOUNT,0)/100 as SUCREGAMOUNT,
+		IFNULL(s2.SUCCOUNT,0) as SUCCOUNT,
+		IFNULL(s3.FAILREGAMOUNT,0)/100 as FAILREGAMOUNT,
+		IFNULL(s3.FAILCOUNT,0) as FAILCOUNT
+		 FROM (
+			SELECT date_format(a1.CREATETIME,'%Y-%m') as CREATETIME,
+			SUM(a1.REGAMOUNT) as ALLREGAMOUNT,
+			COUNT(1) as ALLCOUNT
+			from sys_app_order a1  GROUP BY date_format(a1.CREATETIME,'%Y-%m')
+		)  s1
+		LEFT JOIN
+		(
+		SELECT 
+		
+			date_format( a2.CREATETIME,'%Y-%m') as CREATETIME, 
+			SUM(a2.REGAMOUNT) as SUCREGAMOUNT,
+			COUNT(1) as SUCCOUNT 
+			from sys_app_order a2 WHERE 
+			a2.`STATUS`='1' 
+			GROUP BY date_format(a2.CREATETIME,'%Y-%m')
+		) s2 on s2.CREATETIME= s1.CREATETIME
+		LEFT JOIN
+		(
+		SELECT 
+			date_format( a3.CREATETIME,'%Y-%m') as CREATETIME,
+			SUM(a3.REGAMOUNT) as FAILREGAMOUNT,
+			COUNT(1) as FAILCOUNT
+			from sys_app_order a3 
+			WHERE a3.`STATUS`='0' 
+			GROUP BY date_format(a3.CREATETIME,'%Y-%m')
+		) s3 on s3.CREATETIME= s1.CREATETIME
+  		
+  		WHERE 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and s1.dateTime LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')		
+        </if>
+         ORDER BY s1.CREATETIME DESC
+	 </select>
+	 
 </mapper>

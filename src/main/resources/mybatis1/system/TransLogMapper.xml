@@ -6,7 +6,7 @@
 			<result column="ORG_TRANS_ID" property="orgTransId"/>
 			<result column="DMS_RELATED_KEY" property="dmsRelatedKey"/>
 			<result column="ORG_DMS_RELATED_KEY" property="orgDmsRelatedKey"/>
-			<result column="ORDER_ST" property="orderSt"/>
+			<result column="TRANS_TYPE" property="transType"/>
 			<result column="TRANS_ST" property="transSt"/>
 			<result column="TRANS_CODE" property="transCode"/>
 			<result column="RESP_CODE" property="respCode"/>
@@ -27,7 +27,10 @@
 			<result column="CREATE_DATE" property="createDate"/>	
 			<result column="UPDATE_USER" property="updateUser"/>	
 			<result column="UPDATE_DATE" property="updateDate"/>	
-			<result column="LOCK_VERSION" property="lockVersion"/>	
+			<result column="LOCK_VERSION" property="lockVersion"/>
+			<result column="RES_COLUMN1" property="resColumn1"/>
+			<result column="RES_COLUMN2" property="resColumn2"/>
+			<result column="RES_COLUMN3" property="resColumn3"/>
 			<result column="MCHNT_ID" property="mchntId"/>	
 	</resultMap>
 	
@@ -42,7 +45,7 @@
 		ORG_TRANS_ID,
 		DMS_RELATED_KEY,
 		ORG_DMS_RELATED_KEY,
-		ORDER_ST,
+		TRANS_TYPE,
 		TRANS_ST,	
 		TRANS_CODE,	
 		RESP_CODE,	
@@ -63,7 +66,10 @@
 		CREATE_DATE,	
 		UPDATE_USER,	
 		UPDATE_DATE,	
-		LOCK_VERSION,	
+		LOCK_VERSION,
+		RES_COLUMN1,
+		RES_COLUMN2,
+		RES_COLUMN3,		
 		MCHNT_ID
 	</sql>
 	
@@ -73,7 +79,7 @@
 		#{orgTransId},
 		#{dmsRelatedKey},
 		#{orgDmsRelatedKey},
-		#{orderSt},
+		#{transType},
 		#{transSt},
 		#{transCode},
 		#{respCode},
@@ -95,6 +101,9 @@
 		#{updateUser},
 		#{updateDate},
 		0,
+		#{resColumn1},
+		#{resColumn2},
+		#{resColumn3},
 		#{mchntId}
 	</sql>
 	
@@ -125,7 +134,7 @@
 			ORG_TRANS_ID = #{orgTransId},
 			DMS_RELATED_KEY = #{dmsRelatedKey},
 			ORG_DMS_RELATED_KEY = #{orgDmsRelatedKey},
-			ORDER_ST = #{orderSt},
+			TRANS_TYPE = #{transType},
 			TRANS_ST = #{transSt},
 			TRANS_CODE = #{transCode},
 			RESP_CODE = #{respCode},
@@ -148,6 +157,33 @@
 			MCHNT_ID = #{mchntId}
 		WHERE 
 		TRANS_ID = #{transId}
+	</update>
+	
+	
+	<update id="editOrderLogResp" parameterType="TransLog">
+		UPDATE
+		<include refid="tableName"></include>
+		SET 
+			TRANS_ST = #{transSt},
+			RESP_CODE = #{respCode},
+			UPDATE_DATE = now(),
+			LOCK_VERSION = LOCK_VERSION+1
+		WHERE 
+		TRANS_ID = #{transId}
+	</update>
+	
+	
+	<!-- 修改交易订单状态 -->
+	<update id="updateTransLogByST" parameterType="TransLog">
+		UPDATE
+		<include refid="tableName"></include>
+			SET 
+				TRANS_ST = #{transSt},
+				RESP_CODE = #{respCode},
+				UPDATE_DATE = now(),
+				LOCK_VERSION = LOCK_VERSION+1
+			WHERE 
+			TRANS_ID = #{transId}
 	</update>
 	
 	<!-- 通过ID获取数据 -->

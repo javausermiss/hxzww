@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TransOrderMapper">
+		<resultMap type="TransOrder" id="TransOrderResultMap">
+			<result column="ORDER_ID" property="orderId"/>
+			<result column="ORG_ORDER_ID" property="orgOrderId"/>
+			<result column="DMS_RELATED_KEY" property="dmsRelatedKey"/>
+			<result column="ORG_DMS_RELATED_KEY" property="orgDmsRelatedKey"/>
+			<result column="USER_ID" property="userId"/>
+			<result column="TRANS_TYPE" property="transType"/>
+			<result column="ORDER_ST" property="orderSt"/>
+			<result column="TRANS_CODE" property="transCode"/>
+			<result column="PRI_ACC_ID" property="priAccId"/>
+			<result column="DMS_USER_ID" property="dmsUserId"/>
+			<result column="DMS_USER_UNION_ID" property="dmsUserUnionId"/>
+			<result column="TRANS_AMT" property="transAmt"/>
+			<result column="ORG_TRANS_AMT" property="orgTransAmt"/>
+			<result column="TRANS_CURR_CD" property="transCurrCd"/>
+			<result column="TRANS_CHNL" property="transChnl"/>
+			<result column="TRANS_FEE" property="transFee"/>
+			<result column="TRANS_FEE_TYPE" property="transFeeType"/>
+			<result column="TFR_IN_ACC_ID" property="tfrInAccId"/>
+			<result column="TFR_OUT_ACC_ID" property="tfrOutAccId"/>
+			<result column="ADD_INFO" property="addInfo"/>
+			<result column="REMARKS" property="remarks"/>
+			<result column="CREATE_USER" property="createUser"/>	
+			<result column="CREATE_DATE" property="createDate"/>	
+			<result column="UPDATE_USER" property="updateUser"/>	
+			<result column="UPDATE_DATE" property="updateDate"/>	
+			<result column="LOCK_VERSION" property="lockVersion"/>
+			<result column="RES_COLUMN1" property="resColumn1"/>
+			<result column="RES_COLUMN2" property="resColumn2"/>
+			<result column="RES_COLUMN3" property="resColumn3"/>
+			<result column="MCHNT_ID" property="mchntId"/>	
+	</resultMap>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		TB_TRANS_ORDER
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		ORDER_ID,
+		ORG_ORDER_ID,
+		DMS_RELATED_KEY,
+		ORG_DMS_RELATED_KEY,
+		USER_ID,
+		TRANS_TYPE,
+		ORDER_ST,	
+		TRANS_CODE,	
+		PRI_ACC_ID,	
+		DMS_USER_ID,	
+		DMS_USER_UNION_ID,	
+		TRANS_AMT,	
+		ORG_TRANS_AMT,	
+		TRANS_CURR_CD,	
+		TRANS_CHNL,	
+		TRANS_FEE,	
+		TRANS_FEE_TYPE,	
+		TFR_IN_ACC_ID,	
+		TFR_OUT_ACC_ID,	
+		ADD_INFO,	
+		REMARKS,	
+		CREATE_USER,	
+		CREATE_DATE,	
+		UPDATE_USER,	
+		UPDATE_DATE,	
+		LOCK_VERSION,
+		RES_COLUMN1,
+		RES_COLUMN2,
+		RES_COLUMN3,		
+		MCHNT_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{orderId},
+		#{orgOrderId},
+		#{dmsRelatedKey},
+		#{orgDmsRelatedKey},
+		#{userId},
+		#{transType},
+		#{orderSt},
+		#{transCode},
+		#{priAccId},
+		#{dmsUserId},
+		#{dmsUserUnionId},
+		#{transAmt},
+		#{orgTransAmt},
+		#{transCurrCd},
+		#{transChnl},
+		#{transFee},
+		#{transFeeType},
+		#{tfrInAccId},
+		#{tfrOutAccId},
+		#{addInfo},
+		#{remarks},
+		#{createUser},
+		now(),
+		#{updateUser},
+		#{updateDate},
+		0,
+		#{resColumn1},
+		#{resColumn2},
+		#{resColumn3},
+		#{mchntId}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="TransOrder" useGeneratedKeys="true" keyProperty="orderId">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			ORDER_ID = #{orderId}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="TransOrder">
+		UPDATE
+		<include refid="tableName"></include>
+		SET 
+			ORG_ORDER_ID = #{orgOrderId},
+			DMS_RELATED_KEY = #{dmsRelatedKey},
+			ORG_DMS_RELATED_KEY = #{orgDmsRelatedKey},
+			TRANS_TYPE = #{transType},
+			ORDER_ST = #{orderSt},
+			TRANS_CODE = #{transCode},
+			PRI_ACC_ID = #{priAccId},
+			DMS_USER_ID = #{dmsUserId},
+			DMS_USER_UNION_ID = #{dmsUserUnionId},
+			TRANS_AMT = #{transAmt},
+			ORG_TRANS_AMT = #{orgTransAmt},
+			TRANS_CURR_CD = #{transCurrCd},
+			TRANS_CHNL = #{transChnl},
+			TRANS_FEE = #{transFee},
+			TRANS_FEE_TYPE = #{transFeeType},
+			TFR_IN_ACC_ID = #{tfrInAccId},
+			TFR_OUT_ACC_ID = #{tfrOutAccId},
+			ADD_INFO = #{addInfo},
+			REMARKS = #{remarks},
+			UPDATE_USER = #{updateUser},
+			UPDATE_DATE = now(),
+			LOCK_VERSION = LOCK_VERSION+1,
+			MCHNT_ID = #{mchntId}
+		WHERE 
+		ORDER_ID = #{orderId}
+	</update>
+	
+	
+	<update id="editTransOrderSt" parameterType="TransOrder">
+		UPDATE
+		<include refid="tableName"></include>
+		SET 
+			<if test="dmsRelatedKey!= null and dmsRelatedKey != ''">
+				DMS_RELATED_KEY = #{dmsRelatedKey},
+			</if>
+			ORDER_ST = #{orderSt},
+			LOCK_VERSION = LOCK_VERSION+1
+		WHERE 
+		ORDER_ID = #{orderId}
+	</update>
+	
+	
+	<!-- 修改交易订单状态 -->
+	<update id="updateTransOrderByST" parameterType="TransOrder">
+		UPDATE
+		<include refid="tableName"></include>
+			SET 
+				ORDER_ST = #{orderSt},
+				UPDATE_DATE = now(),
+				LOCK_VERSION = LOCK_VERSION+1
+			WHERE 
+			ORDER_ID = #{orderId}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="String" resultMap="TransOrderResultMap">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			ORDER_ID = #{ORDER_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.TRANS_TYPE != null and pd.TRANS_TYPE != ''"><!-- 关键词检索 -->
+			and TRANS_TYPE=#{pd.TRANS_TYPE}
+		</if>
+		<if test="pd.ORDER_ST != null and pd.ORDER_ST != ''"><!-- 关键词检索 -->
+			and ORDER_ST=#{pd.ORDER_ST}
+		</if>
+		<if test="pd.lastStart != null and pd.lastStart != ''">
+             and date_format(CREATE_DATE,'%Y-%m-%d') &gt;= str_to_date(#{pd.lastStart}, '%Y-%m-%d %H:%i:%s')
+         </if>
+         <if test="pd.lastEnd != null and pd.lastEnd != ''">
+             and date_format(CREATE_DATE,'%Y-%m-%d') &lt;= str_to_date(#{pd.lastEnd}, '%Y-%m-%d %H:%i:%s')
+         </if>
+		 <if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				
+					ORDER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					 USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					 DMS_RELATED_KEY LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				
+				)
+		</if>
+		
+		ORDER BY ORDER_ST ASC,CREATE_DATE DESC
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			ORDER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	
+		<select id="findAccountOrderlistPage" parameterType="page" resultType="pd">
+		SELECT
+			ORDER_ID,
+			DMS_RELATED_KEY,
+			USER_ID,
+			TRANS_TYPE,
+			ORDER_ST,
+			PRI_ACC_ID,
+			DMS_USER_ID,
+			DMS_USER_UNION_ID,
+			TRANS_AMT,
+			ORG_TRANS_AMT,
+			RES_COLUMN1,
+			date_format(CREATE_DATE, '%Y%m%d%H%i%s') as CREATE_DATE
+			from tb_trans_order
+			where
+				USER_ID=#{pd.USER_ID}
+				 <if test="pd.TRANS_TYPE != null and pd.TRANS_TYPE != ''"><!-- 关键词检索 -->
+				 	TRANS_TYPE=#{TRANS_TYPE}
+				 </if>
+			ORDER BY CREATE_DATE DESC
+	</select>
+	
+	<!-- fh313596790qq(青苔) -->
+</mapper>

@@ -27,7 +27,7 @@
 				<div class="row">
 					<div class="col-xs-12">
 					
-					<form action="toytype/${msg }.do" name="Form" id="Form" method="post">
+					<form action="toytype/${msg }.do" name="Form" id="Form" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="ID" id="ID" value="${pd.ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
@@ -38,6 +38,10 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">分类排序:</td>
 								<td><input type="number" name="RANKING" id="RANKING" value="${pd.RANKING}" maxlength="32" placeholder="这里输入分类排序" title="排序" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">图片地址:</td>
+								<td><input type="text" name="IMG_URL" id="IMG_URL" value="${pd.IMG_URL}" maxlength="32" placeholder="这里输入图片地址" title="图片地址" style="width:98%;"/> &nbsp;&nbsp;<input type="file" id="IMG_FILE" name="IMG_FILE" /></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">是否展示:</td>

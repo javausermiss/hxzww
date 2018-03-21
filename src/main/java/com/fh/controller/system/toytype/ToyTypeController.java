@@ -1,5 +1,6 @@
 package com.fh.controller.system.toytype;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,18 +10,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import com.fh.entity.system.ToyType;
+
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
 import com.fh.util.AppUtil;
+import com.fh.util.FastDFSClient;
 import com.fh.util.ObjectExcelView;
 import com.fh.util.PageData;
 import com.fh.util.Jurisdiction;
@@ -45,15 +52,40 @@ public class ToyTypeController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/save")
-	public ModelAndView save() throws Exception{
+	public ModelAndView save(
+			HttpServletRequest req,
+			@RequestParam(value = "IMG_FILE", required = false)CommonsMultipartFile  multipartFile //保存图片文件上传路径
+			) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"新增ToyType");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
+		
+		
+		String TOY_TYPE = req.getParameter("TOY_TYPE");
+		String RANKING = req.getParameter("RANKING");
+		String TYPE = req.getParameter("TYPE");
+		
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		ToyType toyType =  toytypeService.getLastToyTypeId();
-		Integer integer =  toyType.getID();
-		pd.put("ID", integer+1);	//主键
+		
+		//文件上传
+		String fileId="";
+		try{
+			String newFilename=multipartFile.getOriginalFilename();
+			DiskFileItem fi = (DiskFileItem) multipartFile.getFileItem();
+			File file = fi.getStoreLocation();
+			fileId = FastDFSClient.uploadFile(file, newFilename);
+			logger.info("---------fileId-------------"+fileId);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		
+		pd.put("TOY_TYPE", TOY_TYPE);
+		pd.put("IMG_URL", fileId);
+		pd.put("RANKING", RANKING);
+		pd.put("TYPE", TYPE);
+		
 		toytypeService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -80,13 +112,42 @@ public class ToyTypeController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/edit")
-	public ModelAndView edit() throws Exception{
+	public ModelAndView edit(
+			HttpServletRequest req,
+			@RequestParam(value = "IMG_FILE", required = false)CommonsMultipartFile  multipartFile //保存图片文件上传路径
+			) throws Exception{
+		
 		logBefore(logger, Jurisdiction.getUsername()+"修改ToyType");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		String ID=req.getParameter("ID");
+		String TOY_TYPE = req.getParameter("TOY_TYPE");
+		String RANKING = req.getParameter("RANKING");
+		String TYPE = req.getParameter("TYPE");
+		
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		
+		//文件上传
+		String fileId="";
+		try{
+			String newFilename=multipartFile.getOriginalFilename();
+			DiskFileItem fi = (DiskFileItem) multipartFile.getFileItem();
+			File file = fi.getStoreLocation();
+			fileId = FastDFSClient.uploadFile(file, newFilename);
+			logger.info("---------fileId-------------"+fileId);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		pd.put("ID", ID);
+		pd.put("TOY_TYPE", TOY_TYPE);
+		pd.put("IMG_URL", fileId);
+		pd.put("RANKING", RANKING);
+		pd.put("TYPE", TYPE);
+		
 		toytypeService.edit(pd);
+		
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -140,7 +201,7 @@ public class ToyTypeController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = toytypeService.findById(pd);	//根据ID读取
+		pd = toytypeService.findById(pd.getString("ID"));	//根据ID读取
 		mv.setViewName("system/toytype/toytype_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);

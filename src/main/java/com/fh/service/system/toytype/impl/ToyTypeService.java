@@ -68,8 +68,8 @@ public class ToyTypeService implements ToyTypeManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public PageData findById(PageData pd)throws Exception{
-		return (PageData)dao.findForObject("ToyTypeMapper.findById", pd);
+	public PageData findById(String id)throws Exception{
+		return (PageData)dao.findForObject("ToyTypeMapper.findById", id);
 	}
 	
 	/**批量删除

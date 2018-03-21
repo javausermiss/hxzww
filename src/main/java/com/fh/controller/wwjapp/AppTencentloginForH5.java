@@ -1,6 +1,7 @@
 package com.fh.controller.wwjapp;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +25,15 @@ import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.util.Const;
 import com.fh.util.PropertiesUtils;
+import com.fh.util.StringUtils;
 import com.fh.util.wwjUtil.FaceImageUtil;
 import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RedisUtil;
 import com.fh.util.wwjUtil.RespStatus;
 import com.fh.util.wwjUtil.TokenVerify;
+import com.iot.game.pooh.admin.srs.core.entity.httpback.SrsConnectModel;
+import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
+import com.iot.game.pooh.admin.srs.core.util.SrsSignUtil;
 
 import net.sf.json.JSONObject;
 @Controller
@@ -291,6 +296,47 @@ public class AppTencentloginForH5 extends BaseController {
     }
 
 
+    
+    @RequestMapping(value = "/robotLoginToList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject robotLoginToList(HttpServletRequest req){
+    	
+    	String[] userArray=new String[]{"jzzww888888888888888888888888881",
+    									"jzzww888888888888888888888888882",
+    									"jzzww888888888888888888888888883",
+    									"jzzww888888888888888888888888884",
+    									"jzzww888888888888888888888888885"};
+    	
+    	List<Map> data=new ArrayList<>();
+    	
+    	
+    	//遍历用户ID
+    	for (String userId : userArray) {
+    		 //SRS推流
+            SrsConnectModel sc = new SrsConnectModel();
+            long time = System.currentTimeMillis();
+            sc.setType("U");
+            sc.setTid(userId);
+            sc.setExpire(3600 * 24);
+            sc.setTime(time);
+            sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+            
+            //用户session存储
+            String sessionID =  RedisUtil.getRu().get(Const.REDIS_APPUSER_SESSIONID + userId);
+            if(StringUtils.isEmpty(sessionID)){
+            	sessionID=MyUUID.createSessionId();
+            	 RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + userId, sessionID);
+            }	
+            //return data
+            Map<String, Object> map = new HashMap<>();
+            map.put("appUser", getAppUserInfo(userId));//重新查询用户信息
+            map.put("sessionID", sessionID);
+            map.put("srsToken", sc);
+            
+            data.add(map);
+    	}
+        return RespStatus.successs().element("data", data);
+    }
 
 
 

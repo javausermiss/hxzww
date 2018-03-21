@@ -63,5 +63,12 @@ public interface AccountInfManager{
 	 */
 	public AccountInf findByUserId(String userId)throws Exception;
 	
+	/***
+	 * 查询用户的账户余额
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public String getAccountCountByUserId(String userId)throws Exception;
 }
 

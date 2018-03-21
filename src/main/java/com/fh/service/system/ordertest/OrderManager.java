@@ -47,4 +47,14 @@ public interface OrderManager {
      * @throws Exception
      */
     public PageData getOrderTotalByChannelCode(String channelCode) throws Exception;
+    
+    
+    /**
+     * 用户充值，支付回掉，修改订单状态
+     * @param order
+     * @return
+     * @throws Exception
+     */
+    public int doRegCallbackUpdateOrder(Order order)throws Exception;
+
 }
