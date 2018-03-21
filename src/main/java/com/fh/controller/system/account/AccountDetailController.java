@@ -106,4 +106,28 @@ public class AccountDetailController extends BaseController {
 		}
 		return mv;
 	}
+	//月充值统计
+		@RequestMapping(value="/appUserOrderMonthStatistics")
+		public ModelAndView appUserOrderMonthStatistics(Page page){
+			ModelAndView mv = this.getModelAndView();
+			PageData pd = new PageData();
+			try{
+				pd = this.getPageData();
+				String keywords = pd.getString("keywords");							//检索条件 关键词
+				if(null != keywords && !"".equals(keywords)){
+					pd.put("keywords", keywords.trim());
+				}
+				page.setPd(pd);
+				
+				List<PageData> monthlist=paymentService.findRegTotallistMonthPage(page);
+				mv.setViewName("system/account/appuser_order_statistics_month");
+				
+				mv.addObject("monthlist", monthlist);
+				mv.addObject("pd", pd);
+				mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+			} catch(Exception e){
+				logger.error(e.getMessage());
+			}
+			return mv;
+		}
 }

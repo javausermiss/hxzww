@@ -55,6 +55,9 @@ public interface PaymentManager {
 	 //用户充值总额
 	 List<PageData> getUserTotal(Page page)throws Exception;
 	 
-	 //充值用户
+	 //日充值用户
 	 List<PageData> findRegTotallistPage(Page page)throws Exception;
+	 
+	//月充值用户
+	List<PageData> findRegTotallistMonthPage(Page page)throws Exception;
 }

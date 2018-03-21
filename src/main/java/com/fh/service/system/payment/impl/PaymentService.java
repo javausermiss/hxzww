@@ -79,7 +79,7 @@ public class PaymentService implements PaymentManager {
 	}
 
 	/**
-	  * 获取充值用户
+	  * 获取日充值用户
 	  * @param page
 	  * @return
 	  * @throws Exception
@@ -87,5 +87,15 @@ public class PaymentService implements PaymentManager {
 	@Override
 	public List<PageData> findRegTotallistPage(Page page) throws Exception {
 		 return (List<PageData>)dao.findForList("paymentMapper.findRegTotallistPage", page);
+	}
+	/**
+	  * 获取月充值用户
+	  * @param page
+	  * @return
+	  * @throws Exception
+	  */
+	@Override
+	public List<PageData> findRegTotallistMonthPage(Page page) throws Exception {
+		 return (List<PageData>)dao.findForList("paymentMapper.findRegTotalMonthlistPage", page);
 	}
 }
