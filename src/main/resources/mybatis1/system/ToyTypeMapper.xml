@@ -12,7 +12,10 @@
 		ID,	
 		TOY_TYPE,	
 		RANKING,
-		TYPE
+		TYPE,
+		IMG_URL,
+		TOY_FLAG,
+		HREF_URL
 	
 	</sql>
 	
@@ -21,7 +24,10 @@
 		#{ID},	
 		#{TOY_TYPE},	
 		#{RANKING},
-		#{TYPE}
+		#{TYPE},
+		#{IMG_URL},
+		#{TOY_FLAG},
+		#{HREF_URL}
 
 	</sql>
 	
@@ -51,7 +57,10 @@
 		set 
 			TOY_TYPE = #{TOY_TYPE},
 			RANKING = #{RANKING},
-		    TYPE = #{TYPE}
+		    TYPE = #{TYPE},
+		    IMG_URL=#{IMG_URL},
+			TOY_FLAG=#{TOY_FLAG},
+			HREF_URL=#{HREF_URL}
 		where 
 		ID = #{ID}
 	</update>
@@ -105,11 +114,15 @@
 	</delete>
 	
 	<select id="getAllToyType" resultType="com.fh.entity.system.ToyType">
-		SELECT * FROM <include refid="tableName"/> ORDER BY RANKING ASC
+		SELECT 
+		<include refid="Field"></include>
+		 FROM <include refid="tableName"/> ORDER BY RANKING ASC
 	</select>
 
 	<select id="getLastToyTypeId" resultType="com.fh.entity.system.ToyType">
-		SELECT * FROM <include refid="tableName"/> ORDER BY RANKING DESC limit 1;
+		SELECT 
+		<include refid="Field"></include>
+		 FROM <include refid="tableName"/> ORDER BY RANKING DESC limit 1;
 	</select>
 
 

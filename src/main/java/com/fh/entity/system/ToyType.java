@@ -11,5 +11,7 @@ public class ToyType {
     private String TOY_TYPE;
     private Integer RANKING;
     private String TYPE;
-
+    private String IMG_URL;
+    private String TOY_FLAG;
+    private String HREF_URL;
 }
