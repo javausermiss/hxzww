@@ -3,6 +3,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="OrderMapper">
 
+	
+		 <sql id="Field">
+		REC_ID,
+		ORDER_ID,
+		USER_ID,
+		CREATETIME,
+		REGAMOUNT,
+		`STATUS`,
+		REGMODE,
+		UCTIME,
+		ORDER_NO,
+		REGGOLD,
+		CTYPE,
+		PAY_TYPE,
+		PRO_USER_ID,
+		CHANNEL,
+		ADD_INFO
+	</sql>
+
     <insert id="regmount" parameterType="com.fh.entity.system.Order">
         INSERT INTO
         SYS_APP_ORDER
@@ -14,7 +33,11 @@
         REGAMOUNT,
         REGGOLD,
         CTYPE,
-        CHANNEL
+        CHANNEL,
+        PAY_TYPE,
+		PRO_USER_ID,
+        ADD_INFO,
+        OUT_ORDER_ID
         )
         VALUES
         (
@@ -25,7 +48,11 @@
         #{REGAMOUNT},
         #{REGGOLD},
         #{CTYPE},
-        #{CHANNEL}
+        #{CHANNEL},
+        #{PAY_TYPE},
+		#{PRO_USER_ID},
+        #{ADD_INFO},
+        #{OUT_ORDER_ID}
         )
     </insert>
 
@@ -50,6 +77,17 @@
         ORDER_ID = #{ORDER_ID}
     </select>
 
+    
+	<update id="doRegCallbackUpdateOrder" parameterType="com.fh.entity.system.Order">
+
+        UPDATE sys_app_order
+        SET
+        ORDER_NO = #{ORDER_NO},
+        STATUS=#{STATUS},
+        REGGOLD = #{REGGOLD}
+        WHERE
+        ORDER_ID = #{ORDER_ID}
+    </update>
 
 	<select id="getUserRegDetaillistPage" parameterType="page" resultType="pd">
 	SELECT 

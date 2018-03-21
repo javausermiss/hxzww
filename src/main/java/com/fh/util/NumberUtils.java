@@ -145,7 +145,7 @@ public class NumberUtils {
 	public static String RMBCentToYuan(String money){
 		 BigDecimal b1 = new BigDecimal(money);
 		 BigDecimal b2 = new BigDecimal(100);
-		return b1.divide(b2).setScale(2,BigDecimal.ROUND_DOWN).toString();
+		return b1.divide(b2).toString();
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public class NumberUtils {
 	public static String RMBCentToYuan(int money){
 		 BigDecimal b1 = new BigDecimal(money);
 		 BigDecimal b2 = new BigDecimal(100);
-		return b1.divide(b2).setScale(2,BigDecimal.ROUND_DOWN).toString();
+		return b1.divide(b2).toString();
 	}
 	
 	public static String addMoney(String money1,String money2){
@@ -174,6 +174,6 @@ public class NumberUtils {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(RMBYuanToCent("0.02"));
+		System.out.println(RMBCentToYuan("1"));
 	}
 }

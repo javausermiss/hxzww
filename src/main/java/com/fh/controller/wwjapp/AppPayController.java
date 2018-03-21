@@ -481,10 +481,12 @@ public class AppPayController extends BaseController {
                 payment1.setCOST_TYPE("9");
                 payment1.setREMARK("奖励" + award);
                 paymentService.reg(payment1);
+                //当前订单的用户昵称
+                o.setUserNickName(appUser.getNICKNAME());
                 o.setREGGOLD(String.valueOf(gold));
                 o.setORDER_NO(order_no);
                 o.setSTATUS("1");
-                orderService.update(o);
+                orderService.doRegCallbackUpdateOrder(o);
             } else {
                 o.setSTATUS("-1");//支付失败
                 orderService.update(o);
@@ -647,10 +649,13 @@ public class AppPayController extends BaseController {
                 payment1.setCOST_TYPE("9");
                 payment1.setREMARK("奖励" + award);
                 paymentService.reg(payment1);
+                
+                //当前订单的用户昵称
+                o.setUserNickName(appUser.getNICKNAME());
                 o.setREGGOLD(String.valueOf(gold));
                 o.setORDER_NO(order_no);
                 o.setSTATUS("1");
-                orderService.update(o);
+                orderService.doRegCallbackUpdateOrder(o);
             } else {
                 o.setSTATUS("-1");//支付失败
                 orderService.update(o);
@@ -776,10 +781,12 @@ public class AppPayController extends BaseController {
             paymentService.reg(payment1);
 
             //step7 更新订单
+            //当前订单的用户昵称
+            o.setUserNickName(appUser.getNICKNAME());
             o.setORDER_NO(orderid);
             o.setREGGOLD(String.valueOf(gold));
             o.setSTATUS("1");
-            orderService.update(o);
+            orderService.doRegCallbackUpdateOrder(o);
 
             return "SUCCESS";
         } catch (Exception e) {
@@ -987,10 +994,13 @@ public class AppPayController extends BaseController {
                 payment1.setCOST_TYPE("9");
                 payment1.setREMARK("奖励" + award);
                 paymentService.reg(payment1);
+                
+                //当前订单的用户昵称
+                o.setUserNickName(appUser.getNICKNAME());
                 o.setREGGOLD(String.valueOf(gold));
                 o.setORDER_NO(params.get("trade_no"));//支付宝交易凭证号
                 o.setSTATUS("1");
-                orderService.update(o);
+                orderService.doRegCallbackUpdateOrder(o);
 
             } catch (Exception e) {
                 e.printStackTrace();
