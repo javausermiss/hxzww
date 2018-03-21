@@ -363,14 +363,16 @@
         CREATETIME,
         USERNAME,
         NICKNAME,
-        IMAGE_URL
+        IMAGE_URL,
+        BALANCE
         ) values (
         #{USER_ID},
         #{PHONE},
         now(),
-        #{PHONE},
+        #{USERNAME},
         #{NICKNAME},
-        #{IMAGE_URL}
+        #{IMAGE_URL},
+        #{BALANCE}
         )
     </insert>
     <!--更改App用户信息-->
@@ -619,4 +621,30 @@
 		<select id="getSysAppUserCountByChannelCode" parameterType="String" resultType="java.lang.Integer">
 			SELECT COUNT(1) from SYS_APP_USER WHERE CHANNEL_CODE=#{ChannelCode}
 		</select>
+
+    <insert id="regAppUser" parameterType="com.fh.entity.system.AppUser">
+        INSERT INTO SYS_APP_USER
+         (
+        USER_ID,
+        PHONE,
+        CREATETIME,
+        USERNAME,
+        NICKNAME,
+        IMAGE_URL,
+        BALANCE,
+        PASSWORD
+        ) values (
+        #{USER_ID},
+        #{PHONE},
+        now(),
+        #{USERNAME},
+        #{NICKNAME},
+        #{IMAGE_URL},
+        #{BALANCE},
+        #{PASSWORD}
+        )
+
+
+    </insert>
+
 </mapper>

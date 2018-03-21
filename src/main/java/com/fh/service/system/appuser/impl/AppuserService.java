@@ -148,10 +148,13 @@ public class AppuserService implements AppuserManager{
 	 */
 
 	public int reg(String phone,String url) throws Exception {
-		return (int)dao.save("AppuserMapper.reg",new AppUser(MyUUID.createSessionId(),phone,null,phone,phone,url));
+		return (int)dao.save("AppuserMapper.reg",new AppUser(MyUUID.createSessionId(),phone,null,phone,phone,url,"3"));
 	}
 
-	/**
+	public int regAppUser(AppUser appUser) throws Exception {
+		return (int)dao.save("AppuserMapper.regAppUser",appUser);
+	}
+/**
 	 * 通过手机号码查询用户信息
 	 * @param phone
 	 * @return

@@ -129,6 +129,14 @@ public interface AppuserManager {
     public int reg(String phone,String url) throws Exception;
 
     /**
+     * 注册用户，需要密码
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public int regAppUser(AppUser appUser) throws Exception;
+
+    /**
      * 通过手机号码查询用户信息
      *
      * @param phone

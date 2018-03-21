@@ -14,6 +14,7 @@ import com.fh.service.system.payment.PaymentManager;
 import com.fh.util.Const;
 import com.fh.util.MD5;
 import com.fh.util.PropertiesUtils;
+import com.fh.util.StringUtils;
 import com.fh.util.wwjUtil.*;
 import com.iot.game.pooh.admin.srs.core.entity.httpback.SrsConnectModel;
 import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
@@ -21,11 +22,9 @@ import com.iot.game.pooh.admin.srs.core.util.SrsSignUtil;
 import net.sf.json.JSONObject;
 import org.apache.ibatis.annotations.Param;
 
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -39,7 +38,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/app/sms")
-public class AppLoginController extends BaseController{
+public class AppLoginController extends BaseController {
 
     @Resource(name = "appuserService")
     private AppuserManager appuserService;
@@ -50,7 +49,7 @@ public class AppLoginController extends BaseController{
     @Resource(name = "paymentService")
     private PaymentManager paymentService;
 
-    @Resource(name="appuserlogininfoService")
+    @Resource(name = "appuserlogininfoService")
     private AppuserLoginInfoManager appuserlogininfoService;
 
     /**
@@ -90,9 +89,11 @@ public class AppLoginController extends BaseController{
      * @param aPhone
      * @return
      */
-    @RequestMapping(value = "/getRegSMSCode", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @CrossOrigin(origins = "*",maxAge = 3600)
+    @RequestMapping(value = "/getRegSMSCode", method = {RequestMethod.POST,RequestMethod.GET} ,produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject getRegSMSCode(@RequestParam("phone") String aPhone) {
+    public JSONObject getRegSMSCode(@RequestParam("phone") String aPhone,
+                                    @RequestParam(value = "callback",required = false) String callback) {
         try {
             String phone = new String(Base64Util.decryptBASE64(aPhone));
             if (phone == null || phone.trim().length() <= 0) {
@@ -109,7 +110,16 @@ public class AppLoginController extends BaseController{
             }
             SMSUtil.veriCode1(phone, code);
             RedisUtil.getRu().setex("SMSCode:" + phone, code, 300);
+
+           /* if (StringUtils.isNotEmpty(callback)){
+                MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(RespStatus.successs());
+                mappingJacksonValue.setJsonpFunction(callback);
+                return JSONObject.fromObject(mappingJacksonValue);
+            }else {
+
+            }*/
             return RespStatus.successs();
+
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.exception();
@@ -177,7 +187,7 @@ public class AppLoginController extends BaseController{
                 return RespStatus.successs().element("data", map);
             } else {
                 String face = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
-                int a1 = appuserService.reg(phone,face);
+                int a1 = appuserService.reg(phone, face);
                 if (a1 != 1) {
                     return RespStatus.fail("注册失败");
 
@@ -229,11 +239,11 @@ public class AppLoginController extends BaseController{
      * @param userId
      * @return
      */
-    @RequestMapping(value = "/getDoll" ,method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getDoll", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject getDoll(@RequestParam("userId") String userId) {
         try {
-           // String phone = new String(Base64Util.decryptBASE64(aPhone));
+            // String phone = new String(Base64Util.decryptBASE64(aPhone));
             AppUser appUser = appuserService.getUserByID(userId);
             if (appUser != null) {
                 String sessionID = MyUUID.createSessionId();
@@ -264,13 +274,14 @@ public class AppLoginController extends BaseController{
 
     /**
      * 访客模式，只允许查看房间
+     *
      * @return
      */
 
-    @RequestMapping(value = "/autoLogin",method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/autoLogin", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject autoLogin (){
-        try{
+    public JSONObject autoLogin() {
+        try {
             String accessToken = "";
             if (RedisUtil.getRu().exists("accessToken")) {
                 accessToken = RedisUtil.getRu().get("accessToken");
@@ -278,14 +289,81 @@ public class AppLoginController extends BaseController{
                 accessToken = CameraUtils.getAccessToken();
             }
             String sessionID = MyUUID.createSessionId();
-            RedisUtil.getRu().setex("sessionId:autoVistor:" + sessionID, sessionID,3600);
+            RedisUtil.getRu().setex("sessionId:autoVistor:" + sessionID, sessionID, 3600);
             List<Doll> doll = dollService.getAllDoll();
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("accessToken", accessToken);
             map.put("sessionID", sessionID);
             map.put("dollList", doll);
             return RespStatus.successs().element("data", map);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+
+    /**
+     * 注册用户(暂时只提供给H5)
+     *
+     * @param phone
+     * @param pw
+     * @param smsCode
+     * @return
+     */
+    @CrossOrigin(origins = "*",maxAge = 3600)
+    @RequestMapping(value = "/userRegister", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject userPassLogin(@RequestParam("phone") String phone,
+                                    @RequestParam("password") String pw,
+                                    @RequestParam("smsCode") String smsCode
+    ) {
+        try {
+            if (phone == null || phone.trim().length() <= 0) {
+                return RespStatus.fail("手机号不能为空！");
+            } else if (!phone.matches("^1(3|4|5|7|8)\\d{9}$")) {
+                return RespStatus.fail("手机号码格式错误！");
+            } else if (smsCode == null || smsCode.trim().length() <= 0) {
+                return RespStatus.fail("验证码不能为空！");
+            }
+            if (!RedisUtil.getRu().exists("SMSCode:" + phone)) {
+                return RespStatus.fail("此手机号尚未请求验证码！");
+            }
+            String exitCode = RedisUtil.getRu().get("SMSCode:" + phone);
+            if (!exitCode.equals(smsCode)) {
+                return RespStatus.fail("验证码无效！");
+            }
+            AppUser appUser = appuserService.getUserByPhone(phone);
+            if (appUser != null) {
+                return RespStatus.fail("该用户已经注册过");
+            }
+
+            RedisUtil.getRu().del("SMSCode:" + phone);
+            //注册用户
+            AppUser appUser1 = new AppUser();
+            String face = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
+            // appUser1.setBALANCE("3");
+            appUser1.setPASSWORD(MD5.md5(pw));
+            appUser1.setNICKNAME(phone);
+            appUser1.setUSER_ID(MyUUID.createSessionId());
+            appUser1.setIMAGE_URL(face);
+            appUser1.setUSERNAME(phone);
+            appUser1.setPHONE(phone);
+            appUser1.setBALANCE("3");
+            appuserService.regAppUser(appUser1);
+
+            //增加赠送金币明细
+            Payment payment = new Payment();
+            payment.setREMARK(Const.PlayMentCostType.cost_type13.getName());
+            payment.setGOLD("+3");
+            payment.setCOST_TYPE(Const.PlayMentCostType.cost_type13.getValue());
+            payment.setUSERID(appUser1.getUSER_ID());
+            paymentService.reg(payment);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("appUser", appUser1);
+            return RespStatus.successs().element("data", map);
+
+        } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();
         }
@@ -293,23 +371,52 @@ public class AppLoginController extends BaseController{
 
 
     /**
-     * 采用账号密码的方式登陆（待测试未使用）
+     * 采用账号密码的方式登陆(暂时只提供给H5)
      *
      * @param phone
      * @param pw
      * @return
      */
+    @CrossOrigin(origins = "*",maxAge = 3600)
     @RequestMapping(value = "/userPassLogin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public JSONObject userPassLogin(@Param("phone") String phone, @Param("password") String pw) {
+    public JSONObject userPassLogin(@RequestParam("phone") String phone, @RequestParam("pw") String pw) {
         try {
+
+            if (phone == null || phone.trim().length() <= 0) {
+                return RespStatus.fail("手机号不能为空！");
+            } else if (!phone.matches("^1(3|4|5|7|8)\\d{9}$")) {
+                return RespStatus.fail("手机号码格式错误！");
+            }else if (pw == null || pw.trim().length() <= 0){
+                return RespStatus.fail("密码不能为空！");
+            }
             AppUser appUser = appuserService.getUserByPhone(phone);
             if (appUser != null) {
                 String password = appUser.getPASSWORD();
-                if (password.equals(pw) == true) {
-                    String uuid = appUser.getUSER_ID();
-                    String token = TokenUtil.getToken(uuid);
-                    RedisUtil.getRu().setex("token" + phone, token, 86400);
-                    return RespStatus.successs().element("token", token).element("appUser", appUser);
+                String pwmd5 = MD5.md5(pw);
+                logger.info("password--------"+password);
+                logger.info("pwmd5----------"+pwmd5);
+                if (pwmd5.equals(password)) {
+                    //登录日志
+                    AppuserLogin appuserLogin = new AppuserLogin();
+                    appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
+                    appuserLogin.setUSER_ID(appUser.getUSER_ID());
+                    appuserlogininfoService.insertLoginLog(appuserLogin);
+
+                    //SRS推流
+                    SrsConnectModel sc = new SrsConnectModel();
+                    long time = System.currentTimeMillis();
+                    sc.setType("U");
+                    sc.setTid(appUser.getUSER_ID());
+                    sc.setExpire(3600 * 24);
+                    sc.setTime(time);
+                    sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+                    String sessionID = MyUUID.createSessionId();
+                    RedisUtil.getRu().set("sessionId:appUser:" + appUser.getUSER_ID(), sessionID);
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("sessionID", sessionID);
+                    map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
+                    map.put("srsToken", sc);
+                    return RespStatus.successs().element("data", map);
                 } else {
                     return RespStatus.fail("账号密码错误");
                 }
