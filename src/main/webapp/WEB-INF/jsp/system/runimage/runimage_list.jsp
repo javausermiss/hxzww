@@ -82,11 +82,15 @@
                                         <label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox"/><span
                                                 class="lbl"></span></label>
                                     </th>
-                                    <th class="center" style="width:50px;">序号</th>
+                                    
                                       <th class="center" style="width:50px;">id</th>
                                     <th class="center">图片标题</th>
                                     <th class="center">时间</th>
                                     <th class="center">图像地址</th>
+                                    <th class="center">流媒体名称</th>
+                                    <th class="center">推流服务名称</th>
+                                    <th class="center">设备状态</th>
+                                    <th class="center">状态</th>
                                     <th class="center">操作</th>
                                 </tr>
                                 </thead>
@@ -104,11 +108,25 @@
                                                                                       class="ace"/><span
                                                                 class="lbl"></span></label>
                                                     </td>
-                                                    <td class='center' style="width: 30px;">${vs.index+1}</td>
+                                                    
                                                     <td class='center'>${var.RUNIMAGE_ID}</td>
                                                     <td class='center'>${var.RUN_NAME}</td>
                                                     <td class='center'>${var.TIME}</td>
                                                     <td class='center'>${var.IMAGE_URL}</td>
+                                                    <td class='center'>${var.LIVESTREAM}</td>
+                                                    <td class='center'>${var.SERVER_NAME}</td>
+                                                    <td style="width: 100px;" class='center'>
+                                                        <c:if test="${var.DEVICE_STATE == '1' }"><span
+                                                                class="label label-important arrowed-in">不可用</span></c:if>
+                                                        <c:if test="${var.DEVICE_STATE == '0' }"><span
+                                                                class="label label-success arrowed-in">正常</span></c:if>
+                                                    </td>
+                                                    <td style="width: 100px;" class='center'>
+                                                        <c:if test="${var.STATE == '1' }"><span
+                                                                class="label label-important arrowed-in">不可播</span></c:if>
+                                                        <c:if test="${var.STATE == '0' }"><span
+                                                                class="label label-success arrowed-in">可播</span></c:if>
+                                                    </td>
                                                     <td class='center'>
                                                     <c:if test="${QX.edit != 1 && QX.del != 1 }">
                                                         <span class="label label-large label-grey arrowed-in-right arrowed-in"><i

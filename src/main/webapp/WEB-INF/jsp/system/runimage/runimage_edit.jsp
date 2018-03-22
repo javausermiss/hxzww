@@ -52,6 +52,26 @@
 								<td style="width:100px;text-align: right;padding-top: 13px;">新闻内容:</td>
 								<td><script id="editor"  type="text/plain" style="width:100%;height:200px;"></script></td>
 							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">流媒体名称:</td>
+								<td><input type="text" name="LIVESTREAM" id="LIVESTREAM" value="${pd.LIVESTREAM}" 
+								maxlength="50" placeholder="这里输入流媒体名称" title="LIVESTREAM" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">推流服务名称:</td>
+								<td><input type="text" name="SERVER_NAME" id="SERVER_NAME" value="${pd.SERVER_NAME}" 
+								maxlength="50" placeholder="这里输入推流服务名称" title="SERVER_NAME" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">RTMP拉流地址:</td>
+								<td><input type="text" name="RTMP_URL" id="RTMP_URL" value="${pd.RTMP_URL}" 
+								maxlength="50" placeholder="这里输入RTMP拉流地址" title="RTMP_URL" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">H5拉流地址:</td>
+								<td><input type="text" name="H5_URL" id="H5_URL" value="${pd.H5_URL}" 
+								maxlength="50" placeholder="这里输入H5拉流地址" title="H5_URL" style="width:98%;"/></td>
+							</tr>
 						
 							<tr>
 								<td style="text-align: center;" colspan="2">
