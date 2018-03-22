@@ -7,7 +7,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import com.fh.util.Logger;
-
 /**
  * 短信发送工具类
  */
