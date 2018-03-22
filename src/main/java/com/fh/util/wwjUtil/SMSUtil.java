@@ -78,6 +78,5 @@ public class SMSUtil {
         } catch (UnsupportedEncodingException e) {
         	logger.error("veriCode1：", e);
         }
-
     }
 }
