@@ -71,6 +71,12 @@ public class RunImageController extends BaseController {
 		pd.put("CONTENT",req.getParameter("CONTENT"));
 		pd.put("TIME",req.getParameter("TIME"));
 		pd.put("HREF_ST",req.getParameter("HREF_ST"));
+		pd.put("LIVESTREAM",req.getParameter("LIVESTREAM"));
+		pd.put("SERVER_NAME",req.getParameter("SERVER_NAME"));
+		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
+		pd.put("H5_URL",req.getParameter("H5_URL"));
+		pd.put("DEVICE_STATE",req.getParameter("DEVICE_STATE"));
+		pd.put("STATE",req.getParameter("STATE"));
 		runimageService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -131,12 +137,16 @@ public class RunImageController extends BaseController {
 				fileId=runImage.getIMAGE_URL();
 			}
 		}
+		pd.put("RUNIMAGE_ID",req.getParameter("RUNIMAGE_ID"));
 		pd.put("RUN_NAME",req.getParameter("RUN_NAME"));
 		pd.put("IMAGE_URL",fileId);
-		pd.put("RUNIMAGE_ID",req.getParameter("RUNIMAGE_ID"));
 		pd.put("CONTENT",req.getParameter("CONTENT"));
 		pd.put("TIME",req.getParameter("TIME"));
 		pd.put("HREF_ST",req.getParameter("HREF_ST"));
+		pd.put("LIVESTREAM",req.getParameter("LIVESTREAM"));
+		pd.put("SERVER_NAME",req.getParameter("SERVER_NAME"));
+		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
+		pd.put("H5_URL",req.getParameter("H5_URL"));
 		runimageService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -166,6 +176,15 @@ public class RunImageController extends BaseController {
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
+	
+	
+	/**直播列表
+	 * @param page
+	 * @throws Exception
+	 */
+	
+	
+	
 	
 	/**去新增页面
 	 * @param

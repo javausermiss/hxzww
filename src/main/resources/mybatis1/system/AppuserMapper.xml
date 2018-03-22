@@ -647,7 +647,10 @@
 
     </insert>
 
+<<<<<<< HEAD
 		
+=======
+>>>>>>> 62d0212fc463924479f166e6d76a6cebd284160f
 		
 		    <select id="getAppUserForAppByUserId" parameterType="String" resultType="pd">
        SELECT
@@ -689,5 +692,9 @@
 		WHERE
 		USER_ID = #{USER_ID}
 	</update>
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 62d0212fc463924479f166e6d76a6cebd284160f
 </mapper>

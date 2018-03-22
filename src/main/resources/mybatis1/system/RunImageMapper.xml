@@ -14,7 +14,13 @@
 		RUNIMAGE_ID,
 		TIME,
 		HREF_ST,
-		CONTENT
+		CONTENT,
+		LIVESTREAM,
+		SERVER_NAME,
+		RTMP_URL,
+		H5_URL,
+		DEVICE_STATE,
+		STATE
 	</sql>
 	
 	<!-- 字段值 -->
@@ -24,7 +30,13 @@
 		#{RUNIMAGE_ID},
 		#{TIME},
 		#{HREF_ST},
-		#{CONTENT}
+		#{CONTENT},
+		#{LIVESTREAM},
+		#{SERVER_NAME},
+		#{RTMP_URL},
+		#{H5_URL},
+		#{DEVICE_STATE},
+		#{STATE}
 	</sql>
 	
 	<!-- 新增-->
@@ -54,7 +66,11 @@
 			IMAGE_URL = #{IMAGE_URL},
 			RUN_NAME = #{RUN_NAME},
 			HREF_ST = #{HREF_ST},
-		    CONTENT = #{CONTENT}
+		    CONTENT = #{CONTENT},
+		    CONTENT = #{LIVESTREAM},
+		    CONTENT = #{SERVER_NAME},
+		    CONTENT = #{RTMP_URL},
+		    CONTENT = #{H5_URL}
 		where 
 		RUNIMAGE_ID = #{RUNIMAGE_ID}
 	</update>
