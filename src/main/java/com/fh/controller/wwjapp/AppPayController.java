@@ -177,8 +177,7 @@ public class AppPayController extends BaseController {
     /**
      * 购买推广权益，提交订单接口
      * @param userId
-     * @param accessToken
-     * @param pid
+     * @param proManageId
      * @param ctype
      * @param channel
      * @return
@@ -855,6 +854,7 @@ public class AppPayController extends BaseController {
             order.setREGGOLD(glodNum);//充值的金币数量
             order.setCHANNEL(channel);
             order.setCTYPE(ctype);
+            order.setADD_INFO(pid);
             orderService.regmount(order);
         } catch (Exception e) {
             e.printStackTrace();
@@ -969,7 +969,9 @@ public class AppPayController extends BaseController {
                 if (o.getSTATUS().equals("1")) {
                     return "success";
                 }
-                Paycard paycard = paycardService.getGold(String.valueOf(amount));
+                //通过金币卡ID来查询
+                String pid =  o.getADD_INFO();
+                Paycard paycard = paycardService.getPayCardById(pid);
                 int gold = Integer.valueOf(paycard.getGOLD());
                 String award = paycard.getAWARD();
                 String rechare = paycard.getRECHARE();

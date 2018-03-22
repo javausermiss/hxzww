@@ -647,6 +647,7 @@
 
     </insert>
 
+
 		
 		    <select id="getAppUserForAppByUserId" parameterType="String" resultType="pd">
        SELECT
@@ -688,5 +689,5 @@
 		WHERE
 		USER_ID = #{USER_ID}
 	</update>
-	
+
 </mapper>
