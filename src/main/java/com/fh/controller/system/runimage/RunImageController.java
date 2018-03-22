@@ -177,6 +177,15 @@ public class RunImageController extends BaseController {
 		return mv;
 	}
 	
+	
+	/**直播列表
+	 * @param page
+	 * @throws Exception
+	 */
+	
+	
+	
+	
 	/**去新增页面
 	 * @param
 	 * @throws Exception
