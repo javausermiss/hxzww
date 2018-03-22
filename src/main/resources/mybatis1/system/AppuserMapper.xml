@@ -621,7 +621,6 @@
 		<select id="getSysAppUserCountByChannelCode" parameterType="String" resultType="java.lang.Integer">
 			SELECT COUNT(1) from SYS_APP_USER WHERE CHANNEL_CODE=#{ChannelCode}
 		</select>
-<<<<<<< HEAD
 
     <insert id="regAppUser" parameterType="com.fh.entity.system.AppUser">
         INSERT INTO SYS_APP_USER
@@ -648,7 +647,6 @@
 
     </insert>
 
-=======
 		
 		
 		    <select id="getAppUserForAppByUserId" parameterType="String" resultType="pd">
@@ -691,6 +689,5 @@
 		WHERE
 		USER_ID = #{USER_ID}
 	</update>
-	
->>>>>>> 71430c5d5e012e6d5ce3bab4d34912c1b9bbd001
+
 </mapper>
