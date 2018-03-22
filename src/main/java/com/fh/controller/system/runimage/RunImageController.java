@@ -110,7 +110,7 @@ public class RunImageController extends BaseController {
 		logBefore(logger, Jurisdiction.getUsername()+"修改RunImage");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
+		
 		RunImage runImage =  runimageService.getRunImageById(req.getParameter("RUNIMAGE_ID"));
 
 		//上传的文件
@@ -137,6 +137,7 @@ public class RunImageController extends BaseController {
 				fileId=runImage.getIMAGE_URL();
 			}
 		}
+		PageData pd = new PageData();
 		pd.put("RUNIMAGE_ID",req.getParameter("RUNIMAGE_ID"));
 		pd.put("RUN_NAME",req.getParameter("RUN_NAME"));
 		pd.put("IMAGE_URL",fileId);
@@ -147,6 +148,8 @@ public class RunImageController extends BaseController {
 		pd.put("SERVER_NAME",req.getParameter("SERVER_NAME"));
 		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
 		pd.put("H5_URL",req.getParameter("H5_URL"));
+		pd.put("DEVICE_STATE",req.getParameter("DEVICE_STATE"));
+		pd.put("STATE",req.getParameter("STATE"));
 		runimageService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
