@@ -1,35 +1,44 @@
 package com.fh.controller.wwjapp;
 
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+
+import javax.annotation.Resource;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.fh.controller.base.BaseController;
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.AppuserLogin;
 import com.fh.entity.system.Doll;
 import com.fh.entity.system.Payment;
 import com.fh.service.system.appuser.AppuserManager;
-
 import com.fh.service.system.appuserlogininfo.AppuserLoginInfoManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.util.Const;
 import com.fh.util.MD5;
 import com.fh.util.PropertiesUtils;
-import com.fh.util.StringUtils;
-import com.fh.util.wwjUtil.*;
+import com.fh.util.wwjUtil.Base64Util;
+import com.fh.util.wwjUtil.CameraUtils;
+import com.fh.util.wwjUtil.MyUUID;
+import com.fh.util.wwjUtil.RedisUtil;
+import com.fh.util.wwjUtil.RespStatus;
+import com.fh.util.wwjUtil.SMSUtil;
 import com.iot.game.pooh.admin.srs.core.entity.httpback.SrsConnectModel;
 import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
 import com.iot.game.pooh.admin.srs.core.util.SrsSignUtil;
+
 import net.sf.json.JSONObject;
-import org.apache.ibatis.annotations.Param;
-
-import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * 短信接口类
@@ -379,6 +388,7 @@ public class AppLoginController extends BaseController {
      */
     @CrossOrigin(origins = "*",maxAge = 3600)
     @RequestMapping(value = "/userPassLogin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
     public JSONObject userPassLogin(@RequestParam("phone") String phone, @RequestParam("pw") String pw) {
         try {
 
