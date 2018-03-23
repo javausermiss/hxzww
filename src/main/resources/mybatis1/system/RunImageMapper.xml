@@ -127,7 +127,13 @@
 		RUN_NAME,
 		RUNIMAGE_ID,
 		TIME,
-		HREF_ST
+		HREF_ST,
+		CONTENT,
+		LIVESTREAM,
+		SERVER_NAME,
+		RTMP_URL,
+		H5_URL,
+		DEVICE_STATE,
 		FROM <include refid="tableName"/>
 	</select>
 
