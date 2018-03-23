@@ -447,7 +447,7 @@
         DOLLTOTAL
         DESC
         limit
-        0,10
+        0,20
     </select>
 
     <!--更新收货人信息地址-->
@@ -689,5 +689,35 @@
 		WHERE
 		USER_ID = #{USER_ID}
 	</update>
+
+
+    <!-- 查询前20名竞猜获胜最多的用户 -->
+    <select id="rankBetList" resultType="pd">
+        select
+        BET_NUM,NICKNAME,IMAGE_URL,USER_ID
+        from
+        <include refid="tableName"/>
+        where
+        BET_NUM >= 0
+        ORDER BY
+        BET_NUM
+        DESC,
+        createtime
+        ASC
+        limit
+        0,20
+    </select>
+
+    <!--获取竞猜个人排名-->
+    <select id="getAppUserBetRanklist" parameterType="String" resultType="pd">
+        select * from
+        (select u.USER_ID,u.NICKNAME ,u.BET_NUM,u.IMAGE_URL,
+        (@rownum := @rowNum + 1) as RANK from sys_app_user u , (select (@rownum := 0))
+        b order by bet_num desc ,createtime ) p
+        where
+        p.user_id = #{USER_ID}
+    </select>
+
+
 
 </mapper>

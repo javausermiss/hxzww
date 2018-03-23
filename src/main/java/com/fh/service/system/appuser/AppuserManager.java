@@ -353,5 +353,23 @@ public interface AppuserManager {
      * @throws Exception
      */
     public int updateAppUserPhone(AppUser appUser)throws Exception;
+
+    /**
+     * 竞猜获胜排行榜
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> rankBetList()throws Exception;
+
+    /**
+     * 查询竞猜个人名次
+     * @param userid
+     * @return
+     * @throws Exception
+     */
+    public PageData getAppUserBetRanklist(String userid)throws Exception;
+
+
+
 }
 
