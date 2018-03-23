@@ -133,7 +133,7 @@
 		SERVER_NAME,
 		RTMP_URL,
 		H5_URL,
-		DEVICE_STATE,
+		DEVICE_STATE
 		FROM <include refid="tableName"/>
 	</select>
 
