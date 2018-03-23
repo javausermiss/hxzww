@@ -48,31 +48,52 @@
 							<td style="width:75px;text-align: right;padding-top: 13px;">新闻路径:</td>
 							<td><input type="text" name="HREF_ST" id="HREF_ST" value="${pd.HREF_ST}" maxlength="255" placeholder="这里输入图像跳转地址" title="图像跳转地址" style="width:98%;"/></td>
 							</tr>
-							<tr>
+							<!-- <tr>
 								<td style="width:100px;text-align: right;padding-top: 13px;">新闻内容:</td>
 								<td><script id="editor"  type="text/plain" style="width:100%;height:200px;"></script></td>
-							</tr>
+							</tr> -->
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">流媒体名称:</td>
 								<td><input type="text" name="LIVESTREAM" id="LIVESTREAM" value="${pd.LIVESTREAM}" 
-								maxlength="50" placeholder="这里输入流媒体名称" title="LIVESTREAM" style="width:98%;"/></td>
+								maxlength="200" placeholder="这里输入流媒体名称" title="LIVESTREAM" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">推流服务名称:</td>
 								<td><input type="text" name="SERVER_NAME" id="SERVER_NAME" value="${pd.SERVER_NAME}" 
-								maxlength="50" placeholder="这里输入推流服务名称" title="SERVER_NAME" style="width:98%;"/></td>
+								maxlength="200" placeholder="这里输入推流服务名称" title="SERVER_NAME" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">RTMP拉流地址:</td>
 								<td><input type="text" name="RTMP_URL" id="RTMP_URL" value="${pd.RTMP_URL}" 
-								maxlength="50" placeholder="这里输入RTMP拉流地址" title="RTMP_URL" style="width:98%;"/></td>
+								maxlength="200" placeholder="这里输入RTMP拉流地址" title="RTMP_URL" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">H5拉流地址:</td>
 								<td><input type="text" name="H5_URL" id="H5_URL" value="${pd.H5_URL}" 
-								maxlength="50" placeholder="这里输入H5拉流地址" title="H5_URL" style="width:98%;"/></td>
+								maxlength="200" placeholder="这里输入H5拉流地址" title="H5_URL" style="width:98%;"/></td>
 							</tr>
-						
+							<tr>
+							<td style="width:75px;text-align: right;padding-top: 13px;">设备状态:</td>
+								<td>
+								<span style="font-size:12px;">
+									<select id="DEVICE_STATE" name="DEVICE_STATE">
+										<option value="1" <c:if test="${pd.DEVICE_STATE == '1' }">selected</c:if>>不可用</option>
+										<option value="0" <c:if test="${pd.DEVICE_STATE == '0' }">selected</c:if>>可用</option>
+									</select>
+									</span>
+								</td>
+							</tr>
+							<tr>
+							<td style="width:75px;text-align: right;padding-top: 13px;">设备状态:</td>
+								<td>
+								<span style="font-size:12px;">
+									<select id="STATE" name="STATE">
+										<option value="1" <c:if test="${pd.STATE == '1' }">selected</c:if>>视频路径</option>
+										<option value="0" <c:if test="${pd.STATE == '0' }">selected</c:if>>图片路径</option>
+									</select>
+									</span>
+								</td>
+							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="2">
 									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
@@ -105,23 +126,23 @@
 	<!--提示框-->
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	
-    <script type="text/javascript" charset="utf-8" src="static/ueditor/ueditor.config.js"></script>
-    <script type="text/javascript" charset="utf-8" src="static/ueditor/ueditor.all.min.js"> </script>
-    <script type="text/javascript" charset="utf-8" src="static/ueditor/lang/zh-cn/zh-cn.js"></script>
+<!--     <script type="text/javascript" charset="utf-8" src="static/ueditor/ueditor.config.js"></script> -->
+<!--     <script type="text/javascript" charset="utf-8" src="static/ueditor/ueditor.all.min.js"> </script> -->
+<!--     <script type="text/javascript" charset="utf-8" src="static/ueditor/lang/zh-cn/zh-cn.js"></script> -->
 	
 		<script type="text/javascript">
 		$(top.hangge());
 		
-		  //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
-	    var ue = UE.getEditor('editor');
-	    UE.getEditor('editor').addListener("ready", function () {
-	    	// editor准备好之后才可以使用
-	    	UE.getEditor('editor').setContent('${pd.CONTENT}');
-	    });
+// 		  //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+// 	    var ue = UE.getEditor('editor');
+// 	    UE.getEditor('editor').addListener("ready", function () {
+// 	    	// editor准备好之后才可以使用
+// 	    	UE.getEditor('editor').setContent('${pd.CONTENT}');
+// 	    });
 		
-	    function getContent() {
-	      return  ue.getContent();
-	    }
+// 	    function getContent() {
+// 	      return  ue.getContent();
+// 	    }
 	    
 		//保存
 		function save(){
@@ -135,8 +156,8 @@
 				$("#RUN_NAME").focus();
 			return false;
 			}
-            var content=getContent();
-            $('#CONTENT').val(content);
+//             var content=getContent();
+//             $('#CONTENT').val(content);
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

@@ -67,10 +67,12 @@
 			RUN_NAME = #{RUN_NAME},
 			HREF_ST = #{HREF_ST},
 		    CONTENT = #{CONTENT},
-		    CONTENT = #{LIVESTREAM},
-		    CONTENT = #{SERVER_NAME},
-		    CONTENT = #{RTMP_URL},
-		    CONTENT = #{H5_URL}
+		    LIVESTREAM = #{LIVESTREAM},
+		    SERVER_NAME = #{SERVER_NAME},
+		    RTMP_URL = #{RTMP_URL},
+		    H5_URL = #{H5_URL},
+		    DEVICE_STATE = #{DEVICE_STATE},
+			STATE = #{STATE}
 		where 
 		RUNIMAGE_ID = #{RUNIMAGE_ID}
 	</update>
