@@ -458,5 +458,19 @@ public class AppuserService implements AppuserManager{
     public int updateAppUserPhone(AppUser appUser)throws Exception{
     	return (int)dao.update("AppuserMapper.updateAppUserPhone",appUser);
     }
+
+	@Override
+	public List<PageData> rankBetList() throws Exception {
+		return (List<PageData>)dao.findForList("AppuserMapper.rankBetList",null);
+	}
+
+	@Override
+	public PageData getAppUserBetRanklist(String userid) throws Exception {
+		return (PageData) dao.findForObject("AppuserMapper.getAppUserBetRanklist",userid);
+	}
+
+
+
+
 }
 

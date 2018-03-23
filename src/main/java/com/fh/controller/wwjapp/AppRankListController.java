@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.fh.util.PageData;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -78,6 +79,61 @@ public class AppRankListController {
             }
             Map<String, Object> map = new HashMap<>();
             map.put("appUser",appUser);
+            return RespStatus.successs().element("data", map);
+        } catch (Exception e) {
+            return RespStatus.fail();
+        }
+
+    }
+
+    /**
+     * 排行榜及个人所在名次
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/rankAndSelfList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject rankAndSelfList(@RequestParam("userId") String userId) {
+        try {
+            List<AppUser> list = appuserService.rankList();
+            AppUser appUser = appuserService.getAppUserRanklist(userId);
+            if (appUser == null) {
+                return null;
+            }
+            Map<String, Object> map = new HashMap<>();
+            map.put("list", list);
+            map.put("appUser", appUser);
+            return RespStatus.successs().element("data", map);
+        } catch (Exception e) {
+            return RespStatus.fail();
+        }
+
+    }
+
+
+    /**
+     * 竞猜排行榜及个人所在名次
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/rankBetList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject rankBetList(@RequestParam("userId") String userId) {
+        try {
+            List<PageData> list = appuserService.rankBetList();
+            PageData appUser = appuserService.getAppUserBetRanklist(userId);
+
+            if (appUser == null) {
+                return null;
+            }
+            double c = (double) appUser.get("RANK");
+            int i = (new Double(c)).intValue();
+            appUser.put("RANK", String.valueOf(i));
+            Map<String, Object> map = new HashMap<>();
+            map.put("list", list);
+            map.put("appUser", appUser);
             return RespStatus.successs().element("data", map);
         } catch (Exception e) {
             return RespStatus.fail();
