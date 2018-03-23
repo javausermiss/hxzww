@@ -367,9 +367,25 @@ public class AppLoginController extends BaseController {
             payment.setCOST_TYPE(Const.PlayMentCostType.cost_type13.getValue());
             payment.setUSERID(appUser1.getUSER_ID());
             paymentService.reg(payment);
+            
+            
+            //SRS推流
+            SrsConnectModel sc = new SrsConnectModel();
+            long time = System.currentTimeMillis();
+            sc.setType("U");
+            sc.setTid(appUser1.getUSER_ID());
+            sc.setExpire(3600 * 24);
+            sc.setTime(time);
+            sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+            
+            //sessionId
+            String sessionID = MyUUID.createSessionId();
+            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID  +  appUser1.getUSER_ID(), sessionID);
 
             Map<String, Object> map = new HashMap<>();
+            map.put("sessionID", sessionID);
             map.put("appUser", appUser1);
+            map.put("srsToken", sc);
             return RespStatus.successs().element("data", map);
 
         } catch (Exception e) {
@@ -420,8 +436,11 @@ public class AppLoginController extends BaseController {
                     sc.setExpire(3600 * 24);
                     sc.setTime(time);
                     sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+                    
+                    //sessionId
                     String sessionID = MyUUID.createSessionId();
-                    RedisUtil.getRu().set("sessionId:appUser:" + appUser.getUSER_ID(), sessionID);
+                    RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID  +  appUser.getUSER_ID(), sessionID);
+                    
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("sessionID", sessionID);
                     map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
