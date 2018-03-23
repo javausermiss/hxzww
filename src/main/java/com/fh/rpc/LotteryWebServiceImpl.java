@@ -82,7 +82,7 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             if (Integer.valueOf(userBalance) < dollGold) {
             	 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
                  rpcCommandResult.setInfo("余额不足"); ///这里写期号
-                return null;
+                return rpcCommandResult;
             }
             
             
@@ -185,7 +185,7 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
             rpcCommandResult.setInfo("设备异常"); ///这里写期号
-            return null;
+            return rpcCommandResult;
         }
 
     }

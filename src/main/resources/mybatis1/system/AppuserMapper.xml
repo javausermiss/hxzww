@@ -447,7 +447,7 @@
         DOLLTOTAL
         DESC
         limit
-        0,10
+        0,20
     </select>
 
     <!--更新收货人信息地址-->
