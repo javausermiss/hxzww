@@ -10,7 +10,7 @@
 	<!-- 字段 -->
 	<sql id="Field">
 		PRO_MANAGE_ID,
-		USERID,	
+		USER_ID,	
 		RETURN_RATIO,	
 		CREATE_TIME,	
 		UPDATE_TIME,	
@@ -20,7 +20,7 @@
 	<!-- 字段值 -->
 	<sql id="FieldValue">
 		#{PRO_MANAGE_ID},	
-		#{USERID},	
+		#{USER_ID},	
 		#{RETURN_RATIO},	
 		now(),	
 		now(),	
@@ -52,7 +52,7 @@
 		<include refid="tableName"></include>
 		set 
 			PRO_MANAGE_ID = #{PRO_MANAGE_ID},
-			USERID = #{USERID},
+			USER_ID = #{USER_ID},
 			RETURN_RATIO = #{RETURN_RATIO},
 			UPDATE_TIME =now()
 		where 
@@ -76,14 +76,14 @@
 		from 
 		<include refid="tableName"></include>
 		where 
-			USERID = #{PRO_ID}
+			USER_ID = #{PRO_ID}
 	</select>
 	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
 		a.PRO_MANAGE_ID,
-		a.USERID,	
+		a.USER_ID,	
 		a.RETURN_RATIO,	
 		a.CREATE_TIME,	
 		a.UPDATE_TIME,	
@@ -91,26 +91,25 @@
 		u.USER_ID,
 		u.NICKNAME
 		from 
-		SYS_WWJ_PROMOTE_APPUSER a LEFT JOIN SYS_APP_USER u on a.USERID=u.USER_ID
+		SYS_WWJ_PROMOTE_APPUSER a LEFT JOIN SYS_APP_USER u on a.USER_ID=u.USER_ID
 		where 1=1
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and	
 			u.NICKNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 			or
-			a.USERID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			a.USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 		</if>
 	</select>
 	
 	<!-- 查询加盟用户的子用户信息 -->
 	<select id="FranchiseeSubuserlistPage" parameterType="pd" resultType="pd">
 	select
-		a.USERID,
-		u.USER_ID,
+		a.USER_ID,
 		u.NICKNAME,
 		u.PRO_USER_ID,
 		u.CREATETIME
 		from 
-		SYS_WWJ_PROMOTE_APPUSER a LEFT JOIN SYS_APP_USER u on a.USERID=u.PRO_USER_ID
+		SYS_WWJ_PROMOTE_APPUSER a LEFT JOIN SYS_APP_USER u on a.USER_ID=u.PRO_USER_ID
 		where 1=1
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and	
