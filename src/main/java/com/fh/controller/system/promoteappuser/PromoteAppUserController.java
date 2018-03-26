@@ -15,8 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
+import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.promote.PromoteAppUserManager;
+import com.fh.service.system.trans.AccountLogManager;
 import com.fh.util.AppUtil;
+import com.fh.util.Const;
 import com.fh.util.Jurisdiction;
 import com.fh.util.PageData;
 
@@ -30,8 +33,15 @@ import com.fh.util.PageData;
 public class PromoteAppUserController extends BaseController {
 	
 	String menuUrl = "promoteappuser/list.do"; //菜单地址(权限用)
+	
 	@Resource(name="promoteAppUserService")
 	private PromoteAppUserManager promoteappuser;
+	
+	@Resource(name="appuserService")
+	private AppuserManager appuserService;
+	
+    @Resource(name = "accountLogService")
+    private AccountLogManager accountLogService;
 	
 	/**保存
 	 * @param
@@ -100,6 +110,56 @@ public class PromoteAppUserController extends BaseController {
 		page.setPd(pd);
 		List<PageData>	varList = promoteappuser.list(page);	//列出PromoteManage列表
 		mv.setViewName("system/promoteappuser/promoteappuser_list");
+		mv.addObject("varList", varList);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
+	
+	/**下级用户列表
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/proUserList")
+	public ModelAndView proUserList(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表proUserList");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+		page.setPd(pd);
+		List<PageData>	userList = appuserService.listPdPageUser(page);		//列出会员列表
+		mv.setViewName("system/promoteappuser/prouser_list");
+		mv.addObject("userList", userList);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		return mv;
+	}
+	
+	
+	/**用户收益明细
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/proEarningsList")
+	public ModelAndView proEarningsList(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表proEarningsList");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		if(null != keywords && !"".equals(keywords)){
+			pd.put("keywords", keywords.trim());
+		}
+    	pd.put("transType", Const.AccountTransType.TRANS_1001.getValue());
+		page.setPd(pd);
+		List<PageData>	varList = accountLogService.getAccountLogByTypePage(page);	
+		mv.setViewName("system/promoteappuser/promoteearnings_list");
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限

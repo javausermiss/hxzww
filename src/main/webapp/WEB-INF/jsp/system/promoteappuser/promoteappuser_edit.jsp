@@ -41,7 +41,7 @@
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">用户分成比例:</td>
-								<td><input type="text" name="RETURN_RATIO" id="RETURN_RATIO" value="${pd.RETURN_RATIO}" maxlength="12" placeholder="这里输入用户分成比例" title="用户分成比例" style="width:98%;"/></td>
+								<td><input type="number" name="RETURN_RATIO" id="RETURN_RATIO" value="${pd.RETURN_RATIO}" maxlength="12" placeholder="这里输入用户分成比例" title="用户分成比例" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">

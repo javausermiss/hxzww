@@ -68,7 +68,7 @@
 									</th>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">加盟权益分成ID</th>
-									<th class="center">用户USER_ID</th>
+<!-- 									<th class="center">用户USER_ID</th> -->
 									<th class="center">用户昵称</th>
 									<th class="center">用户分成比例</th>
 									<th class="center">创建时间</th>
@@ -89,7 +89,7 @@
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.PRO_MANAGE_ID}</td>
-											<td class='center'>${var.USERID}</td>
+<%-- 											<td class='center'>${var.USERID}</td> --%>
 											<td class='center'>${var.NICKNAME}</td>
 											<td class='center'>${var.RETURN_RATIO}</td>
 											<td class='center'>${var.CREATE_TIME}</td>
@@ -99,6 +99,16 @@
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
+													<c:if test="${QX.cha == 1 }">
+														<a class="btn btn-xs btn-success" title="下级用户" onclick="proUserList('${var.USERID}');">
+															下级用户
+														</a>
+													</c:if>
+													<c:if test="${QX.cha == 1 }">
+														<a class="btn btn-xs btn-success" title="我的佣金" onclick="proEarningsList('${var.USERID}');">
+															我的佣金
+														</a>
+													</c:if>
 													<c:if test="${QX.edit == 1 }">
 													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.PRO_ID}');">
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
@@ -247,6 +257,19 @@
 				});
 			});
 		});
+		
+		function proUserList(userId){
+			var URL = "<%=basePath%>promoteappuser/proUserList.do?PRO_USER_ID="+userId;
+			window.location.href=URL;
+		}
+		
+		
+		
+		function proEarningsList(userId){
+			var URL = "<%=basePath%>promoteappuser/proEarningsList.do?userId="+userId;
+			window.location.href=URL;
+		}
+		
 		
 		//新增
 		function add(){

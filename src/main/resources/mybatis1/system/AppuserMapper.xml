@@ -139,6 +139,9 @@
         <if test="pd.STATUS != null and pd.STATUS != ''"><!-- 状态检索 -->
             and u.STATUS=#{pd.STATUS}
         </if>
+        <if test="pd.PRO_USER_ID != null and pd.PRO_USER_ID != ''"><!-- 状态检索 -->
+            and u.PRO_USER_ID=#{pd.PRO_USER_ID}
+        </if>
         
         <if test="pd.ORDESTR != null and pd.ORDESTR != ''"><!-- 状态检索 -->
        			 
