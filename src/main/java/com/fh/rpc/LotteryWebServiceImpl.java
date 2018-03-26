@@ -1,19 +1,8 @@
 package com.fh.rpc;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import com.alibaba.dubbo.config.annotation.Service;
-import com.fh.entity.system.AppUser;
-import com.fh.entity.system.Doll;
-import com.fh.entity.system.GuessDetailL;
-import com.fh.entity.system.Payment;
-import com.fh.entity.system.PlayDetail;
-import com.fh.entity.system.Pond;
+import com.fh.entity.system.*;
+import com.fh.service.system.afterVoting.AfterVotingManager;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.betgame.BetGameManager;
 import com.fh.service.system.doll.DollManager;
@@ -27,9 +16,12 @@ import com.iot.game.pooh.server.rpc.interfaces.LotteryServerRpcService;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcReturnCode;
 import com.iot.game.pooh.web.rpc.interfaces.LotteryWebRpcService;
-import com.iot.game.pooh.web.rpc.interfaces.entity.GuessDetail;
-
 import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -48,6 +40,8 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
     private DollManager dollService;
     @Resource
     private LotteryServerRpcService lotteryServerRpcService;
+    @Resource(name = "afterVotingService")
+    private AfterVotingManager afterVotingService;
 
     /**
      * 开始竞猜(点击开始 start )
@@ -103,30 +97,20 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             PlayDetail playDetail = new PlayDetail();
             playDetail.setDOLLID(dollId);
             PlayDetail p = playDetailService.getPlayDetailLast(playDetail);
-//            String conversionGold = "";
-//            int gold = dollService.getDollByID(dollId).getDOLL_GOLD();
-//            switch (gold) {
-//                case 19:
-//                    conversionGold = "80";
-//                    break;
-//                case 29:
-//                    conversionGold = "120";
-//                    break;
-//                default:
-//                    conversionGold = "180";
-//            }
             
              //获取娃娃机兑换的金币
              String conversionGold=doll.getDOLL_CONVERSIONGOLD();
+
+            String newGuessID = "";
              
             if (p == null) {
                 Date currentTime1 = new Date();
                 SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
                 String dateString1 = formatter1.format(currentTime1);
                 String num = "0001";
-                String guessId = dateString1 + num;
+                newGuessID = dateString1 + num;
                 PlayDetail newPlayDetail = new PlayDetail();
-                newPlayDetail.setGUESS_ID(guessId);
+                newPlayDetail.setGUESS_ID(newGuessID);
                 newPlayDetail.setDOLLID(dollId);
                 newPlayDetail.setUSERID(userId);
                 newPlayDetail.setCONVERSIONGOLD(conversionGold);
@@ -135,10 +119,7 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                 playDetailService.reg(newPlayDetail);
                 Pond pond = new Pond(newPlayDetail.getGUESS_ID(), dollId, null);
                 pondService.regPond(pond);
-               
-                rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
-                rpcCommandResult.setInfo(guessId); ///这里写期号
-                return rpcCommandResult;
+
             } else {
                 String guessid = p.getGUESS_ID();//获取到场次ID 201712100001
                 Date currentTime = new Date();
@@ -157,14 +138,12 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                     playDetailService.reg(newp);
                     Pond pond = new Pond(newp.getGUESS_ID(), dollId, null);
                     pondService.regPond(pond);
-                    rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
-                    rpcCommandResult.setInfo(newGuessId); ///这里写期号
-                    return rpcCommandResult;
+
                 } else {
                     Date current = new Date();
                     SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
                     String date = format.format(current);
-                    String newGuessID = date + "0001";
+                    newGuessID = date + "0001";
                     PlayDetail playDetail1 = new PlayDetail();
                     playDetail1.setDOLLID(dollId);
                     playDetail1.setUSERID(userId);
@@ -175,11 +154,34 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                     playDetailService.reg(playDetail1);
                     Pond pond = new Pond(playDetail1.getGUESS_ID(), dollId, null);
                     pondService.regPond(pond);
-                    rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
-                    rpcCommandResult.setInfo(newGuessID); ///这里写期号
-                    return rpcCommandResult;
+
                 }
             }
+            //增加追投人的竞猜记录
+            List<AfterVoting> afterVotings = afterVotingService.getListAfterVoting(dollId);
+            if (afterVotings != null) {
+                for (int i = 0; i < afterVotings.size(); i++) {
+                    AfterVoting afterVoting = afterVotings.get(i);
+                    int af = afterVoting.getAFTER_VOTING();
+                    if (af != 0) {
+                        int new_af = af - 1;
+                        afterVoting.setAFTER_VOTING(new_af);
+                        afterVotingService.updateAfterVoting_Num(afterVoting);
+
+                        //增加竞猜记录
+                        GuessDetailL guessDetailL = new GuessDetailL(afterVoting.getUSER_ID(), dollId, afterVoting.getLOTTERY_NUM(), afterVoting.getMULTIPLE() * dollGold, newGuessID);
+                        betGameService.regGuessDetail(guessDetailL);
+                    }
+
+                }
+
+            }
+
+            rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
+            rpcCommandResult.setInfo(newGuessID); ///这里写期号
+            return rpcCommandResult;
+
+
         } catch (Exception e) {
             e.printStackTrace();
             

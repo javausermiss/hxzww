@@ -1,21 +1,6 @@
 package com.fh.controller.wwjapp;
 
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-
-import javax.annotation.Resource;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.fh.controller.base.BaseController;
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.AppuserLogin;
@@ -28,17 +13,16 @@ import com.fh.service.system.payment.PaymentManager;
 import com.fh.util.Const;
 import com.fh.util.MD5;
 import com.fh.util.PropertiesUtils;
-import com.fh.util.wwjUtil.Base64Util;
-import com.fh.util.wwjUtil.CameraUtils;
-import com.fh.util.wwjUtil.MyUUID;
-import com.fh.util.wwjUtil.RedisUtil;
-import com.fh.util.wwjUtil.RespStatus;
-import com.fh.util.wwjUtil.SMSUtil;
+import com.fh.util.wwjUtil.*;
 import com.iot.game.pooh.admin.srs.core.entity.httpback.SrsConnectModel;
 import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
 import com.iot.game.pooh.admin.srs.core.util.SrsSignUtil;
-
 import net.sf.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * 短信接口类
@@ -98,11 +82,11 @@ public class AppLoginController extends BaseController {
      * @param aPhone
      * @return
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
-    @RequestMapping(value = "/getRegSMSCode", method = {RequestMethod.POST,RequestMethod.GET} ,produces = "application/json;charset=UTF-8")
+    @CrossOrigin(origins = "*", maxAge = 3600)
+    @RequestMapping(value = "/getRegSMSCode", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject getRegSMSCode(@RequestParam("phone") String aPhone,
-                                    @RequestParam(value = "callback",required = false) String callback) {
+                                    @RequestParam(value = "callback", required = false) String callback) {
         try {
             String phone = new String(Base64Util.decryptBASE64(aPhone));
             if (phone == null || phone.trim().length() <= 0) {
@@ -243,6 +227,52 @@ public class AppLoginController extends BaseController {
     }
 
     /**
+     * 忘记密码，修改密码
+     * @param phone
+     * @param code
+     * @param password
+     * @return
+     */
+    @CrossOrigin(origins = "*", maxAge = 3600)
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject resetPassword(@RequestParam("phone") String phone,
+                                    @RequestParam("code") String code,
+                                    @RequestParam("password") String password
+    ) {
+        try {
+            if (phone == null || phone.trim().length() <= 0) {
+                return RespStatus.fail("手机号不能为空！");
+            } else if (!phone.matches("^1(3|4|5|7|8)\\d{9}$")) {
+                return RespStatus.fail("手机号码格式错误！");
+            } else if (code == null || code.trim().length() <= 0) {
+                return RespStatus.fail("验证码不能为空！");
+            }
+
+            AppUser appUser = appuserService.getUserByPhone(phone);
+            if (appUser == null) {
+                return RespStatus.fail("该用户暂未注册");
+            }
+
+            if (!RedisUtil.getRu().exists("SMSCode:" + phone)) {
+                return RespStatus.fail("此手机号尚未请求验证码！");
+            }
+            String exitCode = RedisUtil.getRu().get("SMSCode:" + phone);
+            if (!exitCode.equals(code)) {
+                return RespStatus.fail("验证码无效！");
+            }
+            RedisUtil.getRu().del("SMSCode:" + phone);
+            appUser.setPASSWORD(MD5.md5(password));
+            appuserService.updateAppuserpw(appUser);
+            return RespStatus.successs();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+
+    /**
      * 手机号码直登获取娃娃机信息
      *
      * @param userId
@@ -312,14 +342,14 @@ public class AppLoginController extends BaseController {
     }
 
     /**
-     * 注册用户(暂时只提供给H5)
+     * 注册用户
      *
      * @param phone
      * @param pw
      * @param smsCode
      * @return
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
+    @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/userRegister", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject userPassLogin(@RequestParam("phone") String phone,
@@ -367,8 +397,8 @@ public class AppLoginController extends BaseController {
             payment.setCOST_TYPE(Const.PlayMentCostType.cost_type13.getValue());
             payment.setUSERID(appUser1.getUSER_ID());
             paymentService.reg(payment);
-            
-            
+
+
             //SRS推流
             SrsConnectModel sc = new SrsConnectModel();
             long time = System.currentTimeMillis();
@@ -377,10 +407,10 @@ public class AppLoginController extends BaseController {
             sc.setExpire(3600 * 24);
             sc.setTime(time);
             sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
-            
+
             //sessionId
             String sessionID = MyUUID.createSessionId();
-            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID  +  appUser1.getUSER_ID(), sessionID);
+            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser1.getUSER_ID(), sessionID);
 
             Map<String, Object> map = new HashMap<>();
             map.put("sessionID", sessionID);
@@ -396,13 +426,13 @@ public class AppLoginController extends BaseController {
 
 
     /**
-     * 采用账号密码的方式登陆(暂时只提供给H5)
+     * 采用账号密码的方式登陆
      *
      * @param phone
      * @param pw
      * @return
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
+    @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/userPassLogin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject userPassLogin(@RequestParam("phone") String phone, @RequestParam("pw") String pw) {
@@ -412,15 +442,15 @@ public class AppLoginController extends BaseController {
                 return RespStatus.fail("手机号不能为空！");
             } else if (!phone.matches("^1(3|4|5|7|8)\\d{9}$")) {
                 return RespStatus.fail("手机号码格式错误！");
-            }else if (pw == null || pw.trim().length() <= 0){
+            } else if (pw == null || pw.trim().length() <= 0) {
                 return RespStatus.fail("密码不能为空！");
             }
             AppUser appUser = appuserService.getUserByPhone(phone);
             if (appUser != null) {
                 String password = appUser.getPASSWORD();
                 String pwmd5 = MD5.md5(pw);
-                logger.info("password--------"+password);
-                logger.info("pwmd5----------"+pwmd5);
+                logger.info("password--------" + password);
+                logger.info("pwmd5----------" + pwmd5);
                 if (pwmd5.equals(password)) {
                     //登录日志
                     AppuserLogin appuserLogin = new AppuserLogin();
@@ -436,11 +466,11 @@ public class AppLoginController extends BaseController {
                     sc.setExpire(3600 * 24);
                     sc.setTime(time);
                     sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
-                    
+
                     //sessionId
                     String sessionID = MyUUID.createSessionId();
-                    RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID  +  appUser.getUSER_ID(), sessionID);
-                    
+                    RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser.getUSER_ID(), sessionID);
+
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("sessionID", sessionID);
                     map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));

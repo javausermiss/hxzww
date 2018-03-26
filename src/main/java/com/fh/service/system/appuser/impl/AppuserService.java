@@ -1,24 +1,17 @@
 package com.fh.service.system.appuser.impl;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.Payment;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.payment.PaymentManager;
-import com.fh.util.Const;
-import com.fh.util.EmojiUtil;
-import com.fh.util.NumberUtils;
-import com.fh.util.PageData;
-import com.fh.util.StrUtil;
-import com.fh.util.StringUtils;
+import com.fh.util.*;
 import com.fh.util.wwjUtil.MyUUID;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 
 /**类名称：AppuserService
@@ -469,8 +462,9 @@ public class AppuserService implements AppuserManager{
 		return (PageData) dao.findForObject("AppuserMapper.getAppUserBetRanklist",userid);
 	}
 
-
-
-
+	@Override
+	public int updateAppuserpw(AppUser appUser)throws Exception {
+		return (int)dao.update("AppuserMapper.updateAppuserpw",appUser);
+	}
 }
 

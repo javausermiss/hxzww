@@ -1,11 +1,11 @@
 package com.fh.service.system.appuser;
 
-import java.util.List;
-
 import com.fh.entity.Page;
 import com.fh.entity.system.AppUser;
 import com.fh.util.Const;
 import com.fh.util.PageData;
+
+import java.util.List;
 
 
 /**
@@ -368,6 +368,14 @@ public interface AppuserManager {
      * @throws Exception
      */
     public PageData getAppUserBetRanklist(String userid)throws Exception;
+
+    /**
+     * 用户忘记密码，更改密码
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public int updateAppuserpw(AppUser appUser)throws Exception;
 
 
 

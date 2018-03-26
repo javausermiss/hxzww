@@ -4,6 +4,7 @@ import com.fh.controller.base.BaseController;
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.entity.system.*;
+import com.fh.service.system.afterVoting.AfterVotingManager;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.betgame.BetGameManager;
 import com.fh.service.system.doll.DollManager;
@@ -13,8 +14,6 @@ import com.fh.service.system.playdetail.PlayDetailManage;
 import com.fh.service.system.pond.PondManager;
 import com.fh.util.DateUtil;
 import com.fh.util.PageData;
-
-import com.fh.util.wwjUtil.RedisUtil;
 import com.fh.util.wwjUtil.RespStatus;
 import com.iot.game.pooh.server.rpc.interfaces.LotteryServerRpcService;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
@@ -51,6 +50,8 @@ public class BetGameService extends BaseController implements BetGameManager {
     private PaymentManager paymentService;
     @Resource
     private LotteryServerRpcService lotteryServerRpcService;
+    @Resource(name = "afterVotingService")
+    private AfterVotingManager afterVotingService;
 
 
     /**
@@ -192,7 +193,7 @@ public class BetGameService extends BaseController implements BetGameManager {
     }
 
     @Override
-    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey) throws Exception {
+    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer afterVoting ) throws Exception {
 
         PlayDetail p1 = new PlayDetail();
         p1.setDOLLID(dollId);
@@ -216,6 +217,30 @@ public class BetGameService extends BaseController implements BetGameManager {
         } else {
             return RespStatus.fail("余额不足无法竞猜");
         }
+        //增加该用户追投信息
+        if (afterVoting != 0) {
+            AfterVoting afterVoting1 = new AfterVoting();
+            afterVoting1.setROOM_ID(dollId);
+            afterVoting1.setUSER_ID(userId);
+            AfterVoting afterVoting2 = afterVotingService.getAfterVoting(afterVoting1);
+            if (afterVoting2 == null) {
+                AfterVoting afterVoting3 = new AfterVoting();
+                afterVoting1.setAFTER_VOTING(afterVoting);
+                afterVoting1.setUSER_ID(userId);
+                afterVoting1.setROOM_ID(dollId);
+                afterVoting1.setLOTTERY_NUM(guessKey);
+                afterVotingService.regAfterVoting(afterVoting3);
+            }else {
+                int a = afterVoting2.getAFTER_VOTING();
+                int new_af = a + afterVoting;
+                afterVoting2.setAFTER_VOTING(new_af);
+                //更新本房间已存在记录的追投期数
+                afterVotingService.updateAfterVoting_Num(afterVoting2);
+
+            }
+
+        }
+
         //增加消费记录
         Payment payment = new Payment();
         payment.setCOST_TYPE("1");

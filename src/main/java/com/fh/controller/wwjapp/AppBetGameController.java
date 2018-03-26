@@ -127,6 +127,7 @@ public class AppBetGameController {
      * @param wager    投注金额
      * @param guessId  场次ID
      * @param guessKey 竞猜 中 或者 不中
+     * @param afterVoting 追投期数
      * @return
      */
     @RequestMapping(value = "/bets", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -136,12 +137,13 @@ public class AppBetGameController {
             @RequestParam("dollId") String dollId,
             @RequestParam("wager") int wager,
             @RequestParam("guessId") String guessId,
-            @RequestParam("guessKey") String guessKey
+            @RequestParam("guessKey") String guessKey,
+            @RequestParam(value = "atrerVoting",required = false,defaultValue = "0") Integer afterVoting
             )
     {
 
         try {
-          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey);
+          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,afterVoting);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();

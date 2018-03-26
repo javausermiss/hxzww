@@ -717,6 +717,14 @@
         where
         p.user_id = #{USER_ID}
     </select>
+    <!--更改用户密码-->
+    <update id="updateAppuserpw" parameterType="com.fh.entity.system.AppUser">
+        UPDATE  <include refid="tableName"/> SET
+        PASSWORD = #{PASSWORD}
+        WHERE
+        USER_ID = #{USER_ID}
+
+    </update>
 
 
 
