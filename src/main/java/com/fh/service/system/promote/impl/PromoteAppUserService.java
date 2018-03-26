@@ -95,5 +95,15 @@ public class PromoteAppUserService implements PromoteAppUserManager{
 	public PageData findByProCode(String proCode) throws Exception {
 		return (PageData)dao.findForObject("PromoteAppUserMapper.findByProCode", proCode);
 	}
+
+	
+	/**查询加盟用户的子用户信息
+	 * @param page
+	 * @throws Exception
+	 */
+	public List<PageData> findAllFranchiseeSubuser(Page page) throws Exception {
+		
+		return (List<PageData>)dao.findForList("PromoteAppUserMapper.FranchiseeSubuserlistPage",page);
+	}
 }
 
