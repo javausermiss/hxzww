@@ -61,5 +61,11 @@ public interface AccountLogManager{
 	 */
 	public List<PageData> getAccountLogByTypelistAll(PageData pd)throws Exception;
 	
+	/**获取用户的账户日志
+	 * @param page
+	 * @throws Exception
+	 */
+	public List<PageData> getAccountLogByTypePage(Page page)throws Exception;
+	
 }
 

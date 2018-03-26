@@ -199,6 +199,11 @@
 			TB_ACCOUNT_LOG
 			where
 				ACC_ID=(SELECT ACC_ID FROM tb_account_inf t where t.user_ID=#{pd.userId})
+				
+				<if test="pd.transType!= null and pd.transType!=''">
+					AND TRANS_TYPE=#{pd.transType}
+				</if>
+				
 		ORDER BY CREATE_DATE DESC
 	</select>
 	
