@@ -35,7 +35,8 @@
 		NICKNAME,
 		CNEE_PHONE,
 		CNEE_ADDRESS,
-		CNEE_NAME
+		CNEE_NAME,
+		PRO_USER_ID
 
 	</sql>
 
@@ -66,7 +67,8 @@
 		#{NICKNAME},
 		#{CNEE_PHONE},
 		#{CNEE_ADDRESS},
-		#{CNEE_NAME}
+		#{CNEE_NAME},
+		#{PRO_USER_ID}
 	</sql>
 
     <!-- 角色表 -->
