@@ -378,6 +378,15 @@ public interface AppuserManager {
     public int updateAppuserpw(AppUser appUser)throws Exception;
 
 
+    /**
+     * 更新用户余额和竞猜获胜的次数
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public int updateAppUserBlAndBnById(AppUser appUser)throws Exception;
+
+
 
 }
 

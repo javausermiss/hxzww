@@ -345,13 +345,24 @@ public class BetGameService extends BaseController implements BetGameManager {
                 winPerson.setGUESS_TYPE(playDetail.getREWARD_NUM());
                 this.updateGuessDetail(winPerson);
 
-                //更新用户余额
+                /*//更新用户余额
                 String guess_win_user = winPerson.getAPP_USER_ID();
                 AppUser appUser = appuserService.getUserByID(guess_win_user);
                 String old_balance = appUser.getBALANCE();
                 String new_balance = String.valueOf(Integer.valueOf(old_balance) + reword);
                 appUser.setBALANCE(new_balance);
-                appuserService.updateAppUserBalanceById(appUser);
+                appuserService.updateAppUserBalanceById(appUser);*/
+
+                //更新用户余额及竞猜次数
+                String guess_win_user = winPerson.getAPP_USER_ID();
+                AppUser appUser = appuserService.getUserByID(guess_win_user);
+                String old_balance = appUser.getBALANCE();
+                Integer guessNum = appUser.getBET_NUM();
+                Integer new_betnum = guessNum + 1;
+                String new_balance = String.valueOf(Integer.valueOf(old_balance) + reword);
+                appUser.setBALANCE(new_balance);
+                appUser.setBET_NUM(new_betnum);
+                appuserService.updateAppUserBlAndBnById(appUser);
 
                 logger.info("获奖用户ID------------->" + guess_win_user);
 

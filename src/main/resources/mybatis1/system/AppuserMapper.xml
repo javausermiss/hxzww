@@ -36,7 +36,8 @@
 		CNEE_PHONE,
 		CNEE_ADDRESS,
 		CNEE_NAME,
-		PRO_USER_ID
+		PRO_USER_ID,
+		BET_NUM
 
 	</sql>
 
@@ -68,7 +69,8 @@
 		#{CNEE_PHONE},
 		#{CNEE_ADDRESS},
 		#{CNEE_NAME},
-		#{PRO_USER_ID}
+		#{PRO_USER_ID},
+		#{BET_NUM}
 	</sql>
 
     <!-- 角色表 -->
@@ -726,6 +728,18 @@
     <update id="updateAppuserpw" parameterType="com.fh.entity.system.AppUser">
         UPDATE  <include refid="tableName"/> SET
         PASSWORD = #{PASSWORD}
+        WHERE
+        USER_ID = #{USER_ID}
+
+    </update>
+
+
+    <update id="updateAppUserBlAndBnById" parameterType="com.fh.entity.system.AppUser">
+        update
+        <include refid="tableName"/>
+        set
+        BALANCE = #{BALANCE},
+        BET_NUM = #{BET_NUM}
         WHERE
         USER_ID = #{USER_ID}
 
