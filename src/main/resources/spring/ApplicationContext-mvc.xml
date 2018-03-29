@@ -52,7 +52,7 @@ http://www.springframework.org/schema/task
             <value>104857600</value>
         </property>
         <property name="maxInMemorySize">
-            <value>4096</value>
+            <value>10</value>
         </property>
         <property name="defaultEncoding">
             <value>utf-8</value>
