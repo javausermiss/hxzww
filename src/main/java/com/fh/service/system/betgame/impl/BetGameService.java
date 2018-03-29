@@ -193,7 +193,7 @@ public class BetGameService extends BaseController implements BetGameManager {
     }
 
     @Override
-    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer afterVoting ) throws Exception {
+    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer multiple,Integer afterVoting ) throws Exception {
 
         PlayDetail p1 = new PlayDetail();
         p1.setDOLLID(dollId);
@@ -208,7 +208,7 @@ public class BetGameService extends BaseController implements BetGameManager {
         if (appUser == null) {
             return null;
         }
-
+        //总消费金额的判断
         String balance = appUser.getBALANCE();
         if (Integer.parseInt(balance) > wager) {
             int n = Integer.parseInt(balance) - wager;
@@ -222,20 +222,40 @@ public class BetGameService extends BaseController implements BetGameManager {
             AfterVoting afterVoting1 = new AfterVoting();
             afterVoting1.setROOM_ID(dollId);
             afterVoting1.setUSER_ID(userId);
-            AfterVoting afterVoting2 = afterVotingService.getAfterVoting(afterVoting1);
-            if (afterVoting2 == null) {
+            //查询该用户的追投记录集合
+            List<AfterVoting> list = afterVotingService.getAfterVoting(afterVoting1);
+            if (list.size() == 0) {
                 AfterVoting afterVoting3 = new AfterVoting();
-                afterVoting1.setAFTER_VOTING(afterVoting);
-                afterVoting1.setUSER_ID(userId);
-                afterVoting1.setROOM_ID(dollId);
-                afterVoting1.setLOTTERY_NUM(guessKey);
+                afterVoting3.setAFTER_VOTING(afterVoting);
+                afterVoting3.setUSER_ID(userId);
+                afterVoting3.setROOM_ID(dollId);
+                afterVoting3.setMULTIPLE(multiple);
+                afterVoting3.setLOTTERY_NUM(guessKey);
                 afterVotingService.regAfterVoting(afterVoting3);
             }else {
-                int a = afterVoting2.getAFTER_VOTING();
-                int new_af = a + afterVoting;
-                afterVoting2.setAFTER_VOTING(new_af);
-                //更新本房间已存在记录的追投期数
-                afterVotingService.updateAfterVoting_Num(afterVoting2);
+                int b = 0;
+                for (int i = 0; i <list.size() ; i++) {
+                    AfterVoting av =  list.get(i);
+                   if (av.getMULTIPLE().intValue() == multiple.intValue() ){
+                       b = 1;
+                       int a = av.getAFTER_VOTING();
+                       int new_af = a + afterVoting;
+                       av.setAFTER_VOTING(new_af);
+                       //更新本房间已存在记录的追投期数
+                       afterVotingService.updateAfterVoting_Num(av);
+                   }
+
+                }
+                if (b!=1){
+                    AfterVoting afterVoting4= new AfterVoting();
+                    afterVoting4.setAFTER_VOTING(afterVoting);
+                    afterVoting4.setUSER_ID(userId);
+                    afterVoting4.setROOM_ID(dollId);
+                    afterVoting4.setMULTIPLE(multiple);
+                    afterVoting4.setLOTTERY_NUM(guessKey);
+                    afterVotingService.regAfterVoting(afterVoting4);
+
+                }
 
             }
 

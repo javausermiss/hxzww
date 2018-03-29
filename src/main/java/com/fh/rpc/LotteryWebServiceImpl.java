@@ -127,9 +127,9 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                 String dateString = formatter.format(currentTime);
                 String x = guessid.substring(0, 8);//取前八位进行判断
                 if (x.equals(dateString)) {
-                    String newGuessId = String.valueOf(Long.parseLong(guessid) + 1);
+                    newGuessID = String.valueOf(Long.parseLong(guessid) + 1);
                     PlayDetail newp = new PlayDetail();
-                    newp.setGUESS_ID(newGuessId);
+                    newp.setGUESS_ID(newGuessID);
                     newp.setUSERID(userId);
                     newp.setDOLLID(dollId);
                     newp.setCONVERSIONGOLD(conversionGold);
@@ -157,7 +157,7 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
 
                 }
             }
-            //增加追投人的竞猜记录
+            //增加追投人的竞猜记录,查询是否存在倍数不一致的记录，若存在，则按先后顺序依次进行
             List<AfterVoting> afterVotings = afterVotingService.getListAfterVoting(dollId);
             if (afterVotings != null) {
                 for (int i = 0; i < afterVotings.size(); i++) {
@@ -167,7 +167,6 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                         int new_af = af - 1;
                         afterVoting.setAFTER_VOTING(new_af);
                         afterVotingService.updateAfterVoting_Num(afterVoting);
-
                         //增加竞猜记录
                         GuessDetailL guessDetailL = new GuessDetailL(afterVoting.getUSER_ID(), dollId, afterVoting.getLOTTERY_NUM(), afterVoting.getMULTIPLE() * dollGold, newGuessID);
                         betGameService.regGuessDetail(guessDetailL);
@@ -199,8 +198,8 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
     @Override
     public RpcCommandResult endLottery(String roomId, String userName) {
         try {
-            //获取下爪毫秒最后一位作为开奖数字
-            String catch_time = DateUtil.getTimeSSS();
+            //获取服务器时间戳最后一位毫秒作为开奖数字
+            String catch_time = String.valueOf(System.currentTimeMillis());
             log.info(roomId+"--------下爪");
             String reword_num = catch_time.substring(catch_time.length()-1,catch_time.length());
 

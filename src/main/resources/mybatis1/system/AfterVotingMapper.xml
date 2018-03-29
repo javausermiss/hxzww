@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="AccountLogMapper">
+<mapper namespace="AfterVotingMapper">
 
     <insert id="regAfterVoting" parameterType="com.fh.entity.system.AfterVoting">
         INSERT INTO TB_QUIZZES_CHASE
@@ -9,7 +9,8 @@
         ROOM_ID,
         AFTER_VOTING,
         LOTTERY_NUM,
-        MULTIPLE
+        MULTIPLE,
+        now()
         )
         VALUES
         (
@@ -17,7 +18,8 @@
         #{ROOM_ID},
         #{AFTER_VOTING},
         #{LOTTERY_NUM},
-        #{MULTIPLE}
+        #{MULTIPLE},
+        #{CREATE_TIME}
         )
     </insert>
 
@@ -29,8 +31,14 @@
         AFTER_VOTING,
         LOTTERY_NUM,
         MULTIPLE
+        FROM
+        TB_QUIZZES_CHASE
         WHERE
         ROOM_ID = #{ROOM_ID}
+        AND
+        AFTER_VOTING != 0
+        GROUP BY
+        USER_ID
 
     </select>
 
@@ -40,16 +48,18 @@
 
     <select id="getAfterVoting" parameterType="com.fh.entity.system.AfterVoting" resultType="com.fh.entity.system.AfterVoting">
         SELECT
-         ID,
+        ID,
         USER_ID,
         ROOM_ID,
         AFTER_VOTING,
         LOTTERY_NUM,
         MULTIPLE
+        FROM
+        TB_QUIZZES_CHASE
         WHERE
-      ROOM_ID = #{ROOM_ID}
-      AND
-      USER_ID = #{USER_ID}
+        ROOM_ID = #{ROOM_ID}
+        AND
+        USER_ID = #{USER_ID}
     </select>
 
 

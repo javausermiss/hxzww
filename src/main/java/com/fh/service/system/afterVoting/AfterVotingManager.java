@@ -32,7 +32,7 @@ public interface AfterVotingManager {
      * @return
      * @throws Exception
      */
-    public AfterVoting getAfterVoting(AfterVoting afterVoting)throws Exception;
+    public List<AfterVoting> getAfterVoting(AfterVoting afterVoting)throws Exception;
 
     /**
      * 更新追投期数
@@ -41,5 +41,9 @@ public interface AfterVotingManager {
      * @throws Exception
      */
     public int updateAfterVoting_Num(AfterVoting afterVoting)throws Exception;
+
+
+
+
 
 }
