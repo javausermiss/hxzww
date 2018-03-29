@@ -84,9 +84,7 @@
                                     </th>
                                     
                                     <th class="center">图片标题</th>
-                                    <th class="center">图像地址</th>
                                     <th class="center">流媒体名称</th>
-                                    <th class="center">推流服务名称</th>
                                     <th class="center">设备状态</th>
                                     <th class="center">状态</th>
                                     <th class="center">时间</th>
@@ -108,10 +106,7 @@
                                                                 class="lbl"></span></label>
                                                     </td>
                                                     <td class='center'>${var.RUN_NAME}</td>
-                                                    
-                                                    <td class='center'>${var.IMAGE_URL}</td>
                                                     <td class='center'>${var.LIVESTREAM}</td>
-                                                    <td class='center'>${var.SERVER_NAME}</td>
                                                     <td style="width: 100px;" class='center'>
                                                         <c:if test="${var.DEVICE_STATE == '1' }"><span
                                                                 class="label label-important arrowed-in">不可用</span></c:if>
