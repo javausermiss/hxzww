@@ -185,8 +185,11 @@ public class DollToyController extends BaseController {
         PageData pd = new PageData();
         pd = this.getPageData();
         pd = dolltoyService.findById(pd);    //根据ID读取
+        
+        List<PageData> typeList= toytypeService.listAll(new PageData());
         mv.setViewName("system/doll/dolltoytype_edit");
         mv.addObject("msg", "edit");
+        mv.addObject("typeList", typeList);
         mv.addObject("pd", pd);
         return mv;
     }

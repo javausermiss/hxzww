@@ -28,7 +28,6 @@
 		#{IMG_URL},
 		#{TOY_FLAG},
 		#{HREF_URL}
-
 	</sql>
 	
 	<!-- 新增-->
