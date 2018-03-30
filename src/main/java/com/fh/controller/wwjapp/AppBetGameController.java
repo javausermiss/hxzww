@@ -124,7 +124,7 @@ public class AppBetGameController {
      *
      * @param userId   参与竞猜用户ID
      * @param dollId   娃娃机房间ID
-     * @param wager    投注金额，消费总金额（房间金额*倍数*追投期数）
+     * @param wager    单次竞猜金额（房间金额*倍数）
      * @param guessId  场次ID
      * @param guessKey 竞猜 中 或者 不中
      * @param multiple 竞猜倍数

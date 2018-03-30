@@ -27,13 +27,13 @@ public class AfterVotingService implements AfterVotingManager {
 
 
     @Override
-    public List<AfterVoting> getAfterVoting(AfterVoting afterVoting)throws Exception {
+    public AfterVoting getAfterVoting(AfterVoting afterVoting)throws Exception {
 
-        return (List<AfterVoting>) dao.findForObject("AfterVotingMapper.regAfterVoting",afterVoting);
+        return (AfterVoting) dao.findForObject("AfterVotingMapper.getAfterVoting",afterVoting);
     }
 
     @Override
     public int updateAfterVoting_Num(AfterVoting afterVoting)throws Exception{
-        return (int)dao.update("AfterVotingMapper.regAfterVoting",afterVoting);
+        return (int)dao.update("AfterVotingMapper.updateAfterVoting_Num",afterVoting);
     }
 }

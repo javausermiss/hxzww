@@ -60,6 +60,12 @@
         ROOM_ID = #{ROOM_ID}
         AND
         USER_ID = #{USER_ID}
+        AND
+        MULTIPLE = #{MULTIPLE}
+        AND
+        LOTTERY_NUM = #{LOTTERY_NUM}
+
+
     </select>
 
 

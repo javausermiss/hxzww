@@ -148,6 +148,7 @@ public class Const {
 		cost_type12("邀请码分享奖励","12"),
 		cost_type13("推广收入","13"),
 		cost_type14("注册赠送","14"),
+		cost_type15("竞猜追投","15"),
 		cost_type20("输入加盟码","20");
 		
 		private  String name;
