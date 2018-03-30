@@ -10,7 +10,7 @@
         AFTER_VOTING,
         LOTTERY_NUM,
         MULTIPLE,
-        now()
+        CREATE_TIME
         )
         VALUES
         (
@@ -19,7 +19,7 @@
         #{AFTER_VOTING},
         #{LOTTERY_NUM},
         #{MULTIPLE},
-        #{CREATE_TIME}
+        now()
         )
     </insert>
 

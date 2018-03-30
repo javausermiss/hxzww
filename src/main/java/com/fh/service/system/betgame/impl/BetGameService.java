@@ -193,7 +193,7 @@ public class BetGameService extends BaseController implements BetGameManager {
     }
 
     @Override
-    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer multiple,Integer afterVoting ) throws Exception {
+    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer multiple,Integer afterVotingNum ) throws Exception {
 
         PlayDetail p1 = new PlayDetail();
         p1.setDOLLID(dollId);
@@ -218,15 +218,15 @@ public class BetGameService extends BaseController implements BetGameManager {
             return RespStatus.fail("余额不足无法竞猜");
         }
         //增加该用户追投信息
-        if (afterVoting != 0) {
+        if (afterVotingNum != 0) {
             AfterVoting afterVoting1 = new AfterVoting();
             afterVoting1.setROOM_ID(dollId);
             afterVoting1.setUSER_ID(userId);
             //查询该用户的追投记录集合
             List<AfterVoting> list = afterVotingService.getAfterVoting(afterVoting1);
-            if (list.size() == 0) {
+            if (list==null) {
                 AfterVoting afterVoting3 = new AfterVoting();
-                afterVoting3.setAFTER_VOTING(afterVoting);
+                afterVoting3.setAFTER_VOTING(afterVotingNum);
                 afterVoting3.setUSER_ID(userId);
                 afterVoting3.setROOM_ID(dollId);
                 afterVoting3.setMULTIPLE(multiple);
@@ -239,7 +239,7 @@ public class BetGameService extends BaseController implements BetGameManager {
                    if (av.getMULTIPLE().intValue() == multiple.intValue() ){
                        b = 1;
                        int a = av.getAFTER_VOTING();
-                       int new_af = a + afterVoting;
+                       int new_af = a + afterVotingNum;
                        av.setAFTER_VOTING(new_af);
                        //更新本房间已存在记录的追投期数
                        afterVotingService.updateAfterVoting_Num(av);
@@ -248,7 +248,7 @@ public class BetGameService extends BaseController implements BetGameManager {
                 }
                 if (b!=1){
                     AfterVoting afterVoting4= new AfterVoting();
-                    afterVoting4.setAFTER_VOTING(afterVoting);
+                    afterVoting4.setAFTER_VOTING(afterVotingNum);
                     afterVoting4.setUSER_ID(userId);
                     afterVoting4.setROOM_ID(dollId);
                     afterVoting4.setMULTIPLE(multiple);

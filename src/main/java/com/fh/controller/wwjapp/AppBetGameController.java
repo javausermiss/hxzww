@@ -140,7 +140,7 @@ public class AppBetGameController {
             @RequestParam("guessId") String guessId,
             @RequestParam("guessKey") String guessKey,
             @RequestParam(value = "multiple",required = false,defaultValue = "1") Integer multiple,
-            @RequestParam(value = "atrerVoting",required = false,defaultValue = "0") Integer afterVoting
+            @RequestParam(value = "afterVoting",required = false,defaultValue = "0") Integer afterVoting
             )
     {
 
