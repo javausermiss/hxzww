@@ -147,4 +147,17 @@
 		#{APPUSERLOGININFO_ID}
 		)
 	</insert>
+	
+	
+	<!-- 修改 -->
+	<update id="editAppUserLoginLog" parameterType="java.lang.String">
+		update
+		<include refid="tableName"></include>
+		set 
+			ONLINE_TYPE = '0',
+			LOGOUT_TIME=now()
+		where 
+		USER_ID = #{userId}
+		AND ONLINE_TYPE = '1'
+	</update>
 </mapper>
