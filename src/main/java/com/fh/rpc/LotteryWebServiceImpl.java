@@ -204,6 +204,9 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             String reword_num = catch_time.substring(catch_time.length()-1,catch_time.length());
 
             PlayDetail playDetail = playDetailService.getPlayIdForPeople(roomId);//根据房间取得最新的游戏记录
+            if (!playDetail.getSTOP_FLAG().equals("0") || !playDetail.getPOST_STATE().equals("-1")) {
+                return null;
+            }
             String gold = playDetail.getGOLD();//获取下注金币，即竞猜用户扣除的金币数
            //设置游戏列表中的开奖数字
             playDetail.setSTOP_FLAG("-1");

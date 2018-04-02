@@ -314,11 +314,11 @@ public class BetGameService extends BaseController implements BetGameManager {
         String state = playDetail.getPOST_STATE();//获取娃娃发送状态
         //网关自检发送多次free进入此判断逻辑,POST_STATE初始值为"-1"，判断是否已经结算过
         //STOP_FLAG 初始值为"0",下抓后为"-1",判断流程是否走完
-        if (playDetail.getSTOP_FLAG().equals("0") //流程未走完
-                || state.equals("0") //结算过
+        if (playDetail.getSTOP_FLAG().equals("0") || !state.equals("-1")//流程未走完
+              /*  || state.equals("0") //结算过
                 || state.equals("1") //待发货
                 || state.equals("2") //已兑换
-                || state.equals("3") //已发货
+                || state.equals("3") //已发货*/
                 ) {
             return null;
         }
