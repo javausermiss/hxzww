@@ -84,5 +84,9 @@ public class AppuserLoginInfoService implements AppuserLoginInfoManager{
 	public int insertLoginLog(AppuserLogin appuserLogin) throws Exception {
 		return (int)dao.save("AppuserLoginInfoMapper.insertLoginLog",appuserLogin);
 	}
+	
+	public List<PageData> LandingStatelist(Page page)throws Exception{
+		return (List<PageData>)dao.findForList("AppuserLoginInfoMapper.datalistPage", page);
+	}
 }
 

@@ -59,6 +59,6 @@ public interface AppuserLoginInfoManager{
 	public int insertLoginLog(AppuserLogin appuserLogin)throws Exception;
 
 
-	
+	public List<PageData> LandingStatelist(Page page)throws Exception;
 }
 
