@@ -124,9 +124,10 @@ public class AppBetGameController {
      *
      * @param userId   参与竞猜用户ID
      * @param dollId   娃娃机房间ID
-     * @param wager    投注金额
+     * @param wager    单次竞猜金额（房间金额*倍数）
      * @param guessId  场次ID
      * @param guessKey 竞猜 中 或者 不中
+     * @param multiple 竞猜倍数
      * @param afterVoting 追投期数
      * @return
      */
@@ -138,12 +139,13 @@ public class AppBetGameController {
             @RequestParam("wager") int wager,
             @RequestParam("guessId") String guessId,
             @RequestParam("guessKey") String guessKey,
-            @RequestParam(value = "atrerVoting",required = false,defaultValue = "0") Integer afterVoting
+            @RequestParam(value = "multiple",required = false,defaultValue = "1") Integer multiple,
+            @RequestParam(value = "afterVoting",required = false,defaultValue = "0") Integer afterVoting
             )
     {
 
         try {
-          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,afterVoting);
+          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,multiple,afterVoting);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();

@@ -442,7 +442,7 @@
     </update>
 
 
-    <!-- 查询前10名抓娃娃最多的用户 -->
+    <!-- 查询前20名抓娃娃最多的用户 -->
     <select id="rankList" resultType="com.fh.entity.system.AppUser">
         select
         <include refid="Field"/>
@@ -452,7 +452,9 @@
         DOLLTOTAL >= 0
         ORDER BY
         DOLLTOTAL
-        DESC
+        DESC,
+        CREATETIME
+        ASC
         limit
         0,20
     </select>

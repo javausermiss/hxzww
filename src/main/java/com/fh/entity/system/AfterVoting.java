@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class AfterVoting {
-    private String ID;
+    private Integer ID;
     private String USER_ID;
     private String ROOM_ID;
     private Integer AFTER_VOTING;//追投期数 1 ,5 , 10 , 20

@@ -42,4 +42,8 @@ public interface AfterVotingManager {
      */
     public int updateAfterVoting_Num(AfterVoting afterVoting)throws Exception;
 
+
+
+
+
 }

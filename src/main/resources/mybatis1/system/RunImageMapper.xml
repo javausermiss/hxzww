@@ -134,7 +134,7 @@
 		RTMP_URL,
 		H5_URL,
 		DEVICE_STATE,
-		STATE,
+		STATE
 		FROM <include refid="tableName"/>
 	</select>
 
