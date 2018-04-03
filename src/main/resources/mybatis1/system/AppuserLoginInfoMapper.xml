@@ -52,7 +52,13 @@
 			LOGIN_PHONE_TYPE = #{LOGIN_PHONE_TYPE},
 			LOGIN_IP = #{LOGIN_IP},
 			USER_ID = #{USER_ID},
+			LOGOUT_TIME = #{LOGOUT_TIME},
+			NICKNAME = #{NICKNAME},
+			CTYPE = #{CTYPE},
+			ONLINE_TYPE = #{ONLINE_TYPE},
+			CHANNEL = #{CHANNEL},
 			LOGIN_TIME = #{LOGIN_TIME},
+			ACCESS_TOKEN = #{ACCESS_TOKEN},
 		APPUSERLOGININFO_ID = APPUSERLOGININFO_ID
 		where 
 		APPUSERLOGININFO_ID = #{APPUSERLOGININFO_ID}
@@ -135,4 +141,17 @@
 
 		)
 	</insert>
+
+
+	<!-- 修改 -->
+	<update id="editAppUserLoginLog" parameterType="java.lang.String">
+		update
+		<include refid="tableName"></include>
+		set
+			ONLINE_TYPE = '0',
+			LOGOUT_TIME=now()
+		where
+		USER_ID = #{userId}
+		AND ONLINE_TYPE = '1'
+	</update>
 </mapper>

@@ -287,6 +287,25 @@ public class AppTencentloginController extends BaseController {
             return RespStatus.fail();
         }
     }
-
-
+    
+    
+    /**
+     * 退出登陆
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/loginOut", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject loginOut(
+    		HttpServletRequest req,
+            @RequestParam("userId") String userId) {
+        try {
+        	//退出登陆
+        	appuserlogininfoService.editAppUserLoginLog(userId);
+            return RespStatus.successs();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
 }

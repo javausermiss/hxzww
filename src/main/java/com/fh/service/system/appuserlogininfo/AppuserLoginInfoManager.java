@@ -59,6 +59,11 @@ public interface AppuserLoginInfoManager{
 	public int insertLoginLog(AppuserLogin appuserLogin)throws Exception;
 
 
+	public List<PageData> LandingStatelist(Page page)throws Exception;
 	
+	/**退出登陆
+	 * @throws Exception
+	 */
+	public void editAppUserLoginLog(String userId)throws Exception;
 }
 
