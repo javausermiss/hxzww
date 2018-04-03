@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -435,7 +436,7 @@ public class AppLoginController extends BaseController {
     @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/userPassLogin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject userPassLogin(@RequestParam("phone") String phone, @RequestParam("pw") String pw) {
+    public JSONObject userPassLogin(@RequestParam("phone") String phone, @RequestParam("pw") String pw, HttpServletRequest httpServletRequest) {
         try {
 
             if (phone == null || phone.trim().length() <= 0) {
@@ -452,10 +453,18 @@ public class AppLoginController extends BaseController {
                 logger.info("password--------" + password);
                 logger.info("pwmd5----------" + pwmd5);
                 if (pwmd5.equals(password)) {
+                    //sessionId
+                    String sessionID = MyUUID.createSessionId();
+                    RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser.getUSER_ID(), sessionID);
                     //登录日志
                     AppuserLogin appuserLogin = new AppuserLogin();
                     appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
                     appuserLogin.setUSER_ID(appUser.getUSER_ID());
+                    appuserLogin.setACCESS_TOKEN(sessionID);
+                    appuserLogin.setCHANNEL(httpServletRequest.getParameter("CHANNEL"));
+                    appuserLogin.setCTYPE(httpServletRequest.getParameter("CTYPE"));
+                    appuserLogin.setNICKNAME(appUser.getNICKNAME());
+                    appuserLogin.setONLINE_TYPE("1");
                     appuserlogininfoService.insertLoginLog(appuserLogin);
 
                     //SRS推流
@@ -467,9 +476,7 @@ public class AppLoginController extends BaseController {
                     sc.setTime(time);
                     sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
 
-                    //sessionId
-                    String sessionID = MyUUID.createSessionId();
-                    RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser.getUSER_ID(), sessionID);
+
 
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("sessionID", sessionID);

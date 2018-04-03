@@ -167,7 +167,8 @@
         TB_DOLL_PLAY_DETAIL
         SET
         STOP_FLAG = #{STOP_FLAG},
-        REWARD_NUM = #{REWARD_NUM}
+        REWARD_NUM = #{REWARD_NUM},
+        CATCH_TIME = now()
         WHERE
         GUESS_ID = #{GUESS_ID}
 

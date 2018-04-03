@@ -198,6 +198,9 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
     @Override
     public RpcCommandResult endLottery(String roomId, String userName) {
         try {
+
+            RpcCommandResult rpcCommandResult = new RpcCommandResult();
+            rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             //获取服务器时间戳最后一位毫秒作为开奖数字
             String catch_time = String.valueOf(System.currentTimeMillis());
             log.info(roomId+"--------下爪");
@@ -205,7 +208,8 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
 
             PlayDetail playDetail = playDetailService.getPlayIdForPeople(roomId);//根据房间取得最新的游戏记录
             if (!playDetail.getSTOP_FLAG().equals("0") || !playDetail.getPOST_STATE().equals("-1")) {
-                return null;
+                rpcCommandResult.setInfo("该指令为机器自动下抓");
+                return rpcCommandResult;
             }
             String gold = playDetail.getGOLD();//获取下注金币，即竞猜用户扣除的金币数
            //设置游戏列表中的开奖数字
@@ -239,9 +243,6 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             pond.setGUESS_STATE(reword_num);//本局抓中状态
             pondService.updatePondFlag(pond);//更新标签
 
-
-            RpcCommandResult rpcCommandResult = new RpcCommandResult();
-            rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo("结束下抓，禁止竞猜");
             return rpcCommandResult;
         } catch (Exception e) {
