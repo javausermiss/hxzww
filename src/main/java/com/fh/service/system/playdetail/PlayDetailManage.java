@@ -189,4 +189,13 @@ public interface PlayDetailManage {
 	 */
 	public PageData getDollGameProbability()throws Exception;
 
+
+    /**
+     * 查询该房间最近的10条游戏记录
+     * @param dollId
+     * @return
+     * @throws Exception
+     */
+	public List<PageData> getGameList(String dollId)throws Exception;
+
 }

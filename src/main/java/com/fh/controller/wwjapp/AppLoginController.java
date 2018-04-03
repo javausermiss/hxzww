@@ -281,13 +281,26 @@ public class AppLoginController extends BaseController {
      */
     @RequestMapping(value = "/getDoll", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject getDoll(@RequestParam("userId") String userId) {
+    public JSONObject getDoll(@RequestParam("userId") String userId,HttpServletRequest httpServletRequest) {
         try {
             // String phone = new String(Base64Util.decryptBASE64(aPhone));
             AppUser appUser = appuserService.getUserByID(userId);
             if (appUser != null) {
                 String sessionID = MyUUID.createSessionId();
                 RedisUtil.getRu().set("sessionId:appUser:" + userId, sessionID);
+
+                //登录日志
+                AppuserLogin appuserLogin = new AppuserLogin();
+                appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
+                appuserLogin.setUSER_ID(appUser.getUSER_ID());
+                appuserLogin.setACCESS_TOKEN(sessionID);
+                appuserLogin.setCHANNEL(httpServletRequest.getParameter("channel"));
+                appuserLogin.setCTYPE(httpServletRequest.getParameter("ctype"));
+                appuserLogin.setNICKNAME(appUser.getNICKNAME());
+                appuserLogin.setONLINE_TYPE("1");
+                appuserlogininfoService.insertLoginLog(appuserLogin);
+
+
                 //SRS推流
                 SrsConnectModel sc = new SrsConnectModel();
                 long time = System.currentTimeMillis();
@@ -461,8 +474,8 @@ public class AppLoginController extends BaseController {
                     appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
                     appuserLogin.setUSER_ID(appUser.getUSER_ID());
                     appuserLogin.setACCESS_TOKEN(sessionID);
-                    appuserLogin.setCHANNEL(httpServletRequest.getParameter("CHANNEL"));
-                    appuserLogin.setCTYPE(httpServletRequest.getParameter("CTYPE"));
+                    appuserLogin.setCHANNEL(httpServletRequest.getParameter("channel"));
+                    appuserLogin.setCTYPE(httpServletRequest.getParameter("ctype"));
                     appuserLogin.setNICKNAME(appUser.getNICKNAME());
                     appuserLogin.setONLINE_TYPE("1");
                     appuserlogininfoService.insertLoginLog(appuserLogin);

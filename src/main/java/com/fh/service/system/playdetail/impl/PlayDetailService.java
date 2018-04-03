@@ -188,4 +188,9 @@ public class PlayDetailService implements PlayDetailManage {
 	public PageData getDollGameProbability()throws Exception{
 		return (PageData) dao.findForObject("PlayDetailMapper.getDollGameProbability", null);
 	}
+
+    @Override
+    public List<PageData> getGameList(String dollId)throws Exception {
+        return (List<PageData>) dao.findForList("PlayDetailMapper.getGameList", dollId);
+    }
 }

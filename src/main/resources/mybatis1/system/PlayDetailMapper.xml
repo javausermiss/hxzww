@@ -339,4 +339,25 @@
 		
 		)
 	</select>
+
+
+    <select id="getGameList" parameterType="String" resultType="pd">
+            SELECT
+        p.CREATE_DATE,
+        p.STATE,
+        u.NICKNAME,
+        u.IMAGE_URL
+    FROM
+        tb_doll_play_detail AS p
+    LEFT JOIN sys_app_user AS u ON p.USERID = u.USER_ID
+    WHERE
+        p.DOLLID = #{DOLLID}
+    AND
+    p.STATE != ''
+    ORDER BY
+        p.CREATE_DATE DESC
+    LIMIT 0,
+     10
+    </select>
+
 </mapper>

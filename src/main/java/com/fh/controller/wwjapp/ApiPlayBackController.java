@@ -1,17 +1,5 @@
 package com.fh.controller.wwjapp;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.PlayBack;
 import com.fh.entity.system.PlayDetail;
@@ -21,9 +9,19 @@ import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.playback.PlayBackManage;
 import com.fh.service.system.playdetail.PlayDetailManage;
 import com.fh.service.system.pond.PondManager;
+import com.fh.util.PageData;
 import com.fh.util.wwjUtil.RespStatus;
-
 import net.sf.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 视频回放记录存储&游戏记录&竞猜结算
@@ -150,6 +148,29 @@ public class ApiPlayBackController {
         }
 
     }
+
+    /**
+     * 查询该房间最近10条游戏记录
+     * @param roomId
+     * @return
+     */
+
+    @RequestMapping(value = "/getGamelist",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getGamelist(@RequestParam("roomId") String roomId){
+        try {
+             List<PageData> list = playDetailService.getGameList(roomId);
+             Map<String,Object> map =  new HashMap<>();
+             map.put("gameList",list);
+             return  RespStatus.successs().element("data",map);
+        }catch (Exception e){
+            e.printStackTrace();
+            return  RespStatus.fail();
+        }
+    }
+
+
+
 
     public static void main(String[] strings){
         String sendGoods = "wqe,sda, ";

@@ -13,6 +13,12 @@
 		LOGIN_IP,	
 		USER_ID,	
 		LOGIN_TIME,	
+		LOGOUT_TIME,
+		NICKNAME,
+		CTYPE,
+		ONLINE_TYPE,
+		CHANNEL,
+		ACCESS_TOKEN,
 		APPUSERLOGININFO_ID
 	</sql>
 	
@@ -22,7 +28,13 @@
 		#{LOGIN_IP},	
 		#{USER_ID},	
 		#{LOGIN_TIME},	
-		#{APPUSERLOGININFO_ID}
+		#{APPUSERLOGININFO_ID},
+		#{LOGOUT_TIME},
+		#{NICKNAME},
+		#{CTYPE},
+		#{ONLINE_TYPE},
+		#{CHANNEL},
+		#{ACCESS_TOKEN}
 	</sql>
 	
 	<!-- 新增-->
