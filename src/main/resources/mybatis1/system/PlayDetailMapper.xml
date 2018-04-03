@@ -171,6 +171,9 @@
         CATCH_TIME = now()
         WHERE
         GUESS_ID = #{GUESS_ID}
+        AND
+        DOLLID= #{DOLLID}
+
 
     </update>
 

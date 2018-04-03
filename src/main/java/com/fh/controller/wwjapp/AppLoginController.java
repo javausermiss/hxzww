@@ -396,18 +396,18 @@ public class AppLoginController extends BaseController {
             String face = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
             // appUser1.setBALANCE("3");
             appUser1.setPASSWORD(MD5.md5(pw));
-            appUser1.setNICKNAME(phone);
+            appUser1.setNICKNAME(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
             appUser1.setUSER_ID(MyUUID.createSessionId());
             appUser1.setIMAGE_URL(face);
             appUser1.setUSERNAME(phone);
             appUser1.setPHONE(phone);
-            appUser1.setBALANCE("3");
+            appUser1.setBALANCE("29");
             appuserService.regAppUser(appUser1);
 
             //增加赠送金币明细
             Payment payment = new Payment();
             payment.setREMARK(Const.PlayMentCostType.cost_type13.getName());
-            payment.setGOLD("+3");
+            payment.setGOLD("+29");
             payment.setCOST_TYPE(Const.PlayMentCostType.cost_type13.getValue());
             payment.setUSERID(appUser1.getUSER_ID());
             paymentService.reg(payment);

@@ -10,6 +10,7 @@ import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playdetail.PlayDetailManage;
 import com.fh.service.system.pond.PondManager;
 import com.fh.util.DateUtil;
+import com.fh.util.StringUtils;
 import com.iot.game.pooh.server.entity.json.enums.PoohAbnormalStatus;
 import com.iot.game.pooh.server.entity.json.enums.PoohNormalStatus;
 import com.iot.game.pooh.server.rpc.interfaces.LotteryServerRpcService;
@@ -196,7 +197,7 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
      * 结束竞猜(机器下爪 catch)
      */
     @Override
-    public RpcCommandResult endLottery(String roomId, String userName) {
+    public RpcCommandResult endLottery(String roomId, String userId) {
         try {
 
             RpcCommandResult rpcCommandResult = new RpcCommandResult();
@@ -207,10 +208,15 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             String reword_num = catch_time.substring(catch_time.length()-1,catch_time.length());
 
             PlayDetail playDetail = playDetailService.getPlayIdForPeople(roomId);//根据房间取得最新的游戏记录
-            if (!playDetail.getSTOP_FLAG().equals("0") || !playDetail.getPOST_STATE().equals("-1")) {
+            if (!playDetail.getSTOP_FLAG().equals("0") || !playDetail.getPOST_STATE().equals("-1")||StringUtils.isEmpty(userId)) {
                 rpcCommandResult.setInfo("该指令为机器自动下抓");
                 return rpcCommandResult;
             }
+            log.info("初始状态下，STOP_FLAG值为 ：0，POST_STATE值为 ：-1");
+            log.info("该房间号："+playDetail.getDOLLID()+"||STOP_FLAG："+playDetail.getSTOP_FLAG()+"||POST_STATE"+playDetail.getPOST_STATE()
+            +"场次ID"+playDetail.getGUESS_ID()+"||此条记录创建时间为："+playDetail.getCREATE_DATE()+"||当前时间为："+DateUtil.getTimeHHmmss()
+            );
+
             String gold = playDetail.getGOLD();//获取下注金币，即竞猜用户扣除的金币数
            //设置游戏列表中的开奖数字
             playDetail.setSTOP_FLAG("-1");
