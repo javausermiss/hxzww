@@ -94,7 +94,13 @@
 												
 												<td class='center'>${var.CTYPE}</td>
 												<td class='center'>${var.CHANNEL}</td>
-												<td class='center'>${var.ONLINE_TYPE}</td>
+												<td style="width: 100px;" class='center'>
+                                                        <c:if test="${var.ONLINE_TYPE == '1' }"><span
+                                                                class="label label-success arrowed">在线</span></c:if>
+                                                        
+                                                        <c:if test="${var.ONLINE_TYPE == '0' }"><span
+                                                                class="label label-success arrowed-in">不在线</span></c:if>
+                                                    </td>
 												<td class='center'>${var.LOGOUT_TIME}</td>
 											
 											</tr>

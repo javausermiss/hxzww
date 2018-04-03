@@ -86,7 +86,7 @@ public class AppuserLoginInfoService implements AppuserLoginInfoManager{
 	}
 	
 	public List<PageData> LandingStatelist(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("AppuserLoginInfoMapper.datalistPage", page);
+		return (List<PageData>)dao.findForList("AppuserLoginInfoMapper.landingstatelistPage", page);
 	}
 	
 	/**退出登陆

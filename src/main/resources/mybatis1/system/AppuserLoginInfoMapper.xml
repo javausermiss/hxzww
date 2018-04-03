@@ -105,6 +105,34 @@
 		</if>
 	</select>
 	
+	<!-- 用户在线状态 -->
+	<select id="landingstatelistPage" parameterType="page" resultType="pd">
+		select
+		t.USER_ID,	
+		t.LOGIN_TIME,	
+		t.LOGOUT_TIME,
+		t.CTYPE,
+		t.ONLINE_TYPE,
+		t.CHANNEL,
+		t.ACCESS_TOKEN,
+		s.NICKNAME
+		from 
+		sys_app_user S LEFT JOIN tb_appuser_login t on t.USER_ID=s.USER_ID 
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				
+					s.NICKNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					t.ONLINE_TYPE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					t.CHANNEL LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		ORDER BY t.ONLINE_TYPE DESC ,t.LOGOUT_TIME DESC
+	</select>
+	
 	<!-- 列表(全部) -->
 	<select id="listAll" parameterType="pd" resultType="pd">
 		select
