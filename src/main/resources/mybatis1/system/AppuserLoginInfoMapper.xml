@@ -76,6 +76,15 @@
 		APPUSERLOGININFO_ID = #{APPUSERLOGININFO_ID}
 	</update>
 	
+	<!-- 修改30分钟之前的用户装填 -->
+	<update id="changestate" parameterType="pd">
+	update
+	TB_APPUSER_LOGIN t
+	set t.ONLINE_TYPE='0',t.LOGOUT_TIME=now() 
+	where 
+	t.ONLINE_TYPE='1' and t.LOGIN_TIME   &lt;  SUBDATE(now(),interval 30 minute)
+	</update>
+	
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
 		select 

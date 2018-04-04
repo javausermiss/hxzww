@@ -95,5 +95,11 @@ public class AppuserLoginInfoService implements AppuserLoginInfoManager{
 	public void editAppUserLoginLog(String userId)throws Exception{
 		dao.update("AppuserLoginInfoMapper.editAppUserLoginLog", userId);
 	}
+	/**更新30分钟前的登陆状态
+	 * @throws Exception
+	 */
+	public void changestate(PageData pd)throws Exception{
+		dao.update("AppuserLoginInfoMapper.changestate", pd);
+	}
 }
 
