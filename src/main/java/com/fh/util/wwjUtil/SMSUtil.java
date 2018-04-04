@@ -68,7 +68,7 @@ public class SMSUtil {
             String username = "38580643";
             String password = "E142620406F41F48B7311561F8B96CD3";
             String gwid = "85ab540";
-            String content = URLEncoder.encode("【弘休网络】您的验证码是","UTF-8") + Code;
+            String content = URLEncoder.encode("【炎亿网络】您的验证码是","UTF-8") + Code;
             String postData = "type=send&username=" + username + "&password=" + password + "&gwid=" + gwid + "&mobile=" + phone + "&message=" + content + "";
             //SMSUtil.sendPost(url, postData);
             logger.info("短信发送内容："+content);
