@@ -108,6 +108,9 @@
         SETTLEMENT_GOLD = #{SETTLEMENT_GOLD}
         WHERE
         GUESS_ID = #{GUESS_ID}
+        AND
+        DOLL_ID = #{DOLL_ID}
+
     </update>
 
     <select id="getFailer" parameterType="com.fh.entity.system.GuessDetailL" resultType="com.fh.entity.system.GuessDetailL">
@@ -144,6 +147,8 @@
      tb_doll_guess_detail
      WHERE
      PLAYBACK_ID = #{PLAYBACK_ID}
+     AND
+     DOLL_ID = #{DOLL_ID}
     </select>
 
     <update id="updateGuessDetailGuessType" parameterType="com.fh.entity.system.GuessDetailL">
@@ -155,6 +160,8 @@
         SETTLEMENT_DATE = now()
         WHERE
         GUESS_ID = #{GUESS_ID}
+        AND
+        DOLL_ID = #{DOLL_ID}
     </update>
     
     <select id="getGuessDetail" parameterType="com.fh.entity.system.GuessDetailL" resultType="com.fh.entity.system.GuessDetailL">

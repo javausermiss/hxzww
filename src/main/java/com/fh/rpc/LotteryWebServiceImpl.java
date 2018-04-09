@@ -225,11 +225,17 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             if (a==1){
                 log.info("机器下抓--------->获得开奖数存储成功");
             }
-            List<GuessDetailL> guessDetailLS =  betGameService.getAllGuesser(playDetail.getGUESS_ID());
+
+            GuessDetailL guessDetailL_n =  new GuessDetailL();
+            guessDetailL_n.setPLAYBACK_ID(playDetail.getGUESS_ID());
+            guessDetailL_n.setDOLL_ID(playDetail.getDOLLID());
+
+            List<GuessDetailL> guessDetailLS =  betGameService.getAllGuesser(guessDetailL_n);
             for (int i = 0; i < guessDetailLS.size(); i++) {
                 GuessDetailL guessDetailL =  guessDetailLS.get(i);
                 guessDetailL.setGUESS_TYPE(reword_num);
                 guessDetailL.setSETTLEMENT_FLAG("Y");//此标签已不具有结算意义
+                guessDetailL.setDOLL_ID(playDetail.getDOLLID());
                 betGameService.updateGuessDetailGuessType(guessDetailL);
             }
 
@@ -563,7 +569,12 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             appUser.setBALANCE(balance);
             appuserService.updateAppUserBalanceById(appUser);
             //给竞猜用户退回本场竞猜金币,更新本次竞猜记录为异常-1
-            List<GuessDetailL> list = betGameService.getAllGuesser(playDetail.getGUESS_ID());
+
+            GuessDetailL guessDetailL_n =  new GuessDetailL();
+            guessDetailL_n.setPLAYBACK_ID(playDetail.getGUESS_ID());
+            guessDetailL_n.setDOLL_ID(playDetail.getDOLLID());
+
+            List<GuessDetailL> list = betGameService.getAllGuesser(guessDetailL_n);
             for (int i = 0; i < list.size(); i++) {
                 GuessDetailL guessDetailL = list.get(i);
                 guessDetailL.setGUESS_TYPE("-2");

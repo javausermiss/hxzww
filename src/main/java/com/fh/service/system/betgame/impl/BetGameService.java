@@ -168,8 +168,8 @@ public class BetGameService extends BaseController implements BetGameManager {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<GuessDetailL> getAllGuesser(String guessid) throws Exception {
-        return (List<GuessDetailL>) dao.findForList("GuessDetailMapper.getAllGuesser", guessid);
+    public List<GuessDetailL> getAllGuesser(GuessDetailL guessDetailL) throws Exception {
+        return (List<GuessDetailL>) dao.findForList("GuessDetailMapper.getAllGuesser", guessDetailL);
     }
 
     @Override
@@ -177,6 +177,12 @@ public class BetGameService extends BaseController implements BetGameManager {
         return (int) dao.update("GuessDetailMapper.updateGuessDetailGuessType", guessDetailL);
     }
 
+    /**
+     * 暂未用到
+     * @param guessDetailL
+     * @return
+     * @throws Exception
+     */
     @Override
     public GuessDetailL getGuessDetail(GuessDetailL guessDetailL) throws Exception {
         return (GuessDetailL) dao.findForObject("GuessDetailMapper.getGuessDetail", guessDetailL);
@@ -361,6 +367,7 @@ public class BetGameService extends BaseController implements BetGameManager {
                 winPerson.setSETTLEMENT_GOLD(reword);
                 winPerson.setSETTLEMENT_FLAG("Y");
                 winPerson.setGUESS_TYPE(playDetail.getREWARD_NUM());
+                winPerson.setDOLL_ID(playDetail.getDOLLID());
                 this.updateGuessDetail(winPerson);
 
                 /*//更新用户余额

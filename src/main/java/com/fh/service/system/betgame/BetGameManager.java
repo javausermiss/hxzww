@@ -92,11 +92,11 @@ public interface BetGameManager {
     /**
      * 获取所有参与竞猜的人
      *
-     * @param guessid
+     * @param guessDetailL
      * @return
      * @throws Exception
      */
-    public List<GuessDetailL> getAllGuesser(String guessid) throws Exception;
+    public List<GuessDetailL> getAllGuesser(GuessDetailL guessDetailL) throws Exception;
 
     /**
      * 更新竞猜结果
