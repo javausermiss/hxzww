@@ -65,5 +65,10 @@ public interface AppuserLoginInfoManager{
 	 * @throws Exception
 	 */
 	public void editAppUserLoginLog(String userId)throws Exception;
+	
+	/**更新30分钟前的登陆状态
+	 * @throws Exception
+	 */
+	public void changestate(PageData pd)throws Exception;
 }
 

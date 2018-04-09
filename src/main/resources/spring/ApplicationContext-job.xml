@@ -88,12 +88,39 @@
 		</property>
 	</bean>
 	
+	<!-- 定时刷新登陆状态-->
+	<bean id="LandingStateBizJob" class="com.fh.job.LandingStateBizJob"></bean>
+
+    <bean id="LandingStateBizTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="LandingStateBizJob" />
+		</property>
+		<property name="targetMethod">
+			<value>getLandingStateJob</value>
+		</property>
+	    <property name="concurrent">  
+	        <value>false</value>  
+	    </property>  		
+	</bean>
+	
+		
+	<!-- 触发的时间  每次相隔30分钟执行 -->
+	<bean id="LandingStateBizTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="LandingStateBizTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/30 * * * ?</value>
+		</property>
+	</bean>
+	
 	<bean autowire="no" id="startQuartz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="srsCameraBizTrigger" />
 				<ref bean="dollStateBizTrigger" />
 				<ref bean="baseDictBizTrigger" />
+				<ref bean="LandingStateBizTrigger" />
 			</list>
 		</property>
 	</bean>	

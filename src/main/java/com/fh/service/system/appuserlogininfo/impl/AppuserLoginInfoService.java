@@ -86,7 +86,7 @@ public class AppuserLoginInfoService implements AppuserLoginInfoManager{
 	}
 	
 	public List<PageData> LandingStatelist(Page page)throws Exception{
-		return (List<PageData>)dao.findForList("AppuserLoginInfoMapper.datalistPage", page);
+		return (List<PageData>)dao.findForList("AppuserLoginInfoMapper.landingstatelistPage", page);
 	}
 	
 	/**退出登陆
@@ -94,6 +94,12 @@ public class AppuserLoginInfoService implements AppuserLoginInfoManager{
 	 */
 	public void editAppUserLoginLog(String userId)throws Exception{
 		dao.update("AppuserLoginInfoMapper.editAppUserLoginLog", userId);
+	}
+	/**更新30分钟前的登陆状态
+	 * @throws Exception
+	 */
+	public void changestate(PageData pd)throws Exception{
+		dao.update("AppuserLoginInfoMapper.changestate", pd);
 	}
 }
 
