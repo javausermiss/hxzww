@@ -1,9 +1,8 @@
-package com.fh.controller.system.runimage;
+package com.fh.controller.system.appversion;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
-import com.fh.entity.system.RunImage;
-import com.fh.service.system.runimage.RunImageManager;
+import com.fh.service.system.appversion.AppVersionManager;
 import com.fh.util.*;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -25,35 +24,34 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /** 
- * 说明：首页滚动图
+ * 说明：app更新模块
  * 创建人：FH Q313596790
- * 创建时间：2018-01-09
+ * 创建时间：2018-04-10
  */
 @Controller
-@RequestMapping(value="/runimage")
-public class RunImageController extends BaseController {
+@RequestMapping(value="/appversion")
+public class AppVersionController extends BaseController {
 	
-	String menuUrl = "runimage/list.do"; //菜单地址(权限用)
-	@Resource(name="runimageService")
-	private RunImageManager runimageService;
+	String menuUrl = "appversion/list.do"; //菜单地址(权限用)
+	@Resource(name="appversionService")
+	private AppVersionManager appversionService;
 	
 	/**保存
 	 * @param
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/save")
-	public ModelAndView save(
-			HttpServletRequest req,
-			@RequestParam(value = "RUN_FILE", required = false)CommonsMultipartFile multipartFile
-	) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"新增RunImage");
+	public ModelAndView save(HttpServletRequest req,
+							 @RequestParam(value = "APK_FILE", required = false)CommonsMultipartFile multipartFile) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"新增AppVersion");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
+		pd = this.getPageData();
 		//文件上传
 		String fileId="";
 		try{
-			String newFilename=multipartFile.getOriginalFilename();
+			String newFilename = multipartFile.getOriginalFilename();
 			DiskFileItem fi = (DiskFileItem) multipartFile.getFileItem();
 			File file = fi.getStoreLocation();
 			fileId = FastDFSClient.uploadFile(file, newFilename);
@@ -61,19 +59,13 @@ public class RunImageController extends BaseController {
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
-		pd.put("RUNIMAGE_ID", this.get32UUID());	//主键
-		pd.put("RUN_NAME",req.getParameter("RUN_NAME"));
-		pd.put("IMAGE_URL",fileId);
+		pd.put("APPVERSION_ID", this.get32UUID());	//主键
 		pd.put("CONTENT",req.getParameter("CONTENT"));
-		pd.put("TIME",req.getParameter("TIME"));
-		pd.put("HREF_ST",req.getParameter("HREF_ST"));
-		pd.put("LIVESTREAM",req.getParameter("LIVESTREAM"));
-		pd.put("SERVER_NAME",req.getParameter("SERVER_NAME"));
-		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
-		pd.put("H5_URL",req.getParameter("H5_URL"));
-		pd.put("DEVICE_STATE",req.getParameter("DEVICE_STATE"));
+		pd.put("VERSION",req.getParameter("VERSION"));
 		pd.put("STATE",req.getParameter("STATE"));
-		runimageService.save(pd);
+		pd.put("DOWNLOAD_URL",fileId);
+		pd.put("CREATE_TIME",DateUtil.getTime());
+		appversionService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -85,11 +77,11 @@ public class RunImageController extends BaseController {
 	 */
 	@RequestMapping(value="/delete")
 	public void delete(PrintWriter out) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"删除RunImage");
+		logBefore(logger, Jurisdiction.getUsername()+"删除AppVersion");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return;} //校验权限
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		runimageService.delete(pd);
+		appversionService.delete(pd);
 		out.write("success");
 		out.close();
 	}
@@ -99,54 +91,13 @@ public class RunImageController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/edit")
-	public ModelAndView edit(
-			HttpServletRequest req,
-			@RequestParam(value = "RUN_FILE", required = false)CommonsMultipartFile multipartFile
-	) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"修改RunImage");
+	public ModelAndView edit() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"修改AppVersion");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
-		
-		RunImage runImage =  runimageService.getRunImageById(req.getParameter("RUNIMAGE_ID"));
-
-		//上传的文件
-		String newFilename=multipartFile.getOriginalFilename();
-		DiskFileItem fi = (DiskFileItem) multipartFile.getFileItem();
-		File file = fi.getStoreLocation();
-
-
-		//文件上传，编辑操作
-		String fileId="";
-		if (runImage !=null && runImage.getIMAGE_URL()==null){
-			try{
-				fileId = FastDFSClient.uploadFile(file, newFilename);
-				logger.info("---------fileId-------------"+fileId);
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-		}else{
-			//判断当前文件是否为空
-			if(file !=null && !multipartFile.isEmpty() && multipartFile.getSize() >0){
-				fileId = FastDFSClient.modifyFile(runImage.getIMAGE_URL(), file, newFilename);
-			}else{
-				//
-				fileId=runImage.getIMAGE_URL();
-			}
-		}
 		PageData pd = new PageData();
-		pd.put("RUNIMAGE_ID",req.getParameter("RUNIMAGE_ID"));
-		pd.put("RUN_NAME",req.getParameter("RUN_NAME"));
-		pd.put("IMAGE_URL",fileId);
-		pd.put("CONTENT",req.getParameter("CONTENT"));
-		pd.put("TIME",req.getParameter("TIME"));
-		pd.put("HREF_ST",req.getParameter("HREF_ST"));
-		pd.put("LIVESTREAM",req.getParameter("LIVESTREAM"));
-		pd.put("SERVER_NAME",req.getParameter("SERVER_NAME"));
-		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
-		pd.put("H5_URL",req.getParameter("H5_URL"));
-		pd.put("DEVICE_STATE",req.getParameter("DEVICE_STATE"));
-		pd.put("STATE",req.getParameter("STATE"));
-		runimageService.edit(pd);
+		pd = this.getPageData();
+		appversionService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -158,7 +109,7 @@ public class RunImageController extends BaseController {
 	 */
 	@RequestMapping(value="/list")
 	public ModelAndView list(Page page) throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"列表RunImage");
+		logBefore(logger, Jurisdiction.getUsername()+"列表AppVersion");
 		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
@@ -168,22 +119,13 @@ public class RunImageController extends BaseController {
 			pd.put("keywords", keywords.trim());
 		}
 		page.setPd(pd);
-		List<PageData>	varList = runimageService.list(page);	//列出RunImage列表
-		mv.setViewName("system/runimage/runimage_list");
+		List<PageData>	varList = appversionService.list(page);	//列出AppVersion列表
+		mv.setViewName("system/appversion/appversion_list");
 		mv.addObject("varList", varList);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;
 	}
-	
-	
-	/**直播列表
-	 * @param page
-	 * @throws Exception
-	 */
-	
-	
-	
 	
 	/**去新增页面
 	 * @param
@@ -194,7 +136,7 @@ public class RunImageController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		mv.setViewName("system/runimage/runimage_edit");
+		mv.setViewName("system/appversion/appversion_edit");
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
 		return mv;
@@ -209,8 +151,8 @@ public class RunImageController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = runimageService.findById(pd);	//根据ID读取
-		mv.setViewName("system/runimage/runimage_edit");
+		pd = appversionService.findById(pd);	//根据ID读取
+		mv.setViewName("system/appversion/appversion_edit");
 		mv.addObject("msg", "edit");
 		mv.addObject("pd", pd);
 		return mv;
@@ -223,7 +165,7 @@ public class RunImageController extends BaseController {
 	@RequestMapping(value="/deleteAll")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"批量删除RunImage");
+		logBefore(logger, Jurisdiction.getUsername()+"批量删除AppVersion");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
 		PageData pd = new PageData();		
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -232,7 +174,7 @@ public class RunImageController extends BaseController {
 		String DATA_IDS = pd.getString("DATA_IDS");
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(",");
-			runimageService.deleteAll(ArrayDATA_IDS);
+			appversionService.deleteAll(ArrayDATA_IDS);
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");
@@ -248,22 +190,28 @@ public class RunImageController extends BaseController {
 	 */
 	@RequestMapping(value="/excel")
 	public ModelAndView exportExcel() throws Exception{
-		logBefore(logger, Jurisdiction.getUsername()+"导出RunImage到excel");
+		logBefore(logger, Jurisdiction.getUsername()+"导出AppVersion到excel");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("图像地址");	//1
-		titles.add("图片名称");	//2
+		titles.add("DOWNLOAD_URL");	//1
+		titles.add("CONTENT");	//2
+		titles.add("VERSION");	//3
+		titles.add("UPDATE_DATE");	//4
+		titles.add("CREATE_TIME");	//5
 		dataMap.put("titles", titles);
-		List<PageData> varOList = runimageService.listAll(pd);
+		List<PageData> varOList = appversionService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("IMAGE_URL"));	    //1
-			vpd.put("var2", varOList.get(i).getString("RUN_NAME"));	    //2
+			vpd.put("var1", varOList.get(i).getString("DOWNLOAD_URL"));	    //1
+			vpd.put("var2", varOList.get(i).getString("CONTENT"));	    //2
+			vpd.put("var3", varOList.get(i).getString("VERSION"));	    //3
+			vpd.put("var4", varOList.get(i).getString("UPDATE_DATE"));	    //4
+			vpd.put("var5", varOList.get(i).getString("CREATE_TIME"));	    //5
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);
