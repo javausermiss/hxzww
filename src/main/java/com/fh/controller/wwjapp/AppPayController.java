@@ -1,20 +1,21 @@
 package com.fh.controller.wwjapp;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fh.util.*;
+import com.fh.util.xdpayutil.FormDateReportConvertor;
+import com.fh.util.xdpayutil.MD5Facade;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,10 +46,6 @@ import com.fh.service.system.pond.PondManager;
 import com.fh.service.system.promote.PromoteAppUserManager;
 import com.fh.service.system.promotemanage.PromoteManageManager;
 import com.fh.service.system.trans.AccountOperManager;
-import com.fh.util.Const;
-import com.fh.util.NumberUtils;
-import com.fh.util.PageData;
-import com.fh.util.PropertiesUtils;
 import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RedisUtil;
 import com.fh.util.wwjUtil.RespStatus;
@@ -1011,6 +1008,239 @@ public class AppPayController extends BaseController {
         return "success"   ;
 
     }
+
+
+
+    /********************************************************************现在支付******************************************************************************/
+
+
+    @RequestMapping(value = "/getTradeOrderxdpay",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getTradeOrderxdpay(
+            @RequestParam("userId") String userId,
+            @RequestParam("pid") String pid,
+            @RequestParam(value = "ctype", required = false) String ctype,
+            @RequestParam(value = "channel", required = false) String channel,
+            @RequestParam(value="payType" ,required = false) String payType
+    ){
+        try {
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser == null) {
+                return null;
+            }
+            String datetime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+            Paycard paycard = paycardService.getPayCardById(pid);
+            if (paycard == null) {
+                return null;
+            }
+            String glodNum = paycard.getGOLD();//金币数量
+            String amount = paycard.getAMOUNT();//金额
+            boolean a = RedisUtil.getRu().exists("tradeOrder");
+            String newOrder=""; //订单号
+            if (a) {
+                String tradeOrder = RedisUtil.getRu().get("tradeOrder");
+                String x = tradeOrder.substring(0, 8);//取前八位进行判断
+                if (datetime.substring(0, 8).equals(x)) {
+                    String six = tradeOrder.substring(tradeOrder.length() - 6, tradeOrder.length());
+                    String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
+                    newOrder = datetime + newsix;//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
+
+                } else {
+                    newOrder = datetime + "000001";//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
+                }
+            } else {
+                newOrder = datetime + "000001";//新的订单编号
+                RedisUtil.getRu().set("tradeOrder", newOrder);
+            }
+
+            Order order = new Order();
+            order.setUSER_ID(userId);
+            order.setREC_ID(newOrder);
+            order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amount)); //元转分
+            order.setORDER_ID(newOrder);
+            order.setREGGOLD(glodNum); //充值的金币数量
+            order.setCHANNEL(channel);
+            order.setCTYPE(ctype);
+            order.setPAY_TYPE(payType);
+            order.setPRO_USER_ID(appUser.getPRO_USER_ID());
+            orderService.regmount(order);
+
+            Map<String,Object> map = new HashMap<>();
+            map.put("funcode","MQ002");
+            map.put("version","1.0.1");
+            map.put("appId",PropertiesUtils.getCurrProperty("nowpay.appId"));
+            map.put("mhtOrderNo",newOrder);
+            map.put("mhtOrderName","娃娃币");
+            map.put("mhtOrderType","01");
+            map.put("mhtCurrencyType","156");
+            map.put("mhtOrderAmt",Integer.valueOf(NumberUtils.RMBYuanToCent(amount)));
+            map.put("mhtOrderTimeOut",3600);
+            map.put("mhtOrderStartTime",DateUtil.getSdfTimes());
+            map.put("notifyUrl","http://111.231.139.61:18081/pooh-web/app/pay/xdpayCallBack");
+            map.put("mhtCharset","UTF-8");
+            map.put("deviceType","01");
+            map.put("payChannelType","13");
+            map.put("consumerId",userId);
+            map.put("consumerName",appUser.getUSERNAME());
+            map.put("mhtSignType","MD5");
+            String signature = MD5Facade.getFormDataParamMD5(map,PropertiesUtils.getCurrProperty("nowpay.md5Key"),"UTF-8");
+            map.put("signature",signature);
+
+            Map<String, Object> map_1 = new HashMap<>();
+            map.put("Order", getOrderInfo(order.getORDER_ID()));
+            return RespStatus.successs().element("data", map_1).element("nowpayData",map);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+
+    @RequestMapping(value = "/xdpayCallBack",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String xdpayCallBack(HttpServletRequest req) {
+        try{
+            BufferedReader reader = req.getReader();
+            StringBuilder reportBuilder = new StringBuilder();
+            String tempStr = "";
+            while((tempStr = reader.readLine()) != null){
+                reportBuilder.append(tempStr);
+            }
+
+            String reportContent = reportBuilder.toString();
+
+            Map<String,String> dataMap = FormDateReportConvertor.parseFormDataPatternReportWithDecode(reportContent, "UTF-8", "UTF-8");
+
+            //dataMap.remove("signType");
+            String signature = dataMap.remove("signature");
+
+           /* InputStream propertiesInput = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
+            Properties properties = new Properties();
+            properties.load(propertiesInput);
+            String md5Key = (String) properties.get("md5Key");*/
+            String md5Key =  PropertiesUtils.getCurrProperty("nowpay.md5Key");
+            boolean isValidSignature = MD5Facade.validateFormDataParamMD5(dataMap,md5Key,signature);
+            logger.info("验签结果：----------------------------->"+isValidSignature);
+            if (isValidSignature){
+                try {
+                    Order o = orderService.getOrderById(dataMap.get("mhtOrderNo"));
+                    if (o.getSTATUS().equals("1")) {
+                        return "success=Y";
+                    }
+                    //通过金币卡ID来查询
+                    String pid =  o.getADD_INFO();
+                    Paycard paycard = paycardService.getPayCardById(pid);
+                    int gold = Integer.valueOf(paycard.getGOLD());
+                    String award = paycard.getAWARD();
+                    String rechare = paycard.getRECHARE();
+
+                    AppUser appUser = appuserService.getUserByID(o.getUSER_ID());
+                    int a = Integer.valueOf(appUser.getBALANCE()) + gold;
+                    appUser.setBALANCE(String.valueOf(a));
+                    appuserService.updateAppUserBalanceById(appUser);
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + rechare);
+                    payment.setUSERID(o.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE("5");
+                    payment.setREMARK("充值" + rechare);
+                    paymentService.reg(payment);
+                    //奖励记录
+                    Payment payment1 = new Payment();
+                    payment1.setGOLD("+" + award);
+                    payment1.setUSERID(o.getUSER_ID());
+                    payment1.setDOLLID(null);
+                    payment1.setCOST_TYPE("9");
+                    payment1.setREMARK("奖励" + award);
+                    paymentService.reg(payment1);
+
+                    //当前订单的用户昵称
+                    o.setUserNickName(appUser.getNICKNAME());
+                    o.setREGGOLD(String.valueOf(gold));
+                    o.setORDER_NO(dataMap.get("nowPayOrderNo"));//现在支付流水号
+                    o.setSTATUS("1");
+                    orderService.doRegCallbackUpdateOrder(o);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "success=Y";
+            }else {
+                return "success=N";
+            }
+    }catch (Exception e){
+            logger.info("程序异常"+e);
+            e.printStackTrace();
+            return "error";
+        }
+
+    }
+
+    public static void main(String[] args) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("funcode","MQ002");
+        map.put("version","1.0.1");
+        map.put("appId",PropertiesUtils.getCurrProperty("nowpay.appId"));
+        map.put("mhtOrderNo",154);
+        map.put("mhtOrderName","娃娃币");
+        map.put("mhtOrderType","01");
+        map.put("mhtCurrencyType","156");
+        map.put("mhtOrderAmt",Integer.valueOf(NumberUtils.RMBYuanToCent("6")));
+        map.put("mhtOrderTimeOut",3600);
+        map.put("mhtOrderStartTime",DateUtil.getSdfTimes());
+        map.put("notifyUrl","http://111.231.139.61:18081/pooh-web/app/pay/xdpayCallBack");
+        map.put("mhtCharset","UTF-8");
+        map.put("deviceType","01");
+        map.put("payChannelType","13");
+        map.put("consumerId","57457777774");
+        map.put("consumerName","15454444444");
+        map.put("mhtSignType","MD5");
+
+
+        String signature = MD5Facade.getFormDataParamMD5(map,PropertiesUtils.getCurrProperty("nowpay.md5Key"),"UTF-8");
+        System.out.print(signature);
+
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("1",123);
+        map1.put("2",map);
+        System.out.print(map1.get("2"));
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
