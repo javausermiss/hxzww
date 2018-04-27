@@ -1068,8 +1068,8 @@ public class AppPayController extends BaseController {
             orderService.regmount(order);
 
             Map<String,Object> map = new HashMap<>();
-            map.put("funcode","MQ002");
-            map.put("version","1.0.1");
+            map.put("funcode","WP001");
+            map.put("version","1.0.0");
             map.put("appId",PropertiesUtils.getCurrProperty("nowpay.appId"));
             map.put("mhtOrderNo",newOrder);
             map.put("mhtOrderName","娃娃币");
@@ -1085,11 +1085,12 @@ public class AppPayController extends BaseController {
             map.put("consumerId",userId);
             map.put("consumerName",appUser.getUSERNAME());
             map.put("mhtSignType","MD5");
+            map.put("mhtOrderDetail","购买娃娃币");
             String signature = MD5Facade.getFormDataParamMD5(map,PropertiesUtils.getCurrProperty("nowpay.md5Key"),"UTF-8");
-            map.put("signature",signature);
+            map.put("mhtSignature",signature);
 
             Map<String, Object> map_1 = new HashMap<>();
-            map.put("Order", getOrderInfo(order.getORDER_ID()));
+            map_1.put("Order", getOrderInfo(order.getORDER_ID()));
             return RespStatus.successs().element("data", map_1).element("nowpayData",map);
 
         }catch (Exception e){
