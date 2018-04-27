@@ -1,9 +1,18 @@
 package com.fh.controller.system.appversion;
 
-import com.fh.controller.base.BaseController;
-import com.fh.entity.Page;
-import com.fh.service.system.appversion.AppVersionManager;
-import com.fh.util.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -15,13 +24,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.fh.controller.base.BaseController;
+import com.fh.entity.Page;
+import com.fh.entity.system.AppVersion;
+import com.fh.service.system.appversion.AppVersionManager;
+import com.fh.util.AppUtil;
+import com.fh.util.DateUtil;
+import com.fh.util.FastDFSClient;
+import com.fh.util.Jurisdiction;
+import com.fh.util.ObjectExcelView;
+import com.fh.util.PageData;
 
 /** 
  * 说明：app更新模块
@@ -63,6 +75,7 @@ public class AppVersionController extends BaseController {
 		pd.put("CONTENT",req.getParameter("CONTENT"));
 		pd.put("VERSION",req.getParameter("VERSION"));
 		pd.put("STATE",req.getParameter("STATE"));
+		pd.put("FLAG",req.getParameter("FLAG"));
 		pd.put("DOWNLOAD_URL",fileId);
 		pd.put("CREATE_TIME",DateUtil.getTime());
 		appversionService.save(pd);
@@ -91,12 +104,43 @@ public class AppVersionController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/edit")
-	public ModelAndView edit() throws Exception{
+	public ModelAndView edit(HttpServletRequest req,
+			 @RequestParam(value = "APK_FILE", required = false)CommonsMultipartFile  multipartFile //保存图片文件上传路径
+			 ) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改AppVersion");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
+		AppVersion appversion = appversionService.getVersionByID(req.getParameter("APPVERSION_ID"));
+		//上传的文件
+				String newFilename=multipartFile.getOriginalFilename();
+				DiskFileItem fi = (DiskFileItem) multipartFile.getFileItem();
+				File file = fi.getStoreLocation();
+				
+				//文件上传，编辑操作
+				String fileId="";
+				if (appversion !=null && appversion.getDOWNLOAD_URL()==null){
+					try{
+						fileId = FastDFSClient.uploadFile(file, newFilename);
+						logger.info("---------fileId-------------"+fileId);
+					}catch(Exception ex){
+						ex.printStackTrace();
+					}
+				}else{
+					//判断当前文件是否为空
+					if(file !=null && !multipartFile.isEmpty() && multipartFile.getSize() >0){
+						fileId = FastDFSClient.modifyFile(appversion.getDOWNLOAD_URL(), file, newFilename);
+					}else{
+						//
+						fileId=appversion.getDOWNLOAD_URL();
+					}
+				}
 		PageData pd = new PageData();
-		pd = this.getPageData();
+		pd.put("APPVERSION_ID", req.getParameter("APPVERSION_ID"));	//主键
+		pd.put("CONTENT",req.getParameter("CONTENT"));
+		pd.put("VERSION",req.getParameter("VERSION"));
+		pd.put("STATE",req.getParameter("STATE"));
+		pd.put("FLAG",req.getParameter("FLAG"));
+		pd.put("DOWNLOAD_URL",fileId);
 		appversionService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
