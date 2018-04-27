@@ -14,7 +14,8 @@
 		VERSION,
 		CREATE_TIME,
 		STATE,
-		APPVERSION_ID
+		APPVERSION_ID,
+		FLAG
 	</sql>
 	
 	<!-- 字段值 -->
@@ -24,7 +25,8 @@
 		#{VERSION},
 		#{CREATE_TIME},
 		#{STATE},
-		#{APPVERSION_ID}
+		#{APPVERSION_ID},
+		#{FLAG}
 	</sql>
 	
 	<!-- 新增-->
@@ -55,6 +57,7 @@
 			CONTENT = #{CONTENT},
 			VERSION = #{VERSION},
 			STATE = #{STATE},
+			FLAG = #{FLAG},
 			CREATE_TIME = now()
 		where 
 		APPVERSION_ID = #{APPVERSION_ID}
@@ -117,7 +120,8 @@
 		tb_app_version.STATE,
 		tb_app_version.VERSION,
 		tb_app_version.CREATE_TIME,
-		tb_app_version.UPDATE_TIME
+		tb_app_version.UPDATE_TIME,
+		tb_app_version.FLAG
 		FROM
 		tb_app_version
 		WHERE
@@ -127,5 +131,26 @@
 		LIMIT 0, 1
 	</select>
 	
+	
+	 <select id="getVersionByID" parameterType="String" resultType="com.fh.entity.system.AppVersion">
+        SELECT
+        <include refid="Field"></include>
+        FROM
+        <include refid="tableName"/>
+        where 
+		APPVERSION_ID = #{APPVERSION_ID}
+    </select>
+    
+	
+	
+	<!-- 通过版本获取数据 -->
+	<select id="findByVersion" parameterType="String" resultType="com.fh.entity.system.AppVersion">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			VERSION = #{VERSION}
+	</select>
 
 </mapper>

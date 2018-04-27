@@ -3,6 +3,7 @@ package com.fh.service.system.appversion.impl;
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.entity.system.AppVersion;
+import com.fh.entity.system.Doll;
 import com.fh.service.system.appversion.AppVersionManager;
 import com.fh.util.PageData;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,19 @@ public class AppVersionService implements AppVersionManager{
 	@Override
 	public AppVersion getNewVersion()throws Exception {
 		return (AppVersion) dao.findForObject("AppVersionMapper.getNewVersion",null);
+	}
+	
+	
+	public AppVersion getVersionByID(String id) throws Exception {
+		return (AppVersion)dao.findForObject("AppVersionMapper.getVersionByID",id);
+	}
+	/**
+	 * 通过版本获取数据
+	 * @return
+	 * @throws Exception
+	 */
+	public AppVersion findByVersion(String version)throws Exception{
+		return (AppVersion)dao.findForObject("AppVersionMapper.findByVersion", version);
 	}
 }
 

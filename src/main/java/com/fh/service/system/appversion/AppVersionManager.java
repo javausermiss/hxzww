@@ -63,8 +63,14 @@ public interface AppVersionManager{
 	 */
 
 	public AppVersion getNewVersion()throws Exception;
-
-
 	
+	
+	public AppVersion getVersionByID(String id) throws Exception;
+	/**
+	 * 通过版本获取数据
+	 * @return
+	 * @throws Exception
+	 */
+	public AppVersion findByVersion(String version)throws Exception;
 }
 
