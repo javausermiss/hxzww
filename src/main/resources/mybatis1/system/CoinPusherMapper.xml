@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CoinPusherMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		TB_COINPUSHER_PLAY_DETAIL
+	</sql>
+
+	<resultMap id="CoinPusherResultMap" type="CoinPusherVo">
+		<result column="COINPUSHER_ID" property="id"/>
+		<result column="ROOMID" property="roomId"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="COSTGOLD" property="costGold"/>
+		<result column="RETURNGOLD" property="returnGold"/>
+		<result column="FINISH_FLAG" property="finishFlag"/>
+	</resultMap>
+
+	<!-- 字段 -->
+	<sql id="Field">
+		ROOMID,
+		USER_ID,	
+		COSTGOLD,	
+		RETURNGOLD,	
+		CREATE_DATE,	
+		UPDATE_DATE,	
+		COINPUSHER_ID,
+		FINISH_FLAG
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{ROOMID},
+		#{USER_ID},	
+		#{COSTGOLD},	
+		#{RETURNGOLD},	
+		#{CREATE_DATE},	
+		#{UPDATE_DATE},	
+		#{COINPUSHER_ID},
+		#{FINISH_FLAG}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where
+		COINPUSHER_ID = #{COINPUSHER_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			ROOMID = #{ROOMID},
+			USER_ID = #{USER_ID},
+			COSTGOLD = #{COSTGOLD},
+			RETURNGOLD = #{RETURNGOLD},
+			CREATE_DATE = #{CREATE_DATE},
+			UPDATE_DATE = #{UPDATE_DATE}
+		where
+		COINPUSHER_ID = #{COINPUSHER_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+		COINPUSHER_ID = #{COINPUSHER_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				<!--	根据需求自己加检索条件
+					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				-->
+				)
+		</if>
+		order
+		by
+		create_date
+		desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"/>
+		from 
+		<include refid="tableName"/>
+		order
+		by
+		create_date
+		desc
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			CONIPUSHER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<insert id="reg" parameterType="CoinPusherVo">
+		insert
+		into
+		<include refid="tableName"/>
+		(
+		COINPUSHER_ID,
+		ROOMID,
+		USER_ID,
+		COSTGOLD,
+		CREATE_DATE
+		)
+		values
+		(
+		#{id},
+		#{roomId},
+		#{userId},
+		#{costGold},
+		now()
+		)
+	</insert>
+	
+	<select id="getLatestRecord" parameterType="CoinPusherVo" resultMap="CoinPusherResultMap">
+			SELECT
+		C.COINPUSHER_ID,
+		C.ROOMID,
+		C.USER_ID,
+		C.COSTGOLD,
+		C.RETURNGOLD,
+		C.FINISH_FLAG,
+		C.CREATE_DATE,
+		C.UPDATE_DATE
+	FROM
+		tb_coinpusher_play_detail AS C
+	WHERE
+		C.ROOMID = #{roomId} AND
+		C.USER_ID = #{userId} AND
+		C.FINISH_FLAG = 'N'
+	ORDER BY
+		C.CREATE_DATE DESC
+	LIMIT 0,
+	 1
+	</select>
+
+	<update id="updateOutCoin" parameterType="CoinPusherVo">
+		update
+		<include refid="tableName"/>
+		set
+		RETURNGOLD = #{returnGold},
+		FINISH_FLAG = #{finishFlag}
+		where
+		COINPUSHER_ID = #{id}
+	</update>
+
+	<select id="getLatestRecordForId" parameterType="String" resultMap="CoinPusherResultMap">
+		SELECT
+		C.COINPUSHER_ID
+	FROM
+		tb_coinpusher_play_detail AS C
+	WHERE
+		C.ROOMID = #{roomId}
+	ORDER BY
+		C.CREATE_DATE DESC
+	LIMIT 0,
+	 1
+	</select>
+
+	<select id="getCoinPusherRecondList" parameterType="String" resultMap="CoinPusherResultMap">
+			SELECT
+		tb_coinpusher_play_detail.COINPUSHER_ID,
+		tb_coinpusher_play_detail.COSTGOLD,
+		tb_coinpusher_play_detail.RETURNGOLD
+	FROM
+		tb_coinpusher_play_detail
+	WHERE
+		tb_coinpusher_play_detail.USER_ID = #{userId}
+	ORDER BY
+		tb_coinpusher_play_detail.CREATE_DATE DESC
+	LIMIT 0,
+	 10
+	</select>
+</mapper>

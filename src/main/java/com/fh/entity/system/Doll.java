@@ -19,14 +19,16 @@ public class Doll {
     private String TOY_ID;
     private String RELEASE_STATUS;//发布状态
     private String DOLL_TYPE;
+    private String DEVICE_TYPE;//设备类型，用来区分娃娃机（1），推币机（2）
     
     public Doll() {
 
     }
 
-    public Doll(String DOLL_ID, String DOLL_SN) {
+    public Doll(String DOLL_ID, String DOLL_SN ,String DEVICE_TYPE) {
         this.DOLL_ID = DOLL_ID;
         this.DOLL_SN = DOLL_SN;
+        this.DEVICE_TYPE = DEVICE_TYPE;
     }
 
     public String getDOLL_CONVERSIONGOLD() {

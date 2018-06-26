@@ -87,7 +87,7 @@ public class AppTencentloginController extends BaseController {
      *
      * @param userId
      * @param token
-     * @param imageUrl
+     * @param
      * @param nickname
      * @return
      */

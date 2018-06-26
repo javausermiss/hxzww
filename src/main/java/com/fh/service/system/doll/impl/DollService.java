@@ -29,6 +29,7 @@ public class DollService implements DollManager {
 	 * @param pd
 	 * @throws Exception
 	 */
+	@Override
 	public void save(PageData pd)throws Exception{
 		dao.save("DollMapper.save", pd);
 	}
@@ -37,6 +38,7 @@ public class DollService implements DollManager {
 	 * @param pd
 	 * @throws Exception
 	 */
+	@Override
 	public void delete(PageData pd)throws Exception{
 		dao.delete("DollMapper.delete", pd);
 	}
@@ -45,6 +47,7 @@ public class DollService implements DollManager {
 	 * @param pd
 	 * @throws Exception
 	 */
+	@Override
 	public void edit(PageData pd)throws Exception{
 		dao.update("DollMapper.edit", pd);
 	}
@@ -54,6 +57,7 @@ public class DollService implements DollManager {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<PageData> list(Page page)throws Exception{
 		return (List<PageData>)dao.findForList("DollMapper.dolllistPage", page);
 	}
@@ -63,6 +67,7 @@ public class DollService implements DollManager {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<PageData> listAll(PageData pd)throws Exception{
 		return (List<PageData>)dao.findForList("DollMapper.listAllPage", pd);
 	}
@@ -71,6 +76,7 @@ public class DollService implements DollManager {
 	 * @param pd
 	 * @throws Exception
 	 */
+	@Override
 	public PageData findById(PageData pd)throws Exception{
 		return (PageData)dao.findForObject("DollMapper.findById", pd);
 	}
@@ -79,6 +85,7 @@ public class DollService implements DollManager {
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
 	 */
+	@Override
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("DollMapper.deleteAll", ArrayDATA_IDS);
 	}
@@ -87,6 +94,7 @@ public class DollService implements DollManager {
 	 * @param ArrayRELEASE_STA
 	 * @throws Exception
 	 */
+	@Override
 	public void releaseAll(String[] ArrayRELEASE_STA)throws Exception{
 		dao.delete("DollMapper.releaseAll", ArrayRELEASE_STA);
 	}
@@ -97,7 +105,7 @@ public class DollService implements DollManager {
 	 * @return
 	 * @throws Exception
 	 */
-
+	@Override
 	public Doll getDollBySN(String SN) throws Exception {
 		return (Doll)dao.findForObject("DollMapper.getDollBySN",SN);
 	}
@@ -136,13 +144,13 @@ public class DollService implements DollManager {
 
 	/**
 	 * 通过SN注册娃娃机
-	 * @param sn
+	 * @param doll
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public int regDollBySN(String sn) throws Exception {
-		return (int)dao.save("DollMapper.regDollBySN",new Doll("room_"+MyUUID.getUUID(),sn));
+	public int regDollBySN(Doll doll) throws Exception {
+		return (int)dao.save("DollMapper.regDollBySN",doll);
 	}
 
 	/**
@@ -166,6 +174,7 @@ public class DollService implements DollManager {
 	 * @return DollVo
 	 * @throws Exception
 	 */
+	@Override
 	public List<DollVo>  getDollVoList()throws Exception{
 		return (List<DollVo>) dao.findForList("DollMapper.getDollVoList",null);
 	}
@@ -175,6 +184,7 @@ public class DollService implements DollManager {
 	 * @return DollVo
 	 * @throws Exception
 	 */
+	@Override
 	public List<DollVo>  getDollPage(Page page)throws Exception{
 		return (List<DollVo>) dao.findForList("DollMapper.getDolllistPage",page);
 	}
@@ -184,6 +194,7 @@ public class DollService implements DollManager {
 	 * @param page
 	 * @throws Exception
 	 */
+	@Override
 	public List<PageData> getDollCountlist(Page page)throws Exception{
 		return (List<PageData>)dao.findForList("DollMapper.dollCountlistPage", page);
 	}
@@ -203,6 +214,7 @@ public class DollService implements DollManager {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public List<PageData> getAllDollListByRelease()throws Exception{
 		return (List<PageData>) dao.findForList("DollMapper.getAllDollListByRelease",null);
 	}
@@ -212,6 +224,7 @@ public class DollService implements DollManager {
 	 * @param pd
 	 * @throws Exception
 	 */
+	@Override
 	public void updateDollStateByDollId(PageData pd)throws Exception{
 		dao.update("DollMapper.updateDollStateByDollId", pd);
 	}

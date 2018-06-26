@@ -93,7 +93,7 @@ public class FormDateReportConvertor {
      * @param dataMap
      * @return
      */
-    public static String postBraceFormLinkReportWithURLEncode(Map<String,String> dataMap,String charset){
+    public static String postBraceFormLinkReportWithURLEncode(Map<String,Object> dataMap,String charset){
         if(dataMap == null) return "";
 
         StringBuilder reportBuilder = new StringBuilder();
@@ -103,7 +103,7 @@ public class FormDateReportConvertor {
 
         for(String key : keyList){
             try{
-                reportBuilder.append(key+"=\""+ URLEncoder.encode(dataMap.get(key),charset)+"\"&");
+                reportBuilder.append(key+"=\""+ URLEncoder.encode(dataMap.get(key).toString(),charset)+"\"&");
             }catch (Exception ex){
                 //ignore to continue
                 continue;

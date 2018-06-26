@@ -95,11 +95,11 @@ public interface DollManager{
 
 	/**
 	 * 通过SN注册娃娃机
-	 * @param sn
+	 * @param doll
 	 * @return
 	 * @throws Exception
 	 */
-	public int regDollBySN(String sn)throws Exception;
+	public int regDollBySN(Doll doll)throws Exception;
 
 	/**
 	 * 通过网关表获取娃娃机在线的信息

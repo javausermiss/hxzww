@@ -58,25 +58,29 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             Doll doll= dollService.getDollByID(dollId);
             if(doll==null){
             	 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                 rpcCommandResult.setInfo("设备不存在"); ///这里写期号
+                 rpcCommandResult.setInfo("设备不存在");
+                return rpcCommandResult;
             }
             
             //获取用户
             AppUser appUser = appuserService.getUserByID(userId);
             if(appUser==null){
            	 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                rpcCommandResult.setInfo("用户不存在"); ///这里写期号
+                rpcCommandResult.setInfo("用户不存在");
+                return rpcCommandResult;
            }
             
             //判断用户金币大于等于每次抓取的值
-            String appUserBalance = appUser.getBALANCE(); //用户余额
+            //用户余额
+            String appUserBalance = appUser.getBALANCE();
             int userBalance = Integer.valueOf(appUserBalance);
-            int dollGold = doll.getDOLL_GOLD();//抓取金币额度
+            //抓取金币额度
+            int dollGold = doll.getDOLL_GOLD();
           
             
             if (Integer.valueOf(userBalance) < dollGold) {
             	 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                 rpcCommandResult.setInfo("余额不足"); ///这里写期号
+                 rpcCommandResult.setInfo("余额不足");
                 return rpcCommandResult;
             }
             
@@ -270,284 +274,6 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
     @Override
     public RpcCommandResult drawLottery(String roomId, Integer gifinumber) {
         try {
-
-          /*
-            log.info("执行复位时间----------------->"+DateUtil.getTime());
-            PlayDetail playDetail = playDetailService.getPlayIdForPeople(roomId);//根据房间取得最新的游戏记录
-            if (playDetail==null){
-                return null;
-            }
-            String gold = playDetail.getGOLD();//获取下注金币，即竞猜用户扣除的金币数
-            String state = playDetail.getPOST_STATE();//获取娃娃发送状态
-            //网关自检发送多次free进入此判断逻辑,POST_STATE初始值为"-1"，判断是否已经结算过
-            //STOP_FLAG 初始值为"0",下抓后为"-1",判断流程是否走完
-            if (playDetail.getSTOP_FLAG().equals("0")
-                    || state.equals("0")
-                    || state.equals("1")
-                    || state.equals("2")
-                    ) {
-                return null;
-            }
-            if (gifinumber!=0){
-                gifinumber = 1;
-            }
-            playDetail.setSTATE(String.valueOf(gifinumber));
-            playDetail.setPOST_STATE("0");
-            playDetail.setDOLLID(roomId);
-            playDetailService.updatePlayDetailState(playDetail);
-            log.info("更新抓取状态时间----------------->"+DateUtil.getTime());
-            Pond p = new Pond();
-            p.setDOLLID(roomId);
-            p.setGUESS_ID(playDetail.getGUESS_ID());
-            Pond pond = pondService.getPondByPlayId(p);//查询对应奖池信息
-            if (!pond.getPOND_FLAG().equals("0")) {
-                return null;
-            }
-            pond.setPOND_FLAG("-1");//此标签代表禁止再次结算
-            pond.setALLPEOPLE(pond.getGUESS_N()+pond.getGUESS_Y());//获取竞猜总人数
-            int an = pond.getGUESS_N()*Integer.valueOf(gold);
-            int ay = pond.getGUESS_Y()*Integer.valueOf(gold);
-            pond.setGOLD_N(an);//猜不中人下注总金额
-            pond.setGOLD_Y(ay);//猜中的人下注总金额
-            pond.setGUESS_STATE(String.valueOf(gifinumber));//本局抓中状态
-            pondService.updatePondFlag(pond);//更新标签
-            int allGold = pond.getGUESS_GOLD();
-            int y = pond.getGUESS_Y();//猜1
-            int cn = pond.getGUESS_N();//猜0
-            int avg; //结算获胜者的平均金额
-            String s = playDetail.getSTATE();//取得压中的状态
-            String file = "";//失败状态
-            String userid = playDetail.getUSERID();
-            //判断是否抓中
-            if (!String.valueOf(gifinumber).equals("0")) {
-                file = "0";
-                //用户抓中，更新抓中总数
-                AppUser appUser = appuserService.getUserByID(userid);
-                System.out.println("================================appuser:" + appUser);
-                int oldCount = appUser.getDOLLTOTAL();
-                System.out.println("===================================oldcount:" + oldCount);
-                appUser.setDOLLTOTAL(oldCount + 1);
-                appuserService.updateAppUserDollTotalById(appUser);
-                //以下2种判断为单向竞猜 统统返还给用户竞猜金币
-                if (y == 0 && cn != 0) {
-                    List<GuessDetailL> filler = betGameService.getFailer(new GuessDetailL(file, playDetail.getGUESS_ID(), roomId));//获取失败者
-                    for (int i = 0; i < filler.size(); i++) {
-                        GuessDetailL guessDetailL = filler.get(i);
-                        String uid = guessDetailL.getAPP_USER_ID();
-                        AppUser appUser1 = appuserService.getUserByID(uid);
-                        String old = appUser1.getBALANCE();
-                        int k = Integer.valueOf(old) + Integer.valueOf(gold);
-                        appUser1.setBALANCE(String.valueOf(k));
-                        appuserService.updateAppUserBalanceById(appUser1);
-                        //更新收支表
-                        Payment payment = new Payment();
-                        payment.setGOLD("+"+gold);
-                        payment.setUSERID(uid);
-                        payment.setDOLLID(roomId);
-                        payment.setCOST_TYPE("4");
-                        payment.setREMARK("流局返款");
-                        paymentService.reg(payment);
-                        //更改竞猜记录
-                        guessDetailL.setGUESS_TYPE("-1");//流局标识 -1
-                        guessDetailL.setSETTLEMENT_FLAG("Y");//结算
-                        guessDetailL.setSETTLEMENT_GOLD(Integer.valueOf(gold));
-                        betGameService.updateGuessDetail(guessDetailL);
-                    }
-                    RpcCommandResult rpcCommandResult = new RpcCommandResult();
-                    RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), null);
-                    if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                        log.info("通知成功");
-                    } else {
-                        log.info("通知失败");
-                    }
-                    rpcCommandResult.setRpcReturnCode(result);
-                    return rpcCommandResult;
-                }
-                if (y != 0 && cn == 0) {
-                    List<GuessDetailL> winner = betGameService.getWinner(new GuessDetailL(s, playDetail.getGUESS_ID(), roomId));//获取成功者
-                    for (int i = 0; i < winner.size(); i++) {
-                        GuessDetailL guessDetailL = winner.get(i);
-                        String uid = guessDetailL.getAPP_USER_ID();
-                        AppUser appUser1 = appuserService.getUserByID(uid);
-                        String old = appUser1.getBALANCE();
-                        int k = Integer.valueOf(old) + Integer.valueOf(gold);
-                        appUser1.setBALANCE(String.valueOf(k));
-                        appuserService.updateAppUserBalanceById(appUser1);
-                        //更新收支表
-                        Payment payment = new Payment();
-                        payment.setGOLD("+"+gold);
-                        payment.setUSERID(uid);
-                        payment.setDOLLID(roomId);
-                        payment.setCOST_TYPE("4");
-                        payment.setREMARK("流局返款");
-                        paymentService.reg(payment);
-                        //更改竞猜记录
-                        guessDetailL.setGUESS_TYPE("-1");//流局标识 -1
-                        guessDetailL.setSETTLEMENT_FLAG("Y");//结算
-                        guessDetailL.setSETTLEMENT_GOLD(Integer.valueOf(gold));
-                        betGameService.updateGuessDetail(guessDetailL);
-                    }
-                    RpcCommandResult rpcCommandResult = new RpcCommandResult();
-                    RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), null);
-                    if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                        log.info("通知成功");
-                    } else {
-                        log.info("通知失败");
-                    }
-                    rpcCommandResult.setRpcReturnCode(result);
-                    return rpcCommandResult;
-                }
-                //没人竞猜
-                if (y == 0 && cn == 0) {
-                    RpcCommandResult rpcCommandResult = new RpcCommandResult();
-                    RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), null);
-                    if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                        log.info("通知成功");
-                    } else {
-                        log.info("通知失败");
-                    }
-                    rpcCommandResult.setRpcReturnCode(result);
-                    return rpcCommandResult;
-                }
-                avg = (int) Math.floor(allGold / y);
-            } else {
-                //没有抓中的情况
-                file = "1";
-                //以下2种判断为单向竞猜 统统返还给用户竞猜金币
-                if (y == 0 && cn != 0) {
-                    List<GuessDetailL> winner = betGameService.getWinner(new GuessDetailL(s, playDetail.getGUESS_ID(), roomId));//获取成功者
-                    for (int i = 0; i < winner.size(); i++) {
-                        GuessDetailL guessDetailL = winner.get(i);
-                        String uid = guessDetailL.getAPP_USER_ID();
-                        AppUser appUser1 = appuserService.getUserByID(uid);
-                        String old = appUser1.getBALANCE();
-                        int k = Integer.valueOf(old) + Integer.valueOf(gold);
-                        appUser1.setBALANCE(String.valueOf(k));
-                        appuserService.updateAppUserBalanceById(appUser1);
-                        //更新收支表
-                        Payment payment = new Payment();
-                        payment.setGOLD("+"+gold);
-                        payment.setUSERID(uid);
-                        payment.setDOLLID(roomId);
-                        payment.setCOST_TYPE("4");
-                        payment.setREMARK("流局返款");
-                        paymentService.reg(payment);
-                        //更改竞猜记录
-                        guessDetailL.setGUESS_TYPE("-0");//流局标识 -1
-                        guessDetailL.setSETTLEMENT_FLAG("Y");//结算
-                        guessDetailL.setSETTLEMENT_GOLD(Integer.valueOf(gold));
-                        betGameService.updateGuessDetail(guessDetailL);
-                    }
-                    RpcCommandResult rpcCommandResult = new RpcCommandResult();
-                    RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), null);
-                    if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                        log.info("通知成功");
-                    } else {
-                        log.info("通知失败");
-                    }
-                    rpcCommandResult.setRpcReturnCode(result);
-                    return rpcCommandResult;
-
-                }
-                if (y != 0 && cn == 0) {
-                    List<GuessDetailL> filler = betGameService.getFailer(new GuessDetailL(file, playDetail.getGUESS_ID(), roomId));//获取失败者
-                    for (int i = 0; i < filler.size(); i++) {
-                        GuessDetailL guessDetailL = filler.get(i);
-                        String uid = guessDetailL.getAPP_USER_ID();
-                        AppUser appUser1 = appuserService.getUserByID(uid);
-                        String old = appUser1.getBALANCE();
-                        int k = Integer.valueOf(old) + Integer.valueOf(gold);
-                        appUser1.setBALANCE(String.valueOf(k));
-                        appuserService.updateAppUserBalanceById(appUser1);
-                        //更新收支表
-                        Payment payment = new Payment();
-                        payment.setGOLD("+"+gold);
-                        payment.setUSERID(uid);
-                        payment.setDOLLID(roomId);
-                        payment.setCOST_TYPE("4");
-                        payment.setREMARK("流局返款");
-                        paymentService.reg(payment);
-                        //更改竞猜记录
-                        guessDetailL.setGUESS_TYPE("-0");//流局标识 -1
-                        guessDetailL.setSETTLEMENT_FLAG("Y");//结算
-                        guessDetailL.setSETTLEMENT_GOLD(Integer.valueOf(gold));
-                        betGameService.updateGuessDetail(guessDetailL);
-                    }
-                    RpcCommandResult rpcCommandResult = new RpcCommandResult();
-                    RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), null);
-                    if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                        log.info("通知成功");
-                    } else {
-                        log.info("通知失败");
-                    }
-                    rpcCommandResult.setRpcReturnCode(result);
-                    return rpcCommandResult;
-                }
-                //无人竞猜
-                if (y == 0 && cn == 0) {
-                    RpcCommandResult rpcCommandResult = new RpcCommandResult();
-                    RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), null);
-                    if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                        log.info("通知成功");
-                    } else {
-                        log.info("通知失败");
-                    }
-                    rpcCommandResult.setRpcReturnCode(result);
-                    return rpcCommandResult;
-                }
-                avg = (int) Math.floor(allGold / cn);
-            }
-            List<GuessDetailL> filler = betGameService.getFailer(new GuessDetailL(file, playDetail.getGUESS_ID(), roomId));//获取失败者
-            if (filler.size() != 0) {
-                for (int k = 0; k < filler.size(); k++) {
-                    GuessDetailL filePerson = filler.get(k);
-                    filePerson.setSETTLEMENT_FLAG("Y");
-                    filePerson.setGUESS_TYPE(String.valueOf(gifinumber));
-                    betGameService.updateGuessDetail(filePerson);
-                }
-            }
-
-            List<GuessDetailL> winner = betGameService.getWinner(new GuessDetailL(s, playDetail.getGUESS_ID(), roomId));//获取成功者
-           log.info("winner size:"+winner.size());
-            List<GuessDetail> win = new LinkedList<>();
-            if (winner.size() != 0) {
-                for (int f = 0; f < winner.size(); f++) {
-                    GuessDetailL winPerson = winner.get(f);
-                    log.info("localG:"+winPerson);
-                    GuessDetail guessDetail1 = new GuessDetail();
-                    guessDetail1.setAppUserId(winPerson.getAPP_USER_ID());
-                    AppUser appUser = appuserService.getUserByID(winPerson.getAPP_USER_ID());
-                    guessDetail1.setNickname(appUser.getNICKNAME());
-                    win.add(guessDetail1);
-                    log.info("DubboG:"+guessDetail1);
-                    String userId = winPerson.getAPP_USER_ID();
-                    AppUser appUser1 = appuserService.getUserByID(userId);
-                    int balance = Integer.parseInt(appUser1.getBALANCE());
-                    appUser1.setBALANCE(String.valueOf(balance + avg));
-                    appuserService.updateAppUserBalanceById(appUser1);
-                    winPerson.setSETTLEMENT_GOLD(avg);
-                    winPerson.setSETTLEMENT_FLAG("Y");
-                    winPerson.setGUESS_TYPE(String.valueOf(gifinumber));
-                    betGameService.updateGuessDetail(winPerson);
-                    //更新收支表
-                    Payment payment = new Payment();
-                    payment.setGOLD("+"+String.valueOf(avg));
-                    payment.setUSERID(userId);
-                    payment.setDOLLID(roomId);
-                    payment.setCOST_TYPE("3");
-                    payment.setREMARK("竞猜成功");
-                    paymentService.reg(payment);
-                }
-            }
-            RpcCommandResult rpcCommandResult = new RpcCommandResult();
-            RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(roomId, playDetail.getGUESS_ID(), win);
-            if (RpcReturnCode.SUCCESS == rpcCommandResult.getRpcReturnCode()) {
-                log.info("通知成功");
-            } else {
-                log.info("通知失败");
-            }
-            rpcCommandResult.setRpcReturnCode(result);
-            return rpcCommandResult;*/
          return betGameService.doFree(roomId,gifinumber);
         } catch (Exception e) {
             e.printStackTrace();

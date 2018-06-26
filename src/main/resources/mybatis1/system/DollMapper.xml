@@ -236,15 +236,18 @@
         insert into
         <include refid="tableName"/>
         (
-	        DOLL_ID,
-	        DOLL_SN,
-	        RELEASE_STATUS,
-	        DOLL_TYPE
+        DOLL_ID,
+        DOLL_SN,
+        RELEASE_STATUS,
+        DOLL_TYPE,
+        DEVICE_TYPE
+
         ) values (
-	        #{DOLL_ID},
-	        #{DOLL_SN},
-	        '0',
-	        'N'
+        #{DOLL_ID},
+        #{DOLL_SN},
+        '0',
+        'N',
+        #{DEVICE_TYPE}
         )
 
     </insert>

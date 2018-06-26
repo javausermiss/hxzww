@@ -125,10 +125,11 @@ public class AppBetGameController {
      * @param userId   参与竞猜用户ID
      * @param dollId   娃娃机房间ID
      * @param wager    单次竞猜金额（房间金额*倍数）
-     * @param guessId  场次ID
-     * @param guessKey 竞猜 中 或者 不中
+     * @param guessId  场次ID 如果属于无用户玩游戏，则此值传字符串null
+     * @param guessKey 竞猜数字
      * @param multiple 竞猜倍数
      * @param afterVoting 追投期数
+     * @param flag 是否开始游戏标签，在游戏中true 不在游戏中false
      * @return
      */
     @RequestMapping(value = "/bets", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -137,15 +138,16 @@ public class AppBetGameController {
             @RequestParam("userId") String userId,
             @RequestParam("dollId") String dollId,
             @RequestParam("wager") int wager,
-            @RequestParam("guessId") String guessId,
+            @RequestParam(value = "guessId",required = false,defaultValue = "null") String guessId,
             @RequestParam("guessKey") String guessKey,
             @RequestParam(value = "multiple",required = false,defaultValue = "1") Integer multiple,
-            @RequestParam(value = "afterVoting",required = false,defaultValue = "0") Integer afterVoting
+            @RequestParam(value = "afterVoting",required = false,defaultValue = "0") Integer afterVoting,
+            @RequestParam("flag") String flag
             )
     {
 
         try {
-          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,multiple,afterVoting);
+          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,multiple,afterVoting,flag);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();

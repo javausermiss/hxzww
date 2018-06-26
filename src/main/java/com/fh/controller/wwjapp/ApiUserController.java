@@ -23,6 +23,10 @@ import com.fh.util.wwjUtil.RespStatus;
 
 import net.sf.json.JSONObject;
 
+/**
+ * @author wjy
+ * @date
+ */
 @Controller
 @RequestMapping("/api/user")
 public class ApiUserController {

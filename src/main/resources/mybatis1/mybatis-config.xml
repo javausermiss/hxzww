@@ -25,6 +25,7 @@
 		
 		<typeAlias type="com.fh.vo.system.DollVo" alias="DollVo"/>
 		<typeAlias type="com.fh.vo.system.CameraVo" alias="CameraVo"/>
+		<typeAlias type="com.fh.entity.system.CoinPusher" alias="CoinPusherVo"/>
 		<!-- 这里添加生成的实体类 -->
 		
 		<!-- 账户信息 -->
