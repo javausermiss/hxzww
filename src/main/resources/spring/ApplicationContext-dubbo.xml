@@ -18,11 +18,13 @@
 
     <!--声明需要暴露的服务接口-->
     <dubbo:service interface="com.iot.game.pooh.web.rpc.interfaces.LotteryWebRpcService" version="1.0" ref="lotteryWebRpcService"/>
-        <dubbo:service interface="com.iot.game.pooh.web.rpc.interfaces.DollWebRpcService" version="1.0" ref="dollWebRpcService"/>
+    <dubbo:service interface="com.iot.game.pooh.web.rpc.interfaces.DollWebRpcService" version="1.0" ref="dollWebRpcService"/>
+    <dubbo:service interface="com.iot.game.pooh.web.rpc.interfaces.CoinRpcService" version="1.0" ref="coinWebServiceImpl"/>
 
     <!--具体的实现bean-->
     <bean id="lotteryWebRpcService" class="com.fh.rpc.LotteryWebServiceImpl"/>
     <bean id="dollWebRpcService" class="com.fh.rpc.DollWebServiceImpl"/>
+    <bean id="coinWebServiceImpl" class="com.fh.rpc.CoinWebServiceImpl"/>
 
     <dubbo:reference id="lotteryServerRpcService" interface="com.iot.game.pooh.server.rpc.interfaces.LotteryServerRpcService" version="1.0"/>
 

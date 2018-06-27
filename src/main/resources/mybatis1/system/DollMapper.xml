@@ -16,6 +16,7 @@
 		<result column="CAMERA_NAME_01" property="cameraName01"/>
 		<result column="CAMERA_NAME_02" property="cameraName02"/>
         <result column="DOLL_TAG" property="dollTag"/>
+        <result column="DEVICE_TYPE" property="deviceType"/>
 		<!-- <result column="TOY_ID" property="toy_id"/> -->
 		<result column="DOLL_TYPE" property="DOLL_TYPE"/>	
 		<collection property="cameras" column="DOLL_ID" ofType="com.fh.vo.system.CameraVo">
@@ -316,6 +317,7 @@
 			d.DOLL_GOLD,
 			d.DOLL_URL,
 			d.DOLL_CONVERSIONGOLD,
+            d.DEVICE_TYPE,
 			c.CAMERA_ID,
 			c.CAMERA_TYPE,
 			c.RTMP_URL,
