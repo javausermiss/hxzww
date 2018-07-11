@@ -10,14 +10,16 @@ import com.fh.service.system.coinpusher.CoinPusherManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.util.Const;
+import com.fh.util.DateUtil;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcReturnCode;
 import com.iot.game.pooh.web.rpc.interfaces.CoinRpcService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -32,7 +34,6 @@ public class CoinWebServiceImpl implements CoinRpcService {
     private PaymentManager paymentService;
 
     /**
-     *
      * @param roomId
      * @param userId
      * @param bat
@@ -41,9 +42,9 @@ public class CoinWebServiceImpl implements CoinRpcService {
     @Override
     public RpcCommandResult checkCoin(String roomId, String userId, Integer bat) {
 
-        log.info("用户:"+userId+"-------------------->"+roomId+"开始投币，数量为"+bat);
+        log.info("用户:" + userId + "-------------------->" + roomId + "开始投币，数量为" + bat);
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
-        try{
+        try {
             //查找娃娃机信息
             Doll doll = dollService.getDollByID(roomId);
             if (doll == null) {
@@ -62,7 +63,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
 
             int balance = Integer.valueOf(appUser.getBALANCE());
             int costGold = bat * 10;
-            if (balance < costGold){
+            if (balance < costGold) {
                 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
                 rpcCommandResult.setInfo("余额不足");
                 return rpcCommandResult;
@@ -78,13 +79,13 @@ public class CoinWebServiceImpl implements CoinRpcService {
             payment.setDOLLID(roomId);
             payment.setUSERID(userId);
             payment.setGOLD("-" + String.valueOf(costGold));
-            payment.setREMARK( doll.getDOLL_NAME()+"游戏");
+            payment.setREMARK(doll.getDOLL_NAME() + "游戏");
             paymentService.reg(payment);
 
             //增加用户的推币机游戏记录
 
-            CoinPusher cp =  coinpusherService.getLatestRecordForId(roomId);
-            String newId ;
+            CoinPusher cp = coinpusherService.getLatestRecordForId(roomId);
+            String newId;
             if (cp == null) {
                 Date currentTime1 = new Date();
                 SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
@@ -117,7 +118,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo("SUCCESS");
             return rpcCommandResult;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
             rpcCommandResult.setInfo("程序异常");
@@ -127,7 +128,6 @@ public class CoinWebServiceImpl implements CoinRpcService {
     }
 
     /**
-     *
      * @param roomId
      * @param userId
      * @param bat
@@ -136,9 +136,9 @@ public class CoinWebServiceImpl implements CoinRpcService {
      */
     @Override
     public RpcCommandResult playResult(String roomId, String userId, Integer bat, Integer bingo) {
-        log.info("用户:"+userId+"-------------------->"+roomId+"开始出币，数量为"+bingo);
+        log.info("用户:" + userId + "-------------------->" + roomId + "开始出币，数量为" + bingo);
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
-        try{
+        try {
             //查找设备信息
             Doll doll = dollService.getDollByID(roomId);
             if (doll == null) {
@@ -159,7 +159,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
             coinPusher.setRoomId(roomId);
             coinPusher.setUserId(userId);
             CoinPusher coinPusher1 = coinpusherService.getLatestRecord(coinPusher);
-            if (coinPusher1==null){
+            if (coinPusher1 == null) {
                 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
                 rpcCommandResult.setInfo("无此记录");
                 return rpcCommandResult;
@@ -168,27 +168,72 @@ public class CoinWebServiceImpl implements CoinRpcService {
             coinPusher1.setFinishFlag("Y");
             coinpusherService.updateOutCoin(coinPusher1);
             //娃娃币换算
-            if (bingo!=0){
-                int wwb =  bingo * 10;
-                int newBalance = Integer.valueOf(appUser.getBALANCE())+wwb;
-                //修改金币数量
-                appUser.setBALANCE(String.valueOf(newBalance));
-                appuserService.updateAppUserBalanceById(appUser);
+            if (bingo != 0) {
+                String now = DateUtil.getDay();
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, 1);
+                String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+                CoinPusher coinPusher_day = new CoinPusher();
+                coinPusher_day.setUserId(userId);
+                coinPusher_day.setBeginDate(now);
+                coinPusher_day.setEndDate(tomorrow);
+                CoinPusher coinPusher_sum = coinpusherService.getSumCoinOneDay(coinPusher_day);
+                int sum = coinPusher_sum.getSum();
+                int mp_new = sum / 50;
+                int mp_old = appUser.getCOIN_MULTIPLES();
+                int newBalance;
+                int wwb ;
+                if (mp_old != mp_new) {
+                    wwb = bingo * 10;
+                    int reward = (mp_new - mp_old) * 500;
+                    newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb + reward;
+                    //修改金币数量
+                    appUser.setBALANCE(String.valueOf(newBalance));
+                    appUser.setCOIN_MULTIPLES(mp_new);
+                    appuserService.updateAppUserCoinMultiples(appUser);
 
-                //更新收支表
-                Payment payment = new Payment();
-                payment.setGOLD("+" + wwb);
-                payment.setUSERID(userId);
-                payment.setDOLLID(roomId);
-                payment.setCOST_TYPE(Const.PlayMentCostType.cost_type17.getValue());
-                payment.setREMARK(Const.PlayMentCostType.cost_type17.getName() +"+"+ wwb);
-                paymentService.reg(payment);
+
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + wwb);
+                    payment.setUSERID(userId);
+                    payment.setDOLLID(roomId);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type17.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type17.getName() + "+" + wwb);
+                    paymentService.reg(payment);
+
+                    //更新奖励收支表
+                    Payment payment_reward = new Payment();
+                    payment_reward.setGOLD("+" + reward);
+                    payment_reward.setUSERID(userId);
+                    payment_reward.setDOLLID(roomId);
+                    payment_reward.setCOST_TYPE(Const.PlayMentCostType.cost_type18.getValue());
+                    payment_reward.setREMARK(Const.PlayMentCostType.cost_type18.getName() + "+" + reward);
+                    paymentService.reg(payment_reward);
+
+                }else {
+                    wwb = bingo * 10;
+                    newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb;
+                    //修改金币数量
+                    appUser.setBALANCE(String.valueOf(newBalance));
+                    appuserService.updateAppUserBalanceById(appUser);
+
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + wwb);
+                    payment.setUSERID(userId);
+                    payment.setDOLLID(roomId);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type17.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type17.getName() + "+" + wwb);
+                    paymentService.reg(payment);
+                }
             }
+
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo("SUCCESS");
             return rpcCommandResult;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
             rpcCommandResult.setInfo("程序异常");

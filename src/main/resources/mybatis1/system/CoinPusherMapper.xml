@@ -14,6 +14,7 @@
 		<result column="COSTGOLD" property="costGold"/>
 		<result column="RETURNGOLD" property="returnGold"/>
 		<result column="FINISH_FLAG" property="finishFlag"/>
+		<result column="sum" property="sum"/>
 	</resultMap>
 
 	<!-- 字段 -->
@@ -210,4 +211,14 @@
 	LIMIT 0,
 	 10
 	</select>
+
+	<select id="getSumCoinOneDay" parameterType="CoinPusherVo" resultMap="CoinPusherResultMap">
+		select sum(returngold) as sum
+		from TB_COINPUSHER_PLAY_DETAIL
+		where user_id = #{userId}
+		and create_date &lt;= #{endDate}
+		and create_date &gt;= #{beginDate}
+
+	</select>
+
 </mapper>

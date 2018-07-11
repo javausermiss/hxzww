@@ -15,4 +15,7 @@ public class CoinPusher {
     private String costGold;
     private String returnGold;
     private String finishFlag;
+    private String beginDate;
+    private String endDate;
+    private Integer sum;
 }

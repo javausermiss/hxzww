@@ -37,7 +37,9 @@
 		CNEE_ADDRESS,
 		CNEE_NAME,
 		PRO_USER_ID,
-		BET_NUM
+		BET_NUM,
+		COIN_MULTIPLES,
+		CHANNEL_NUM
 
 	</sql>
 
@@ -70,7 +72,10 @@
 		#{CNEE_ADDRESS},
 		#{CNEE_NAME},
 		#{PRO_USER_ID},
-		#{BET_NUM}
+		#{BET_NUM},
+		#{COIN_MULTIPLES},
+		#{CHANNEL_NUM}
+
 	</sql>
 
     <!-- 角色表 -->
@@ -520,7 +525,8 @@
         UPDATE
         sys_app_user
 		SET
-		SIGN_TAG = #{SIGN_TAG}
+		SIGN_TAG = #{SIGN_TAG},
+		COIN_MULTIPLES = #{COIN_MULTIPLES}
 		WHERE
 		USER_ID = #{USER_ID}
     </update>
@@ -641,7 +647,8 @@
         NICKNAME,
         IMAGE_URL,
         BALANCE,
-        PASSWORD
+        PASSWORD,
+        CHANNEL_NUM
         ) values (
         #{USER_ID},
         #{PHONE},
@@ -650,7 +657,8 @@
         #{NICKNAME},
         #{IMAGE_URL},
         #{BALANCE},
-        #{PASSWORD}
+        #{PASSWORD},
+        #{CHANNEL_NUM}
         )
 
 
@@ -745,6 +753,18 @@
         WHERE
         USER_ID = #{USER_ID}
 
+    </update>
+
+
+
+    <update id="updateAppUserCoinMultiples" parameterType="com.fh.entity.system.AppUser">
+        update
+        <include refid="tableName"/>
+        set
+        BALANCE = #{BALANCE},
+        COIN_MULTIPLES = #{COIN_MULTIPLES}
+        WHERE
+        USER_ID = #{USER_ID}
     </update>
 
 

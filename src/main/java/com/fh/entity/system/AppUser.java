@@ -30,8 +30,14 @@ public class AppUser {
     private String SIGN_TAG;
     private String RANK;
     private Integer BET_NUM;
-    
+    //推币机奖励倍数标签
+    private Integer COIN_MULTIPLES;
+
+
     private String PRO_USER_ID; //
+
+
+    private String CHANNEL_NUM;//渠道包编号
 
     public AppUser() {
     }
@@ -76,6 +82,22 @@ public class AppUser {
         this.NICKNAME = NICKNAME;
         this.IMAGE_URL = IMAGE_URL;
         this.BALANCE = BALANCE;
+    }
+
+    public Integer getCOIN_MULTIPLES() {
+        return COIN_MULTIPLES;
+    }
+
+    public String getCHANNEL_NUM() {
+        return CHANNEL_NUM;
+    }
+
+    public void setCHANNEL_NUM(String CHANNEL_NUM) {
+        this.CHANNEL_NUM = CHANNEL_NUM;
+    }
+
+    public void setCOIN_MULTIPLES(Integer COIN_MULTIPLES) {
+        this.COIN_MULTIPLES = COIN_MULTIPLES;
     }
 
     public Integer getBET_NUM() {

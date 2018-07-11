@@ -80,6 +80,7 @@ public class AppSignController {
             for (int i = 0; i < list.size(); i++) {
                 AppUser appUser = list.get(i);
                 appUser.setSIGN_TAG("0");
+                appUser.setCOIN_MULTIPLES(0);
                 appuserService.updateAppUserSign(appUser);
             }
 

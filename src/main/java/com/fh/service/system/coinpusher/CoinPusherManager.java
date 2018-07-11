@@ -95,6 +95,14 @@ public interface CoinPusherManager {
 	 * @throws Exception
 	 */
 	public List<CoinPusher> getCoinPusherRecondList(String userId)throws Exception;
+
+	/**
+	 * 查询该用户当日已经获得硬币数
+	 * @param coinPusher
+	 * @return
+	 * @throws Exception
+	 */
+	public CoinPusher getSumCoinOneDay(CoinPusher coinPusher) throws Exception;
 	
 }
 

@@ -111,5 +111,10 @@ public class CoinPusherService implements CoinPusherManager {
 	public List<CoinPusher> getCoinPusherRecondList(String userId)throws Exception {
 		return (List<CoinPusher>) dao.findForList("CoinPusherMapper.getCoinPusherRecondList",userId);
 	}
+
+	@Override
+	public CoinPusher getSumCoinOneDay(CoinPusher coinPusher)throws Exception {
+		return (CoinPusher)dao.findForObject("CoinPusherMapper.getSumCoinOneDay",coinPusher);
+	}
 }
 

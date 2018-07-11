@@ -150,6 +150,7 @@ public class Const {
 		cost_type14("注册赠送","14"),
 		cost_type15("竞猜追投","15"),
 		cost_type17("自动兑换","17"),
+		cost_type18("推币机奖励","18"),
 		cost_type20("输入加盟码","20");
 		
 		private  String name;

@@ -471,5 +471,10 @@ public class AppuserService implements AppuserManager{
 	public int updateAppUserBlAndBnById(AppUser appUser) throws Exception {
 		return (int)dao.update("AppuserMapper.updateAppUserBlAndBnById",appUser);
 	}
+
+	@Override
+	public int updateAppUserCoinMultiples(AppUser appUser) throws Exception {
+		return (int)dao.update("AppuserMapper.updateAppUserCoinMultiples",appUser);
+	}
 }
 

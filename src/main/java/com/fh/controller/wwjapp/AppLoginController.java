@@ -368,7 +368,8 @@ public class AppLoginController extends BaseController {
     @ResponseBody
     public JSONObject userPassLogin(@RequestParam("phone") String phone,
                                     @RequestParam("password") String pw,
-                                    @RequestParam("smsCode") String smsCode
+                                    @RequestParam("smsCode") String smsCode,
+                                    @RequestParam(value = "channelNum",required = false,defaultValue = "100001") String channelNum
     ) {
         try {
             if (phone == null || phone.trim().length() <= 0) {
@@ -402,6 +403,7 @@ public class AppLoginController extends BaseController {
             appUser1.setUSERNAME(phone);
             appUser1.setPHONE(phone);
             appUser1.setBALANCE("29");
+            appUser1.setCHANNEL_NUM(channelNum);
             appuserService.regAppUser(appUser1);
 
             //增加赠送金币明细

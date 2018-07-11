@@ -387,6 +387,18 @@ public interface AppuserManager {
     public int updateAppUserBlAndBnById(AppUser appUser)throws Exception;
 
 
+    /**
+     * 修改金币奖励倍数
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public int updateAppUserCoinMultiples(AppUser appUser)throws Exception;
+
+
+
+
+
 
 }
 
