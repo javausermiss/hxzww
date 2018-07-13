@@ -185,7 +185,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 int wwb ;
                 if (mp_old != mp_new) {
                     wwb = bingo * 10;
-                    int reward = (mp_new - mp_old) * 500;
+                    int reward = (mp_new - mp_old) * doll.getCOINPUSHER_REWORD();
                     newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb + reward;
                     //修改金币数量
                     appUser.setBALANCE(String.valueOf(newBalance));

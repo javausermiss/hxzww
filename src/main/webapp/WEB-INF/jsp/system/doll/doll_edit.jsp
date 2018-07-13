@@ -32,28 +32,33 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:100px;text-align: right;padding-top: 13px;">娃娃机机SN:</td>
+								<td style="width:200px;text-align: right;padding-top: 13px;">娃娃机机SN:</td>
 								<td><input type="text" name="DOLL_SN" id="DOLL_SN" value="${pd.DOLL_SN}" maxlength="50" placeholder="这里输入娃娃机SN" title="sn" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:100px;text-align: right;padding-top: 13px;">设备编号:</td>
+								<td style="width:200px;text-align: right;padding-top: 13px;">设备编号:</td>
 								<td><input type="text" name="ROOM_ID" id="ROOM_ID" value="${pd.ROOM_ID}"
 								 maxlength="10" placeholder="这里输入娃娃机设备编号" title="ROOM_ID" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:100px;text-align: right;padding-top: 13px;">娃娃机名字:</td>
+								<td style="width:200px;text-align: right;padding-top: 13px;">娃娃机名字:</td>
 								<td><input type="text" name="DOLL_NAME" id="DOLL_NAME" value="${pd.DOLL_NAME}"
 								 maxlength="10" placeholder="这里输入娃娃机名字" title="DOLL_NAME" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:100px;text-align: right;padding-top: 13px;">娃娃机金币:</td>
+								<td style="width:200px;text-align: right;padding-top: 13px;">娃娃机金币:</td>
 								<td><input type="text" name="DOLL_GOLD" id="DOLL_GOLD" value="${pd.DOLL_GOLD}" 
 								maxlength="10" placeholder="这里输入娃娃机花费金额" title="DOLL_GOLD" style="width:98%;"/></td>
 							</tr>
 							<tr>
-								<td style="width:100px;text-align: right;padding-top: 13px;">可兑换金币数:</td>
+								<td style="width:200px;text-align: right;padding-top: 13px;">可兑换金币数:</td>
 								<td><input type="text" name="DOLL_CONVERSIONGOLD" id="DOLL_CONVERSIONGOLD" 
 								value="${pd.DOLL_CONVERSIONGOLD}" maxlength="10" placeholder="这里输入可兑换金币数" title="DOLL_CONVERSIONGOLD" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:200px;text-align: right;padding-top: 13px;">推币机奖励金币数:</td>
+								<td><input type="text" name="COINPUSHER_REWORD" id="COINPUSHER_REWORD" value="${pd.COINPUSHER_REWORD}"
+										   maxlength="10" placeholder="这里输入娃娃机花费金额" title="COINPUSHER_REWORD" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="text-align: right;padding-top: 13px;">玩具名称:</td>

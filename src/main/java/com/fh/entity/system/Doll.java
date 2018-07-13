@@ -20,6 +20,7 @@ public class Doll {
     private String RELEASE_STATUS;//发布状态
     private String DOLL_TYPE;
     private String DEVICE_TYPE;//设备类型，用来区分娃娃机（1），推币机（2）
+    private Integer COINPUSHER_REWORD;//推币机奖励金额
     
     public Doll() {
 
@@ -29,6 +30,14 @@ public class Doll {
         this.DOLL_ID = DOLL_ID;
         this.DOLL_SN = DOLL_SN;
         this.DEVICE_TYPE = DEVICE_TYPE;
+    }
+
+    public Integer getCOINPUSHER_REWORD() {
+        return COINPUSHER_REWORD;
+    }
+
+    public void setCOINPUSHER_REWORD(Integer COINPUSHER_REWORD) {
+        this.COINPUSHER_REWORD = COINPUSHER_REWORD;
     }
 
     public String getDOLL_CONVERSIONGOLD() {

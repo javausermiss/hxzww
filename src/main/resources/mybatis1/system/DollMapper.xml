@@ -54,7 +54,8 @@
 		TOY_ID,
 		RELEASE_STATUS,
 		DOLL_TAG,
-		DOLL_TYPE
+		DOLL_TYPE,
+		COINPUSHER_REWORD
 	</sql>
 
     <!-- 字段值 -->
@@ -72,7 +73,8 @@
 		#{TOY_ID},
 		#{RELEASE_STATUS},
 		#{DOLL_TAG},
-		#{DOLL_TYPE}
+		#{DOLL_TYPE},
+		#{COINPUSHER_REWORD}
 	</sql>
 
     <!-- 新增-->
@@ -127,6 +129,10 @@
         <if test="TOY_ID != null and TOY_ID != ''">
         	TOY_ID = #{TOY_ID},
          </if>
+
+        <if test="COINPUSHER_REWORD != null and COINPUSHER_REWORD != ''">
+            COINPUSHER_REWORD = #{COINPUSHER_REWORD},
+        </if>
         
         DOLL_TYPE = #{DOLL_TYPE}
         

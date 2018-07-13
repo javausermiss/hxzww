@@ -136,31 +136,6 @@ public class SignService implements SignManager {
                     payment.setREMARK("签到奖励");
                     paymentService.reg(payment);
 
-                 /* if (h != 7) {
-                    switch (String.valueOf(h + 1)) {
-                        case "1":
-                            gold = "3";
-                            break;
-                        case "2":
-                            gold = "10";
-                            break;
-                        case "3":
-                            gold = "20";
-                            break;
-                        case "4":
-                            gold = "10";
-                            break;
-                        case "5":
-                            gold = "10";
-                            break;
-                        case "6":
-                            gold = "10";
-                            break;
-                        case "7":
-                            gold = "40";
-                            break;
-                    }*/
-
                 } else {
                     s.setUSERID(userId);
                     s.setSIGNTIME(dateString);

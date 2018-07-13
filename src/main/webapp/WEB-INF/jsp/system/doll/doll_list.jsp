@@ -110,9 +110,10 @@
                                     <th class="center">娃娃机房间号</th>
                                     <th class="center">娃娃金币</th>
                                     <th class="center">娃娃可兑换金币</th>
+                                    <th class="center">奖励金币</th>
                                     <th class="center">设备编号</th>
-                                    <th class="center">网关状态</th>
                                     <th class="center">概率</th>
+                                    <th class="center">网关状态</th>
                                     <th class="center">H5可见</th>
                                     <th class="center">发布状态</th>
                                     <th class="center">操作</th>
@@ -137,6 +138,7 @@
                                                     <td class='center'>${var.DOLL_ID}</td>
                                                     <td class="center">${var.DOLL_GOLD}</td>
                                                     <td class="center">${var.DOLL_CONVERSIONGOLD}</td>
+                                                    <td class="center">${var.COINPUSHER_REWORD}</td>
                                                     <td class="center">${var.ROOM_ID}</td>
                                                     <td class="center">${var.ROOMPROBABILITY}</td>
                                                     <td class="center">${var.DOLL_STATE}</td>

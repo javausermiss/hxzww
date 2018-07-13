@@ -67,6 +67,36 @@ public class AppCoinPusherController {
 
     }
 
+    /**
+     * 查询用户的投币记录，出币记录
+     * @return
+     */
+    @RequestMapping(value = "/getCoinSum", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getCoinSum(@RequestParam("userId") String userId){
+        try {
+            String now = DateUtil.getDay();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 1);
+            String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+            CoinPusher coinPusher_day = new CoinPusher();
+            coinPusher_day.setUserId(userId);
+            coinPusher_day.setBeginDate(now);
+            coinPusher_day.setEndDate(tomorrow);
+            CoinPusher coinPusher_sum = coinpusherService.getSumCoinOneDay(coinPusher_day);
+            int sum = coinPusher_sum.getSum();
+            Map<String,Object> map = new HashMap<>();
+            map.put("coinPusher",coinPusher_sum);
+            return RespStatus.successs().element("data",map);
+        }catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+
+
+    }
+
+
 
 
 

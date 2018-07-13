@@ -170,6 +170,7 @@ public class DollController extends BaseController {
 		pd.put("DOLL_URL", fileId);
 		pd.put("ROOM_ID", req.getParameter("ROOM_ID"));
 		pd.put("DOLL_TYPE", req.getParameter("DOLL_TYPE"));
+		pd.put("COINPUSHER_REWORD",req.getParameter("COINPUSHER_REWORD"));
 		dollService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
