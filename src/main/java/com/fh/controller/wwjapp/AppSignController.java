@@ -71,7 +71,7 @@ public class AppSignController {
     }
 
     /**
-     * 定时器。0点刷新用户的签到标签 ,竞猜次数标签
+     * 定时器。0点刷新用户的签到标签 ,竞猜次数标签,刷新奖励倍数标签
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void flushAppuserSign() {

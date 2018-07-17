@@ -72,15 +72,6 @@ public class SignService implements SignManager {
                 Map<String, Object> map = new HashMap<>();
                 map.put("sign", newSignLast1);
                 return RespStatus.successs().element("data", map);
-            } else if (newSignLast.getCSDATE().equals("7")) {
-                sign.setCSDATE("0");
-                sign.setUSERID(userId);
-                sign.setSIGNTIME(dateString);
-                this.insertSign(sign);
-                Sign newSignLast1 = this.getSignLastByUserId(userId);
-                Map<String, Object> map = new HashMap<>();
-                map.put("sign", newSignLast1);
-                return RespStatus.successs().element("data", map);
             }
             Map<String, Object> map = new HashMap<>();
             map.put("sign", newSignLast);
@@ -93,8 +84,8 @@ public class SignService implements SignManager {
                 signLast.setCSDATE("1");
                 this.updateSign(signLast);
 
-                SignGold signGold =  signgoldService.getSignGoldByDay("1");
-                gold =  signGold.getGOLD_NUM();
+                SignGold signGold = signgoldService.getSignGoldByDay("1");
+                gold = signGold.getGOLD_NUM();
 
                 AppUser appUser = appuserService.getUserByID(userId);
                 String oldBalance = appUser.getBALANCE();
@@ -105,7 +96,7 @@ public class SignService implements SignManager {
                 Payment payment = new Payment();
                 payment.setCOST_TYPE("8");
                 payment.setUSERID(userId);
-                payment.setGOLD("+"+gold);
+                payment.setGOLD("+" + gold);
                 payment.setREMARK("签到奖励");
                 paymentService.reg(payment);
             } else {
@@ -115,9 +106,9 @@ public class SignService implements SignManager {
                 String signday = signLast.getCSDATE();//查询最近的签到天数
                 int h = Integer.valueOf(signday);
 
-                SignGold signGold =  signgoldService.getSignGoldByDay(String.valueOf(h));
-                if (h!=7){
-                    gold =  signGold.getGOLD_NUM();
+                SignGold signGold = signgoldService.getSignGoldByDay(String.valueOf(h));
+                if (h != 7) {
+                    gold = signGold.getGOLD_NUM();
                     signday = String.valueOf(h + 1);
                     s.setUSERID(userId);
                     s.setSIGNTIME(dateString);
@@ -135,28 +126,6 @@ public class SignService implements SignManager {
                     payment.setGOLD("+" + gold);
                     payment.setREMARK("签到奖励");
                     paymentService.reg(payment);
-
-                } else {
-                    s.setUSERID(userId);
-                    s.setSIGNTIME(dateString);
-                    s.setCSDATE("1");
-                    this.insertSign(s);
-
-                    SignGold signGold1 =  signgoldService.getSignGoldByDay("1");
-                    gold =  signGold1.getGOLD_NUM();
-
-                    AppUser appUser = appuserService.getUserByID(userId);
-                    String oldBalance = appUser.getBALANCE();
-                    int newBalance = Integer.valueOf(oldBalance) + Integer.valueOf(gold);
-                    appUser.setBALANCE(String.valueOf(newBalance));
-                    appUser.setSIGN_TAG("1");
-                    appuserService.updateAppUserSB(appUser);
-                    Payment payment = new Payment();
-                    payment.setCOST_TYPE("8");
-                    payment.setUSERID(userId);
-                    payment.setGOLD("+"+gold);
-                    payment.setREMARK("签到奖励");
-                    paymentService.reg(payment);
                 }
             }
             Sign newSignLast = this.getSignLastByUserId(userId);
@@ -165,5 +134,6 @@ public class SignService implements SignManager {
             map.put("sign", newSignLast);
             return RespStatus.successs().element("data", map);
         }
+
     }
 }

@@ -508,7 +508,7 @@
     </select>
 
     <select id="getAppUserList" resultType="com.fh.entity.system.AppUser">
-        SELECT a.USER_ID , a.SIGN_TAG FROM sys_app_user AS a WHERE a.SIGN_TAG = '1'
+        SELECT a.USER_ID , a.SIGN_TAG ,a.COIN_MULTIPLES FROM sys_app_user
     </select>
 
     <update id="updateAppUserSB" parameterType="com.fh.entity.system.AppUser">
