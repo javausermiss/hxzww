@@ -395,6 +395,20 @@ public interface AppuserManager {
      */
     public int updateAppUserCoinMultiples(AppUser appUser)throws Exception;
 
+    /**
+     * 获取周卡用户
+     * @return
+     * @throws Exception
+     */
+    public List<AppUser> getWeekCardPeoples()throws Exception;
+
+    /**
+     * 获取月卡用户
+     * @return
+     * @throws Exception
+     */
+    public List<AppUser> getMonthCardPeoples()throws Exception;
+
 
 
 

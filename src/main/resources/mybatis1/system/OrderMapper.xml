@@ -19,7 +19,8 @@
 		PAY_TYPE,
 		PRO_USER_ID,
 		CHANNEL,
-		ADD_INFO
+		ADD_INFO,
+		PAYOUT_TYPE
 	</sql>
 
     <insert id="regmount" parameterType="com.fh.entity.system.Order">
@@ -37,7 +38,8 @@
         PAY_TYPE,
 		PRO_USER_ID,
         ADD_INFO,
-        OUT_ORDER_ID
+        OUT_ORDER_ID,
+        PAYOUT_TYPE
         )
         VALUES
         (
@@ -52,7 +54,8 @@
         #{PAY_TYPE},
 		#{PRO_USER_ID},
         #{ADD_INFO},
-        #{OUT_ORDER_ID}
+        #{OUT_ORDER_ID},
+        #{PAYOUT_TYPE}
         )
     </insert>
 

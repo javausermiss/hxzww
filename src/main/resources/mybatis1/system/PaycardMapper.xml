@@ -14,7 +14,11 @@
         AMOUNT,
         GOLD,
         DISCOUNT,
-        IMAGEURL
+        IMAGEURL,
+        RECHARE,
+        AWARD,
+        FIRSTAWARD,
+        FIRSTAWARD_GOLD
     </sql>
 
     <!-- 字段值 -->
@@ -23,7 +27,11 @@
         #{AMOUNT},
         #{GOLD},
         #{DISCOUNT},
-        #{IMAGEURL}
+        #{IMAGEURL},
+        #{RECHARE},
+        #{AWARD},
+        #{FIRSTAWARD},
+        #{FIRSTAWARD_GOLD}
     </sql>
 
     <!-- 新增-->

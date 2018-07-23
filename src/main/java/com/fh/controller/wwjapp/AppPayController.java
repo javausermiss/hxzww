@@ -792,6 +792,15 @@ public class AppPayController extends BaseController {
     /**
      * 支付宝下单
      *
+     *    //周卡
+     *   String wc = "wc";
+     *   //月卡
+     *  String mc = "mc";
+     *  //首充用户
+     *  String fc = "fc";
+     *  //正常充值
+     *  String nm = "nm";
+     *
      * @param userId
      * @param amt
      * @param ctype
@@ -802,9 +811,11 @@ public class AppPayController extends BaseController {
     @ResponseBody
     public JSONObject getTradeOrder(@RequestParam("userId") String userId,
                                     @RequestParam("amount") String amt,
+                                    @RequestParam(value = "regGold") String regGold,
                                     @RequestParam(value = "ctype", required = false) String ctype,
                                     @RequestParam(value = "channel", required = false) String channel,
-                                    @RequestParam(value="payType" ,required = false) String payType
+                                    @RequestParam(value="payType" ,required = false) String payType,
+                                    @RequestParam(value = "payOutType") String payOutType
 
     ) {
 
@@ -838,29 +849,18 @@ public class AppPayController extends BaseController {
                 newOrder = datetime + "000001";//新的订单编号
                 RedisUtil.getRu().set("tradeOrder", newOrder);
             }
-           /* Order order = new Order();
-            order.setUSER_ID(userId);
-            order.setREC_ID(MyUUID.getUUID32());
-            order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amt));//充值金额
-            order.setORDER_ID(newOrder);
-            order.setREGGOLD(String.valueOf(Integer.valueOf(amt)*10));//充值的金币数量
-            order.setCHANNEL(channel);
-            order.setCTYPE(ctype);
-            order.setADD_INFO(NumberUtils.RMBYuanToCent(amt));
-            orderService.regmount(order);*/
 
             Order order = new Order();
             order.setUSER_ID(userId);
             order.setREC_ID(newOrder);
             order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amt)); //元转分
             order.setORDER_ID(newOrder);
-            Double aDouble = Double.valueOf(amt)*10;
-            int aInt = aDouble.intValue();
-            order.setREGGOLD(String.valueOf(aInt)); //充值的金币数量
+            order.setREGGOLD(regGold); //充值的金币数量
             order.setCHANNEL(channel);
             order.setCTYPE(ctype);
             order.setPAY_TYPE(payType);
             order.setPRO_USER_ID(appUser.getPRO_USER_ID());
+            order.setPAYOUT_TYPE(payOutType);
             orderService.regmount(order);
 
         } catch (Exception e) {
@@ -970,34 +970,121 @@ public class AppPayController extends BaseController {
         if ("TRADE_SUCCESS".equals(params.get("trade_status")) || "TRADE_FINISHED".equals(params.get("trade_status"))) {
             logger.info("支付订单状态----------->>>>>>>>>>>>>>" + params.get("trade_status"));
             try {
-
                 Order o = orderService.getOrderById(out_trade_no);
+                AppUser appUser = appuserService.getUserByID(o.getUSER_ID());
                 if (o.getSTATUS().equals("1")) {
                     return "success";
                 }
+                //周卡
+                String wc = "wc";
+                //月卡
+                String mc = "mc";
+                //首充用户
+                String fc = "fc";
+                //正常充值
+                String nm = "nm";
+
                 String rechare = o.getREGGOLD();
                 int gold = Integer.valueOf(rechare);
-                AppUser appUser = appuserService.getUserByID(o.getUSER_ID());
-                int a = Integer.valueOf(appUser.getBALANCE()) + gold;
-                appUser.setBALANCE(String.valueOf(a));
-                appuserService.updateAppUserBalanceById(appUser);
-                //更新收支表
-                Payment payment = new Payment();
-                payment.setGOLD("+" + rechare);
-                payment.setUSERID(o.getUSER_ID());
-                payment.setDOLLID(null);
-                payment.setCOST_TYPE("5");
-                payment.setREMARK("充值" + rechare);
-                paymentService.reg(payment);
-               /* //奖励记录
-                Payment payment1 = new Payment();
-                payment1.setGOLD("+" + award);
-                payment1.setUSERID(o.getUSER_ID());
-                payment1.setDOLLID(null);
-                payment1.setCOST_TYPE("9");
-                payment1.setREMARK("奖励" + award);
-                paymentService.reg(payment1);*/
-                
+                int nb = 0;
+
+                if (o.getPAYOUT_TYPE().equals(wc)){
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + rechare);
+                    payment.setUSERID(o.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type19.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type19.getName());
+                    paymentService.reg(payment);
+
+                    Integer wd =  appUser.getWEEKS_CARD();
+                    String sdt = appUser.getWEEKS_CARD_TAG();
+                    if (sdt.equals("1")){
+                        appUser.setWEEKS_CARD(wd + 7);
+                        nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                    }else {
+                        //更新收支表
+                        Payment payment_1 = new Payment();
+                        payment_1.setGOLD("+" + 20);
+                        payment_1.setUSERID(o.getUSER_ID());
+                        payment_1.setDOLLID(null);
+                        payment_1.setCOST_TYPE(Const.PlayMentCostType.cost_type22.getValue());
+                        payment_1.setREMARK(Const.PlayMentCostType.cost_type22.getName());
+                        paymentService.reg(payment_1);
+                        appUser.setWEEKS_CARD(wd + 6);
+                        nb = Integer.valueOf(appUser.getBALANCE()) + gold + 20;
+                    }
+                    appUser.setWEEKS_CARD_TAG("1");
+                    appUser.setBALANCE(String.valueOf(nb));
+                    appuserService.updateAppUserBalanceById(appUser);
+
+                }
+                if (o.getPAYOUT_TYPE().equals(mc)){
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + rechare);
+                    payment.setUSERID(o.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type21.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type21.getName());
+                    paymentService.reg(payment);
+
+                    Integer wd =  appUser.getMONTH_CARD();
+                    String sdt = appUser.getMONTH_CARD_TAG();
+                    if (sdt.equals("1")){
+                        appUser.setMONTH_CARD(wd + 30);
+                        nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                    }else {
+                        //更新收支表
+                        Payment payment_2 = new Payment();
+                        payment_2.setGOLD("+" + 33);
+                        payment_2.setUSERID(o.getUSER_ID());
+                        payment_2.setDOLLID(null);
+                        payment_2.setCOST_TYPE(Const.PlayMentCostType.cost_type23.getValue());
+                        payment_2.setREMARK(Const.PlayMentCostType.cost_type23.getName());
+                        paymentService.reg(payment_2);
+                        appUser.setMONTH_CARD(wd + 29);
+                        nb = Integer.valueOf(appUser.getBALANCE()) + gold + 33;
+                    }
+                    appUser.setMONTH_CARD_TAG("1");
+                    appUser.setBALANCE(String.valueOf(nb));
+                    appuserService.updateAppUserBalanceById(appUser);
+
+
+                }
+                if (o.getPAYOUT_TYPE().equals(fc)){
+                    appUser.setFIRST_CHARGE("1");
+                    nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                    appUser.setBALANCE(String.valueOf(nb));
+                    appuserService.updateAppUserBalanceById(appUser);
+
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + rechare);
+                    payment.setUSERID(o.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type24.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type24.getName());
+                    paymentService.reg(payment);
+
+                }
+                if (o.getPAYOUT_TYPE().equals(nm)){
+                    nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                    appUser.setBALANCE(String.valueOf(nb));
+                    appuserService.updateAppUserBalanceById(appUser);
+
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + rechare);
+                    payment.setUSERID(o.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type05.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type05.getName());
+                    paymentService.reg(payment);
+
+                }
+
                 //当前订单的用户昵称
                 o.setUserNickName(appUser.getNICKNAME());
                 o.setREGGOLD(String.valueOf(gold));
@@ -1008,6 +1095,7 @@ public class AppPayController extends BaseController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
         return "success"   ;
 

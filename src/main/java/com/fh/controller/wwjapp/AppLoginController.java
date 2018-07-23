@@ -402,18 +402,9 @@ public class AppLoginController extends BaseController {
             appUser1.setIMAGE_URL(face);
             appUser1.setUSERNAME(phone);
             appUser1.setPHONE(phone);
-            appUser1.setBALANCE("29");
+            appUser1.setBALANCE("0");
             appUser1.setCHANNEL_NUM(channelNum);
             appuserService.regAppUser(appUser1);
-
-            //增加赠送金币明细
-            Payment payment = new Payment();
-            payment.setREMARK(Const.PlayMentCostType.cost_type13.getName());
-            payment.setGOLD("+29");
-            payment.setCOST_TYPE(Const.PlayMentCostType.cost_type13.getValue());
-            payment.setUSERID(appUser1.getUSER_ID());
-            paymentService.reg(payment);
-
 
             //SRS推流
             SrsConnectModel sc = new SrsConnectModel();

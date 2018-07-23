@@ -14,6 +14,8 @@ public class Paycard {
     private String IMAGEURL;
     private String RECHARE;
     private String AWARD;
+    private String FIRSTAWARD;
+    private String FIRSTAWARD_GOLD;
 
 
 }

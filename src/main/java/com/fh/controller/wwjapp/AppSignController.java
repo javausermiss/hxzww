@@ -8,6 +8,7 @@ import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playdetail.PlayDetailManage;
 import com.fh.service.system.sendgoods.SendGoodsManager;
 import com.fh.service.system.sign.SignManager;
+import com.fh.util.Const;
 import com.fh.util.DateUtil;
 import com.fh.util.wwjUtil.RespStatus;
 import lombok.Data;
@@ -81,6 +82,8 @@ public class AppSignController {
                 AppUser appUser = list.get(i);
                 appUser.setSIGN_TAG("0");
                 appUser.setCOIN_MULTIPLES(0);
+                appUser.setWEEKS_CARD_TAG("0");
+                appUser.setMONTH_CARD_TAG("0");
                 appuserService.updateAppUserSign(appUser);
             }
 
@@ -89,6 +92,75 @@ public class AppSignController {
         }
 
     }
+
+    /**
+     * 定时器。下发奖励周卡用户
+     */
+    @Scheduled(cron = "0 5 0 * * ?")
+    public void flushAppuserWeekAward() {
+        try {
+            List<AppUser> list = appuserService.getWeekCardPeoples();
+            for (int i = 0; i < list.size(); i++) {
+                AppUser appUser = list.get(i);
+                if (!appUser.getWEEKS_CARD_TAG().equals("1")){
+                   int nb =  Integer.valueOf(appUser.getBALANCE()) + 20;
+                   appUser.setWEEKS_CARD(appUser.getWEEKS_CARD()-1);
+                   appUser.setBALANCE(String.valueOf(nb));
+                   appUser.setWEEKS_CARD_TAG("1");
+                   appuserService.updateAppUserBalanceById(appUser);
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + 20);
+                    payment.setUSERID(appUser.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type22.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type22.getName());
+                    paymentService.reg(payment);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * 定时器。下发奖励月卡用户
+     */
+    @Scheduled(cron = "0 10 0 * * ?")
+    public void flushAppuserMonthAward() {
+        try {
+            List<AppUser> list = appuserService.getMonthCardPeoples();
+            for (int i = 0; i < list.size(); i++) {
+                AppUser appUser = list.get(i);
+                if (!appUser.getMONTH_CARD_TAG().equals("1")){
+                    int nb =  Integer.valueOf(appUser.getBALANCE()) + 33;
+                    appUser.setMONTH_CARD(appUser.getMONTH_CARD()-1);
+                    appUser.setBALANCE(String.valueOf(nb));
+                    appUser.setMONTH_CARD_TAG("1");
+                    appuserService.updateAppUserBalanceById(appUser);
+
+                    //更新收支表
+                    Payment payment = new Payment();
+                    payment.setGOLD("+" + 33);
+                    payment.setUSERID(appUser.getUSER_ID());
+                    payment.setDOLLID(null);
+                    payment.setCOST_TYPE(Const.PlayMentCostType.cost_type23.getValue());
+                    payment.setREMARK(Const.PlayMentCostType.cost_type23.getName());
+                    paymentService.reg(payment);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
 
     /**
      * 定时兑换用户过期的娃娃,凌晨3点查询

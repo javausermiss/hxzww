@@ -151,7 +151,13 @@ public class Const {
 		cost_type15("竞猜追投","15"),
 		cost_type17("自动兑换","17"),
 		cost_type18("推币机奖励","18"),
-		cost_type20("输入加盟码","20");
+		cost_type19("充值周卡","19"),
+		cost_type20("输入加盟码","20"),
+		cost_type21("充值月卡","21"),
+		cost_type22("周卡每日赠送","22"),
+		cost_type23("月卡每日赠送","23"),
+		cost_type24("用户首充","24");
+
 		
 		private  String name;
 		private  String value;

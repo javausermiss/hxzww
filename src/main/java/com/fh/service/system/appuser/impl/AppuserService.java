@@ -476,5 +476,15 @@ public class AppuserService implements AppuserManager{
 	public int updateAppUserCoinMultiples(AppUser appUser) throws Exception {
 		return (int)dao.update("AppuserMapper.updateAppUserCoinMultiples",appUser);
 	}
+
+	@Override
+	public List<AppUser> getWeekCardPeoples() throws Exception {
+		return (List<AppUser>)dao.findForList("AppuserMapper.getWeekCardPeoples",null);
+	}
+
+	@Override
+	public List<AppUser> getMonthCardPeoples() throws Exception{
+		return (List<AppUser>)dao.findForList("AppuserMapper.getMonthCardPeoples",null);
+	}
 }
 

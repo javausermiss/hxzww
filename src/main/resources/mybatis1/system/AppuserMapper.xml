@@ -39,8 +39,12 @@
 		PRO_USER_ID,
 		BET_NUM,
 		COIN_MULTIPLES,
-		CHANNEL_NUM
-
+		CHANNEL_NUM,
+		FIRST_CHARGE,
+		WEEKS_CARD,
+		WEEKS_CARD_TAG,
+		MONTH_CARD,
+		MONTH_CARD_TAG
 	</sql>
 
     <!-- 字段值 -->
@@ -74,7 +78,12 @@
 		#{PRO_USER_ID},
 		#{BET_NUM},
 		#{COIN_MULTIPLES},
-		#{CHANNEL_NUM}
+		#{CHANNEL_NUM},
+		#{FIRST_CHARGE},
+		#{WEEKS_CARD},
+		#{WEEKS_CARD_TAG},
+		#{MONTH_CARD},
+		#{MONTH_CARD_TAG}
 
 	</sql>
 
@@ -221,7 +230,7 @@
     <update id="editU" parameterType="pd">
         update
         <include refid="tableName"/>
-        set USERNAME = #{USERNAME},
+        set
         NAME = #{NAME},
         ROLE_ID = #{ROLE_ID},
         BZ = #{BZ},
@@ -432,6 +441,21 @@
         <include refid="tableName"/>
         set
         BALANCE = #{BALANCE}
+        <if test="FIRST_CHARGE != null and FIRST_CHARGE != ''">
+            ,FIRST_CHARGE = #{FIRST_CHARGE}
+        </if>
+        <if test="MONTH_CARD_TAG != null and MONTH_CARD_TAG !=''">
+            ,MONTH_CARD_TAG = #{MONTH_CARD_TAG}
+        </if>
+        <if test="WEEKS_CARD_TAG != null and WEEKS_CARD_TAG !=''">
+            ,WEEKS_CARD_TAG = #{WEEKS_CARD_TAG}
+        </if>
+        <if test="WEEKS_CARD != null and WEEKS_CARD !=''">
+            ,WEEKS_CARD = #{WEEKS_CARD}
+        </if>
+        <if test="MONTH_CARD != null and MONTH_CARD != ''">
+            ,MONTH_CARD = #{MONTH_CARD}
+        </if>
         WHERE
         USER_ID = #{USER_ID}
     </update>
@@ -508,7 +532,7 @@
     </select>
 
     <select id="getAppUserList" resultType="com.fh.entity.system.AppUser">
-        SELECT a.USER_ID , a.SIGN_TAG ,a.COIN_MULTIPLES FROM sys_app_user
+        SELECT a.USER_ID , a.SIGN_TAG ,a.COIN_MULTIPLES ,a.MONTH_CARD_TAG, a.WEEKS_CARD_TAG FROM sys_app_user as a
     </select>
 
     <update id="updateAppUserSB" parameterType="com.fh.entity.system.AppUser">
@@ -526,7 +550,9 @@
         sys_app_user
 		SET
 		SIGN_TAG = #{SIGN_TAG},
-		COIN_MULTIPLES = #{COIN_MULTIPLES}
+		COIN_MULTIPLES = #{COIN_MULTIPLES},
+		WEEKS_CARD_TAG = #{WEEKS_CARD_TAG},
+		MONTH_CARD_TAG = #{MONTH_CARD_TAG}
 		WHERE
 		USER_ID = #{USER_ID}
     </update>
@@ -668,23 +694,7 @@
 		
 		    <select id="getAppUserForAppByUserId" parameterType="String" resultType="pd">
        SELECT
-			USER_ID,
-			USERNAME,
-			`NAME`,
-			RIGHTS,
-			NICKNAME,
-			`STATUS`,
-			BZ,
-			PHONE,
-			IMAGE_URL,
-			ADDRESS,
-			BALANCE,
-			DOLLTOTAL,
-			CNEE_PHONE,
-			CNEE_ADDRESS,
-			CNEE_NAME,
-			BET_NUM,
-			SIGN_TAG
+                <include refid="Field"/>
 		from sys_app_user where USER_ID=#{userId}
     </select>
 
@@ -766,6 +776,25 @@
         WHERE
         USER_ID = #{USER_ID}
     </update>
+
+    <select id="getWeekCardPeoples" resultType="com.fh.entity.system.AppUser">
+        select
+        <include refid="Field"/>
+        from
+        <include refid="tableName"/>
+        where
+        WEEKS_CARD != 0
+    </select>
+
+    <select id="getMonthCardPeoples" resultType="com.fh.entity.system.AppUser">
+        select
+        <include refid="Field"/>
+        from
+        <include refid="tableName"/>
+        where
+        MONTH_CARD != 0
+
+    </select>
 
 
 

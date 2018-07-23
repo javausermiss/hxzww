@@ -32,12 +32,18 @@ public class AppUser {
     private Integer BET_NUM;
     //推币机奖励倍数标签
     private Integer COIN_MULTIPLES;
-
-
     private String PRO_USER_ID; //
-
-
     private String CHANNEL_NUM;//渠道包编号
+
+    //首充标签
+    private String FIRST_CHARGE;
+    //周卡天数
+    private Integer WEEKS_CARD;
+    private String WEEKS_CARD_TAG;
+
+    //月卡天数
+    private Integer MONTH_CARD;
+    private String MONTH_CARD_TAG;
 
     public AppUser() {
     }
@@ -82,6 +88,46 @@ public class AppUser {
         this.NICKNAME = NICKNAME;
         this.IMAGE_URL = IMAGE_URL;
         this.BALANCE = BALANCE;
+    }
+
+    public String getWEEKS_CARD_TAG() {
+        return WEEKS_CARD_TAG;
+    }
+
+    public void setWEEKS_CARD_TAG(String WEEKS_CARD_TAG) {
+        this.WEEKS_CARD_TAG = WEEKS_CARD_TAG;
+    }
+
+    public String getMONTH_CARD_TAG() {
+        return MONTH_CARD_TAG;
+    }
+
+    public void setMONTH_CARD_TAG(String MONTH_CARD_TAG) {
+        this.MONTH_CARD_TAG = MONTH_CARD_TAG;
+    }
+
+    public Integer getWEEKS_CARD() {
+        return WEEKS_CARD;
+    }
+
+    public void setWEEKS_CARD(Integer WEEKS_CARD) {
+        this.WEEKS_CARD = WEEKS_CARD;
+    }
+
+    public Integer getMONTH_CARD() {
+        return MONTH_CARD;
+    }
+
+    public void setMONTH_CARD(Integer MONTH_CARD) {
+        this.MONTH_CARD = MONTH_CARD;
+    }
+
+    public String getFIRST_CHARGE() {
+        return FIRST_CHARGE;
+    }
+
+    public void setFIRST_CHARGE(String FIRST_CHARGE) {
+        this.FIRST_CHARGE = FIRST_CHARGE;
     }
 
     public Integer getCOIN_MULTIPLES() {

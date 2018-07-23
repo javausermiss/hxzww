@@ -114,7 +114,7 @@
 			CREATE_TIME,
 			REMARK,
 			UPDATE_TIME
-         from tb_appuser_payment where userid = #{USERID} order by create_time desc ;
+         from tb_appuser_payment where userid = #{USERID} order by ID desc ;
     </select>
     
 

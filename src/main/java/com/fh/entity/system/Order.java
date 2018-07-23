@@ -19,11 +19,21 @@ public class Order {
     
     private String ADD_INFO; //追加信息
     private String OUT_ORDER_ID; //外部订单信息
+    private String PAYOUT_TYPE;//支付所属类型，月卡，周卡或者其他
+
     
     /***业务扩展字段***/
     private String userNickName;
 
     public Order() {
+    }
+
+    public String getPAYOUT_TYPE() {
+        return PAYOUT_TYPE;
+    }
+
+    public void setPAYOUT_TYPE(String PAYOUT_TYPE) {
+        this.PAYOUT_TYPE = PAYOUT_TYPE;
     }
 
     public String getCTYPE() {
