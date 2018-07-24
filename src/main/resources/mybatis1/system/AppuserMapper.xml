@@ -143,6 +143,8 @@
             u.NUMBER LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
             or
             u.NICKNAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+            or
+            u.PHONE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
             )
         </if>
         <if test="pd.ROLE_ID != null and pd.ROLE_ID != ''"><!-- 角色检索 -->
