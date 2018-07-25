@@ -44,7 +44,10 @@ public class AppUser {
     //月卡天数
     private Integer MONTH_CARD;
     private String MONTH_CARD_TAG;
-
+    
+    private String OPEN_TYPE;
+    private String GENDER;
+    
     public AppUser() {
     }
 
@@ -384,6 +387,22 @@ public class AppUser {
 
 	public void setPRO_USER_ID(String pRO_USER_ID) {
 		PRO_USER_ID = pRO_USER_ID;
+	}
+
+	public String getOPEN_TYPE() {
+		return OPEN_TYPE;
+	}
+
+	public void setOPEN_TYPE(String oPEN_TYPE) {
+		OPEN_TYPE = oPEN_TYPE;
+	}
+
+	public String getGENDER() {
+		return GENDER;
+	}
+
+	public void setGENDER(String gENDER) {
+		GENDER = gENDER;
 	}
 
 }

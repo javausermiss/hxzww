@@ -11,18 +11,27 @@ import com.fh.service.system.appuserlogininfo.AppuserLoginInfoManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.util.Const;
+import com.fh.util.FastDFSClient;
 import com.fh.util.MD5;
+import com.fh.util.PageData;
 import com.fh.util.PropertiesUtils;
 import com.fh.util.wwjUtil.*;
 import com.iot.game.pooh.admin.srs.core.entity.httpback.SrsConnectModel;
 import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
 import com.iot.game.pooh.admin.srs.core.util.SrsSignUtil;
+
+import cn.jpush.http.RequestTypeEnum;
 import net.sf.json.JSONObject;
+
+import org.springframework.boot.autoconfigure.security.oauth2.authserver.OAuth2AuthorizationServerConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -502,9 +511,90 @@ public class AppLoginController extends BaseController {
 
         }
     }
+    
+    /**
+     * 
+     * @param uid 用户id
+     * @param nickname	用户昵称
+     * @param gender	性别
+     * @param imgUrl	头像
+     * @param regChannel 登录渠道微信或者QQ
+     * @return
+     */
+    @RequestMapping(value = "/wxRegister", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody 
+    public JSONObject wxRegister(@RequestParam("uid") String uid,
+                                      @RequestParam("name") String nickname,
+                                      @RequestParam("gender") String gender,
+                                      @RequestParam("iconurl") String imgUrl,
+                                      @RequestParam("regChannel") String regChannel,
+                                      @RequestParam(value = "channelNum",required = false,defaultValue = "100001") String channelNum
+                                      ){
+    		//查看用户是否存在
+    	try{
+    		AppUser appUser = appuserService.getUserByID(uid);
+        	String newFace ="";
+        	if (appUser == null) {
+        		
+                appUser = new AppUser();
+                if (imgUrl == null || imgUrl.equals("")) {
+                	newFace = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
+                }else{
+                	newFace=FaceImageUtil.downloadImage(imgUrl);
+                	}
+                appUser.setNAME(nickname);
+                appUser.setIMAGE_URL(newFace);
+                appUser.setUSER_ID(uid);
+                appUser.setCHANNEL_NUM(channelNum);
+                appUser.setGENDER(gender);
+                appUser.setOPEN_TYPE(regChannel);
+                appuserService.regwx(appUser); //未注册用户 先注册用户
+                }else {
+                	//如果当前用户图像不是默认头像，则先删除，再上传
+            		if(newFace !=null && appUser.getIMAGE_URL() !=null){
+            			String defaultUrl=PropertiesUtils.getCurrProperty("user.default.header.url"); //获取默认头像Id
+            			if(!defaultUrl.equals(appUser.getIMAGE_URL())){
+            				FastDFSClient.deleteFile(appUser.getIMAGE_URL());
+            			}
+            		}
+            		appUser.setNICKNAME(nickname);
+                    appUser.setIMAGE_URL(newFace);
+                    appuserService.updateTencentUser(appUser); //已注册用户 更新用户昵称和头像
+				}
+              //SRS推流
+                SrsConnectModel sc = new SrsConnectModel();
+                long time = System.currentTimeMillis();
+                sc.setType("U");
+                sc.setTid(appUser.getUSER_ID());
+                sc.setExpire(3600 * 24);
+                sc.setTime(time);
+                sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
 
+                //sessionId
+                String sessionID = MyUUID.createSessionId();
+                RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + uid, sessionID);
+                
+                Map<String, Object> map = new HashMap<>();
+                map.put("sessionID", sessionID);
+                map.put("appUser", appUser);
+                map.put("srsToken", sc);
+                return RespStatus.successs().element("data", map);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+
+   
 
 }
+
+
+
+
+
+
 
 
 

@@ -44,7 +44,8 @@
 		WEEKS_CARD,
 		WEEKS_CARD_TAG,
 		MONTH_CARD,
-		MONTH_CARD_TAG
+		MONTH_CARD_TAG,
+		OPEN_TYPE
 	</sql>
 
     <!-- 字段值 -->
@@ -83,8 +84,8 @@
 		#{WEEKS_CARD},
 		#{WEEKS_CARD_TAG},
 		#{MONTH_CARD},
-		#{MONTH_CARD_TAG}
-
+		#{MONTH_CARD_TAG},
+		#{OPEN_TYPE}
 	</sql>
 
     <!-- 角色表 -->
@@ -509,13 +510,16 @@
         USER_ID,
         CREATETIME,
         NICKNAME,
-        IMAGE_URL
-
+        IMAGE_URL,
+        NAME,
+		OPEN_TYPE
         ) values (
         #{USER_ID},
         now(),
         #{NICKNAME},
-        #{IMAGE_URL}
+        #{IMAGE_URL},
+        #{NAME},
+        #{OPEN_TYPE}
         )
     </insert>
 
