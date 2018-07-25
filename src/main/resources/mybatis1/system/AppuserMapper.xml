@@ -511,15 +511,17 @@
         CREATETIME,
         NICKNAME,
         IMAGE_URL,
-        NAME,
-		OPEN_TYPE
+		OPEN_TYPE,
+        CHANNEL_NUM,
+        BALANCE
         ) values (
         #{USER_ID},
         now(),
         #{NICKNAME},
         #{IMAGE_URL},
-        #{NAME},
-        #{OPEN_TYPE}
+        #{OPEN_TYPE},
+        #{CHANNEL_NUM},
+        #{BALANCE}
         )
     </insert>
 

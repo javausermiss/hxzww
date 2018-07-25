@@ -238,6 +238,7 @@ public class AppLoginController extends BaseController {
 
     /**
      * 忘记密码，修改密码
+     *
      * @param phone
      * @param code
      * @param password
@@ -290,7 +291,7 @@ public class AppLoginController extends BaseController {
      */
     @RequestMapping(value = "/getDoll", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject getDoll(@RequestParam("userId") String userId,HttpServletRequest httpServletRequest) {
+    public JSONObject getDoll(@RequestParam("userId") String userId, HttpServletRequest httpServletRequest) {
         try {
             // String phone = new String(Base64Util.decryptBASE64(aPhone));
             AppUser appUser = appuserService.getUserByID(userId);
@@ -378,7 +379,7 @@ public class AppLoginController extends BaseController {
     public JSONObject userPassLogin(@RequestParam("phone") String phone,
                                     @RequestParam("password") String pw,
                                     @RequestParam("smsCode") String smsCode,
-                                    @RequestParam(value = "channelNum",required = false,defaultValue = "100001") String channelNum
+                                    @RequestParam(value = "channelNum", required = false, defaultValue = "100001") String channelNum
     ) {
         try {
             if (phone == null || phone.trim().length() <= 0) {
@@ -406,7 +407,7 @@ public class AppLoginController extends BaseController {
             String face = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
             // appUser1.setBALANCE("3");
             appUser1.setPASSWORD(MD5.md5(pw));
-            appUser1.setNICKNAME(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+            appUser1.setNICKNAME(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
             appUser1.setUSER_ID(MyUUID.createSessionId());
             appUser1.setIMAGE_URL(face);
             appUser1.setUSERNAME(phone);
@@ -492,7 +493,6 @@ public class AppLoginController extends BaseController {
                     sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
 
 
-
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("sessionID", sessionID);
                     map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
@@ -511,82 +511,141 @@ public class AppLoginController extends BaseController {
 
         }
     }
-    
+
     /**
-     * 
-     * @param uid 用户id
-     * @param nickname	用户昵称
-     * @param gender	性别
-     * @param imgUrl	头像
+     * @param uid        用户id
+     * @param nickname   用户昵称
+     * @param gender     性别
+     * @param imgUrl     头像
      * @param regChannel 登录渠道微信或者QQ
      * @return
      */
+    @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/wxRegister", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    @ResponseBody 
+    @ResponseBody
     public JSONObject wxRegister(@RequestParam("uid") String uid,
-                                      @RequestParam("name") String nickname,
-                                      @RequestParam("gender") String gender,
-                                      @RequestParam("iconurl") String imgUrl,
-                                      @RequestParam("regChannel") String regChannel,
-                                      @RequestParam(value = "channelNum",required = false,defaultValue = "100001") String channelNum
-                                      ){
-    		//查看用户是否存在
-    	try{
-    		AppUser appUser = appuserService.getUserByID(uid);
-        	String newFace ="";
-        	if (appUser == null) {
-        		
+                                 @RequestParam("name") String nickname,
+                                 @RequestParam("gender") String gender,
+                                 @RequestParam("iconurl") String imgUrl,
+                                 @RequestParam("regChannel") String regChannel,
+                                 @RequestParam(value = "channelNum", required = false, defaultValue = "100001") String channelNum
+    ) {
+        //查看用户是否存在
+        try {
+            AppUser appUser = appuserService.getUserByID(uid);
+            logger.info("头像URL-----------------------》"+imgUrl);
+            String newFace = "";
+            if (appUser == null) {
                 appUser = new AppUser();
                 if (imgUrl == null || imgUrl.equals("")) {
-                	newFace = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
-                }else{
-                	newFace=FaceImageUtil.downloadImage(imgUrl);
-                	}
+                    newFace = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
+                } else {
+                    newFace = FaceImageUtil.downloadImage(imgUrl);
+                }
                 appUser.setNAME(nickname);
                 appUser.setIMAGE_URL(newFace);
                 appUser.setUSER_ID(uid);
                 appUser.setCHANNEL_NUM(channelNum);
                 appUser.setGENDER(gender);
                 appUser.setOPEN_TYPE(regChannel);
+                appUser.setBALANCE("0");
                 appuserService.regwx(appUser); //未注册用户 先注册用户
-                }else {
-                	//如果当前用户图像不是默认头像，则先删除，再上传
-            		if(newFace !=null && appUser.getIMAGE_URL() !=null){
-            			String defaultUrl=PropertiesUtils.getCurrProperty("user.default.header.url"); //获取默认头像Id
-            			if(!defaultUrl.equals(appUser.getIMAGE_URL())){
-            				FastDFSClient.deleteFile(appUser.getIMAGE_URL());
-            			}
-            		}
-            		appUser.setNICKNAME(nickname);
-                    appUser.setIMAGE_URL(newFace);
-                    appuserService.updateTencentUser(appUser); //已注册用户 更新用户昵称和头像
-				}
-              //SRS推流
-                SrsConnectModel sc = new SrsConnectModel();
-                long time = System.currentTimeMillis();
-                sc.setType("U");
-                sc.setTid(appUser.getUSER_ID());
-                sc.setExpire(3600 * 24);
-                sc.setTime(time);
-                sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+            } else {
 
-                //sessionId
-                String sessionID = MyUUID.createSessionId();
-                RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + uid, sessionID);
-                
-                Map<String, Object> map = new HashMap<>();
-                map.put("sessionID", sessionID);
-                map.put("appUser", appUser);
-                map.put("srsToken", sc);
-                return RespStatus.successs().element("data", map);
+                //如果传过来的头像url是否为空
+                if (imgUrl == null || imgUrl.equals("")) {
+                    newFace = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
+                } else {
+                    newFace = FaceImageUtil.downloadImage(imgUrl);
+                }
+                //如果当前用户图像不是默认头像，则先删除，再上传
+                if (newFace != null && appUser.getIMAGE_URL() != null) {
+                    String defaultUrl = PropertiesUtils.getCurrProperty("user.default.header.url"); //获取默认头像Id
+                    if (!defaultUrl.equals(appUser.getIMAGE_URL())) {
+                        FastDFSClient.deleteFile(appUser.getIMAGE_URL());
+                    }
+                }
+                appUser.setNICKNAME(nickname);
+                appUser.setIMAGE_URL(newFace);
+                appuserService.updateTencentUser(appUser); //已注册用户 更新用户昵称和头像
+            }
 
-        }catch (Exception e) {
+            //登录日志
+            AppuserLogin appuserLogin = new AppuserLogin();
+            appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
+            appuserLogin.setUSER_ID(uid);
+            appuserlogininfoService.insertLoginLog(appuserLogin);
+
+            //SRS推流
+            SrsConnectModel sc = new SrsConnectModel();
+            long time = System.currentTimeMillis();
+            sc.setType("U");
+            sc.setTid(appUser.getUSER_ID());
+            sc.setExpire(3600 * 24);
+            sc.setTime(time);
+            sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+
+            //sessionId
+            String sessionID = MyUUID.createSessionId();
+            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + uid, sessionID);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("sessionID", sessionID);
+            map.put("appUser", appUser);
+            map.put("srsToken", sc);
+            return RespStatus.successs().element("data", map);
+
+        } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();
         }
     }
 
-   
+
+    /**
+     * 自动登录
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/wxAutoLogin", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject wxAutoLogin(
+            @RequestParam("uid") String userId
+    ) {
+        try {
+                if (appuserService.getUserByID(userId) == null) {
+                    return RespStatus.fail("用户不存在");
+                }
+                //登录日志
+                AppuserLogin appuserLogin = new AppuserLogin();
+                appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
+                appuserLogin.setUSER_ID(userId);
+                appuserlogininfoService.insertLoginLog(appuserLogin);
+                //SRS推流
+                SrsConnectModel sc = new SrsConnectModel();
+                long time = System.currentTimeMillis();
+                sc.setType("U");
+                sc.setTid(userId);
+                sc.setExpire(3600 * 24);
+                sc.setTime(time);
+                sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
+                String sessionID = MyUUID.createSessionId();
+                RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + userId, sessionID);
+                 //用户登陆存储redis log
+
+                logger.info("redis "+Const.REDIS_APPUSER_SESSIONID + userId+"-->"+sessionID);
+                Map<String, Object> map1 = new HashMap<>();
+                map1.put("appUser", getAppUserInfo(userId));
+                map1.put("sessionID", sessionID);
+                map1.put("srsToken", sc);
+                return RespStatus.successs().element("data", map1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+
 
 }
 

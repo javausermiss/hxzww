@@ -99,6 +99,7 @@ public class FastDFSClient {
 		try {
 			NameValuePair[] meta_list = new NameValuePair[0];
 			String fileid = storageClient1.upload_file1(file_buff, getFileExt(fileName), meta_list);
+			logger.info("头像文件名为----------------------------->"+fileid);
 			return fileid;
 		} catch (Exception ex) {
 			logger.error(ex.getLocalizedMessage());
