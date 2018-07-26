@@ -543,7 +543,7 @@ public class AppLoginController extends BaseController {
                 } else {
                     newFace = FaceImageUtil.downloadImage(imgUrl);
                 }
-                appUser.setNAME(nickname);
+                appUser.setNICKNAME(nickname);
                 appUser.setIMAGE_URL(newFace);
                 appUser.setUSER_ID(uid);
                 appUser.setCHANNEL_NUM(channelNum);
