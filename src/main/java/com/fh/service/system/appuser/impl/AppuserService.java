@@ -216,7 +216,7 @@ public class AppuserService implements AppuserManager{
 
 	@Override
 	public List<AppUser> getAppUserByNickNameList(String nickName) throws Exception {
-		return (List<AppUser>)dao.findForObject("AppuserMapper.getAppUserByNickNameList",nickName);
+		return (List<AppUser>)dao.findForList("AppuserMapper.getAppUserByNickNameList",nickName);
 	}
 
 	/**
@@ -434,10 +434,10 @@ public class AppuserService implements AppuserManager{
     public PageData getAppUserForAppByUserId(String userid)throws Exception{
     	PageData pd=(PageData) dao.findForObject("AppuserMapper.getAppUserForAppByUserId",userid);
     	
-    	if(pd !=null && StringUtils.isNotEmpty(pd.getString("PHONE"))){
-    		pd.put("PHONE", pd.getString("PHONE").replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+    	if(pd !=null && StringUtils.isNotEmpty(pd.getString("BDPHONE"))){
+    		pd.put("BDPHONE", pd.getString("BDPHONE").replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
     	}else{
-    		pd.put("PHONE","");
+    		pd.put("BDPHONE","");
     	}
     	return pd;
     }

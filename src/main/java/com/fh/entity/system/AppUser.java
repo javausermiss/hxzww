@@ -47,6 +47,10 @@ public class AppUser {
     
     private String OPEN_TYPE;
     private String GENDER;
+
+    //绑定的银行卡手机号码
+    private String BDPHONE;
+
     
     public AppUser() {
     }
@@ -91,6 +95,14 @@ public class AppUser {
         this.NICKNAME = NICKNAME;
         this.IMAGE_URL = IMAGE_URL;
         this.BALANCE = BALANCE;
+    }
+
+    public String getBDPHONE() {
+        return BDPHONE;
+    }
+
+    public void setBDPHONE(String BDPHONE) {
+        this.BDPHONE = BDPHONE;
     }
 
     public String getWEEKS_CARD_TAG() {

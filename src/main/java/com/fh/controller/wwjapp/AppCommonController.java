@@ -47,7 +47,7 @@ public class AppCommonController {
 	
     /**
      * 用户用户账户信息
-     * @param JSONObject
+     * @param
      * @return
      */
     @RequestMapping(value = "/getAppUserInf", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -86,7 +86,7 @@ public class AppCommonController {
 	
     /**
      * 用户推广加盟提现银行卡信息
-     * @param select "0" 查询 "1" 修改
+     * @param  "0" 查询 "1" 修改
      * @param userId 用户ID
      * @param bankAddress 银行地址
      * @param bankName 银行名称
@@ -94,7 +94,7 @@ public class AppCommonController {
      * @param bankCardNo 银行卡号
      * @param idNumber 身份证号码
      * @param userName 用户真实姓名
-     * @param bankPhone 手机号码
+     * @param
      * @param isDefault 是否默认
      * @return
      */
@@ -175,7 +175,7 @@ public class AppCommonController {
     
     /**
      * 修改用户手机号
-     * @param JSONObject
+     * @param
      * @return
      */
     @RequestMapping(value = "/editAppUserPhone", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -203,7 +203,7 @@ public class AppCommonController {
         	}
         	
         	/**修改用户的手机号**/
-        	appUser.setPHONE(phoneNumber);
+        	appUser.setBDPHONE(phoneNumber);
         	appuserService.updateAppUserPhone(appUser);
         	
         	PageData userPd=appuserService.getAppUserForAppByUserId(userId);
@@ -222,7 +222,7 @@ public class AppCommonController {
     /**
      * 获取短信验证码
      *
-     * @param aPhone
+     * @param
      * @return
      */
     @RequestMapping(value = "/getPhoneCode", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -243,8 +243,8 @@ public class AppCommonController {
         			|| Const.AppPhoneSmsMenu.PHONE_SMS_TYPE_3000.getCode().equals(smsType)){
         		appUser=appuserService.getUserByID(userId);
         		
-        		if(StringUtils.isNotEmpty(appUser.getPHONE())){
-        			phoneNumber=appUser.getPHONE();
+        		if(StringUtils.isNotEmpty(appUser.getBDPHONE())){
+        			phoneNumber=appUser.getBDPHONE();
         		}else{
         			return RespStatus.fail("请先绑定手机号");
         		}

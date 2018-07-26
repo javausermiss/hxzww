@@ -178,7 +178,7 @@ public class ApiUserController {
             } else {
                 List<AppUser> userExist = appuserService.getAppUserByNickNameList(name);
                 if (userExist != null) {
-                    return RespStatus.fail("用户名已经存在");
+                    return RespStatus.fail("该昵称已经存在");
                 } else {
                     user.setNICKNAME(name);
                     int n = appuserService.updateAppUsernickName(user);

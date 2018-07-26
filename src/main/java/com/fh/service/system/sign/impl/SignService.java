@@ -83,7 +83,6 @@ public class SignService implements SignManager {
             if (signLast.getCSDATE().equals("0")) {
                 signLast.setCSDATE("1");
                 this.updateSign(signLast);
-
                 SignGold signGold = signgoldService.getSignGoldByDay("1");
                 gold = signGold.getGOLD_NUM();
 
@@ -105,9 +104,8 @@ public class SignService implements SignManager {
                 }
                 String signday = signLast.getCSDATE();//查询最近的签到天数
                 int h = Integer.valueOf(signday);
-
-                SignGold signGold = signgoldService.getSignGoldByDay(String.valueOf(h));
                 if (h != 7) {
+                    SignGold signGold = signgoldService.getSignGoldByDay(String.valueOf(h+1));
                     gold = signGold.getGOLD_NUM();
                     signday = String.valueOf(h + 1);
                     s.setUSERID(userId);

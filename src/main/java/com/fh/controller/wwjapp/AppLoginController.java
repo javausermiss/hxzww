@@ -414,6 +414,7 @@ public class AppLoginController extends BaseController {
             appUser1.setPHONE(phone);
             appUser1.setBALANCE("0");
             appUser1.setCHANNEL_NUM(channelNum);
+            appUser1.setBDPHONE(phone);
             appuserService.regAppUser(appUser1);
 
             //SRS推流

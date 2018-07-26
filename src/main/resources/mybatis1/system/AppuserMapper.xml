@@ -45,7 +45,8 @@
 		WEEKS_CARD_TAG,
 		MONTH_CARD,
 		MONTH_CARD_TAG,
-		OPEN_TYPE
+		OPEN_TYPE,
+		BDPHONE
 	</sql>
 
     <!-- 字段值 -->
@@ -85,7 +86,8 @@
 		#{WEEKS_CARD_TAG},
 		#{MONTH_CARD},
 		#{MONTH_CARD_TAG},
-		#{OPEN_TYPE}
+		#{OPEN_TYPE},
+		#{BDPHONE}
 	</sql>
 
     <!-- 角色表 -->
@@ -682,7 +684,8 @@
         IMAGE_URL,
         BALANCE,
         PASSWORD,
-        CHANNEL_NUM
+        CHANNEL_NUM,
+        BDPHONE
         ) values (
         #{USER_ID},
         #{PHONE},
@@ -692,7 +695,8 @@
         #{IMAGE_URL},
         #{BALANCE},
         #{PASSWORD},
-        #{CHANNEL_NUM}
+        #{CHANNEL_NUM},
+        #{BDPHONE}
         )
 
 
@@ -711,7 +715,7 @@
 		UPDATE
 		sys_app_user
 		SET
-		phone = #{PHONE}
+            BDPHONE = #{BDPHONE}
 		WHERE
 		USER_ID = #{USER_ID}
 	</update>
