@@ -69,6 +69,7 @@
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">ROOMID</th>
 									<th class="center">用户ID</th>
+									<th class="center">用户昵称</th>
 									<th class="center">消费的金币数</th>
 									<th class="center">出币数</th>
 									<th class="center">创建时间</th>
@@ -90,6 +91,7 @@
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.ROOMID}</td>
 											<td class='center'>${var.USER_ID}</td>
+											<td class='center'>${var.NICKNAME}</td>
 											<td class='center'>${var.COSTGOLD}</td>
 											<td class='center'>${var.RETURNGOLD}</td>
 											<td class='center'>${var.CREATE_DATE}</td>
