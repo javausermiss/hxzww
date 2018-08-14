@@ -239,8 +239,11 @@ public class CoinPusherService implements CoinPusherManager {
             int a = userPoints.getTodayPoints();
             int newpg = userPoints.getPusherGame() + 1;
             userPoints.setPusherGame(newpg);
+            userpointsService.updateUserPoints(userPoints);
+
             if (newpg == 10) {
                 userPoints.setTodayPoints(a + pointsMall.getPointsValue());
+                appUser = appuserService.getUserByID(userId);
                 appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
                 appuserService.updateAppUserBalanceById(appUser);
                 //增加积分记录

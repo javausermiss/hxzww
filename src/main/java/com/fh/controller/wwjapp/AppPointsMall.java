@@ -142,6 +142,7 @@ public class AppPointsMall extends BaseController {
                     userPoints.setTodayPoints(now_points);
                     userPoints.setShareGame("1");
                     userpointsService.updateUserPoints(userPoints);
+
                     appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
 
 
@@ -369,12 +370,14 @@ public class AppPointsMall extends BaseController {
             appUser1.setIMAGE_URL(face);
             appUser1.setUSERNAME("123");
             appUser1.setPHONE("123");
-            appUser1.setBALANCE("0");
+            appUser1.setBALANCE("15");
             appUser1.setCHANNEL_NUM("123");
             appUser1.setBDPHONE("123");
             appUser1.setPOINTS(11);
             appuserService.regAppUser(appUser1);
             AppUser aa =  appuserService.getUserByID(n_userId);
+            aa.setTODAY_POOH(15);
+            appuserService.updateAppUserBalanceById(aa);
 
             return aa.getUSER_ID();
 
@@ -384,6 +387,10 @@ public class AppPointsMall extends BaseController {
             e.printStackTrace();
             return "F";
         }
+
+    }
+
+    public static  void main(String[] A){
 
     }
 

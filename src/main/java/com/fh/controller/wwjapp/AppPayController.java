@@ -1117,8 +1117,9 @@ public class AppPayController extends BaseController {
                         userPoints.setTodayPoints(now_points);
                         userPoints.setFirstPay("1");
                         userpointsService.updateUserPoints(userPoints);
+
+                        appUser = appuserService.getUserByID(userId);
                         appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
-                        appuserService.updateAppUserBalanceById(appUser);
 
                         //增加积分记录
                         PointsDetail pointsDetail = new PointsDetail();
@@ -1136,10 +1137,11 @@ public class AppPayController extends BaseController {
                         Integer ob = Integer.valueOf(appUser.getBALANCE());
                         Integer nb_2 = 0;
                         List<PointsReward> list = pointsrewardService.getPointsReward();
-                        userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                        String n_rtag = userpointsService.doGoldReward(r_tag, goldValue, sum, ob, list, now_points, nb_2, appUser);
+                        userPoints.setPointsReward_Tag(n_rtag);
+                        userpointsService.updateUserPoints(userPoints);
+
                     }
-
-
 
                 //当前订单的用户昵称
                 o.setUserNickName(appUser.getNICKNAME());
