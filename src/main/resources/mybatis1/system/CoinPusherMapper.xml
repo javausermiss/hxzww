@@ -88,9 +88,19 @@
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
-		<include refid="Field"></include>
+		c.ROOMID,
+		c.USER_ID,	
+		c.COSTGOLD,	
+		c.RETURNGOLD,	
+		c.CREATE_DATE,	
+		c.UPDATE_DATE,	
+		c.COINPUSHER_ID,
+		c.FINISH_FLAG,
+		u.NICKNAME
 		from 
-		<include refid="tableName"></include>
+		
+		TB_COINPUSHER_PLAY_DETAIL c LEFT JOIN SYS_APP_USER u on c.USER_ID=u.USER_ID
+		
 		where 1=1
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and
