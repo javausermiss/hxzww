@@ -132,9 +132,10 @@ public class PromoteAppUserController extends BaseController {
 			pd.put("keywords", keywords.trim());
 		}
 		page.setPd(pd);
-		List<PageData>	userList = appuserService.listPdPageUser(page);		//列出会员列表
+		//List<PageData>	userList = appuserService.listPdPageUser(page);		//列出会员列表
+		List<PageData> pageData =  promoteappuser.findAllFranchiseeSubuser(page);
 		mv.setViewName("system/promoteappuser/prouser_list");
-		mv.addObject("userList", userList);
+		mv.addObject("userList", pageData);
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		return mv;

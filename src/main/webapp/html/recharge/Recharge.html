@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />		
+		<title>充值</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/recharge.css"/>		
+		<script>
+			(function () {
+			　　　function changeRootFont() {
+			　　　   var designWidth = 750, rem2px = 100;
+			　　　   document.documentElement.style.fontSize =((window.innerWidth / designWidth) * rem2px) + 'px';
+			　　　}
+			　　　changeRootFont();
+			　　　window.addEventListener('resize', changeRootFont,false);
+			})();
+			function goBack() {
+			    history.go(-1);
+			}
+		</script>
+	</head>
+	<body>
+		<div class="recharge-main">
+			<!--<div class="recharge-head">
+				充值
+				<img src="img/01.png" alt="" class="recharge-back" onclick="goBack()"/>
+				<span class="recharge-mingxi">明细</span>
+			</div>-->
+			<div class="recharge-yuecont">
+				<div>我的账户余额：</div>
+				<p><span id="BALANCE"></span>游戏币</p>
+			</div>
+			<div class="recharge-fenleicont">
+				<ul class="recharge-ka">
+					<li data-id = "wc" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "8">28</span></span></div>
+						<div>送 140 币</div>
+						<div>共 <span class="recharge-tall">420</span> 币</div>
+					</li>
+					<li data-id = "mc" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "9">98</span></span></div>
+						<div>送 990 币</div>
+						<div>共 <span class="recharge-tall">1970</span> 币</div>
+					</li>
+				</ul>			
+				<p class="recharge-zhu">注：周卡分七天返还,每天返20游戏币       &nbsp;&nbsp; &nbsp;月卡分三十天返还,每天返33游戏币</p>
+				<ul class="recharge-chong">
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "1">10</span></span></div>
+						<div style="padding-bottom: 0.54rem;"> </div>
+						<div>共 <span class="recharge-tall">100</span> 币</div>
+						<img src="img/07.png" style="position: absolute;width: 0.9rem;height: 0.58rem;top: 0.35rem;left: 0.57rem;"/>
+					</li>
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "2">20</span></span></div>
+						<div>送 10 币</div>
+						<div>共 <span class="recharge-tall">210</span> 币</div>
+						<img src="img/08.png" style="position: absolute;width: 0.86rem;height: 0.54rem;top: 0.32rem;left: 0.40rem;"/>
+					</li>
+				</ul>
+				<ul class="recharge-chong">
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "3">50</span></span></div>
+						<div>送 50 币</div>
+						<div>共 <span class="recharge-tall">550</span> 币</div>
+						<img src="img/09.png" style="position: absolute;width: 1.64rem;height: 0.71rem;top: 0.30rem;left: 0.15rem;"/>
+					</li>
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "4">100</span></span></div>
+						<div>送 125 币</div>
+						<div>共 <span class="recharge-tall">1125</span> 币</div>
+						<img src="img/10.png" style="position: absolute;width: 1.1rem;height: 1.04rem;top: 0.15rem;left: 0.35rem;"/>
+					</li>
+				</ul>
+				<ul class="recharge-chong">
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "5">200</span></span></div>
+						<div>送 280 币</div>
+						<div>共 <span class="recharge-tall">2280</span> 币</div>
+						<img src="img/11.png" style="position: absolute;width: 1.49rem;height: 1.04rem;top: 0.16rem;left: 0.10rem;"/>
+					</li>
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "6">500</span></span></div>
+						<div>送 750  币</div>
+						<div>共 <span class="recharge-tall">5750</span> 币</div>
+						<img src="img/12.png" style="position: absolute;width: 1.51rem;height: 1.17rem;top: 0.09rem;left: 0.12rem;"/>
+					</li>
+				</ul>
+				<ul class="recharge-chong">
+					<li data-id = "nm" class="recharge-li">
+						<div>充 <span>￥<span class="recharge-moneynum" data-id = "7">1000</span></span></div>
+						<div>送 2000 币</div>
+						<div>共 <span class="recharge-tall">12000</span> 币</div>
+						<img src="img/13.png" style="position: absolute;width: 1.13rem;height: 1.12rem;top: 0.12rem;left: 0.32rem;"/>
+					</li>
+					<li>
+						<img src="img/06.png" style="width: 100%;height: 100%;"/>
+					</li>
+				</ul>
+
+			</div>
+		</div>
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="js/recharge.js"></script>
+	</body>
+</html>

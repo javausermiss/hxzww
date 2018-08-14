@@ -113,6 +113,33 @@ public class AppRankListController {
 
 
     /**
+     * 当日排行榜及个人所在名次
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/rankAndSelfListToday", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject rankAndSelfListToday(@RequestParam("userId") String userId) {
+        try {
+            List<AppUser> list = appuserService.rankListToday();
+            AppUser appUser = appuserService.getAppUserRanklistToday(userId);
+            if (appUser == null) {
+                return null;
+            }
+            Map<String, Object> map = new HashMap<>();
+            map.put("list", list);
+            map.put("appUser", appUser);
+            return RespStatus.successs().element("data", map);
+        } catch (Exception e) {
+            return RespStatus.fail();
+        }
+
+    }
+
+
+
+    /**
      * 竞猜排行榜及个人所在名次
      *
      * @param userId
@@ -124,6 +151,35 @@ public class AppRankListController {
         try {
             List<PageData> list = appuserService.rankBetList();
             PageData appUser = appuserService.getAppUserBetRanklist(userId);
+
+            if (appUser == null) {
+                return null;
+            }
+            double c = (double) appUser.get("RANK");
+            int i = (new Double(c)).intValue();
+            appUser.put("RANK", String.valueOf(i));
+            Map<String, Object> map = new HashMap<>();
+            map.put("list", list);
+            map.put("appUser", appUser);
+            return RespStatus.successs().element("data", map);
+        } catch (Exception e) {
+            return RespStatus.fail();
+        }
+
+    }
+
+    /**
+     * 竞猜排行榜及个人所在名次
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/rankBetListToday", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject rankBetListToday(@RequestParam("userId") String userId) {
+        try {
+            List<PageData> list = appuserService.rankBetListToday();
+            PageData appUser = appuserService.getAppUserBetRanklistToday(userId);
 
             if (appUser == null) {
                 return null;

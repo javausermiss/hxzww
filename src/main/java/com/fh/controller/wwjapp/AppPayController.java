@@ -13,6 +13,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.fh.entity.system.*;
+import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pointsmall.PointsMallManager;
+import com.fh.service.system.pointsreward.PointsRewardManager;
+import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.*;
 import com.fh.util.wwjUtil.*;
 import com.fh.util.xdpayutil.FormDateReportConvertor;
@@ -32,10 +38,6 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.fh.alipay.AlipayConfig;
 import com.fh.controller.base.BaseController;
-import com.fh.entity.system.AppUser;
-import com.fh.entity.system.Order;
-import com.fh.entity.system.Paycard;
-import com.fh.entity.system.Payment;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.ordertest.OrderManager;
@@ -55,6 +57,8 @@ import net.sf.json.JSONObject;
 public class AppPayController extends BaseController {
 
     public static AlipayTradeAppPayResponse response;
+    private static final String nurl = "http://111.231.139.61:18081/pooh-web/html/recharge/Recharge.html?userId=";
+    private static final String furl = "http://111.231.139.61:18081/pooh-web/html/recharge/fistRecharge.html?userId=";
 
     //  private final String ckey = "y3WfBKF1FY4=";
     @Resource(name = "appuserService")
@@ -80,19 +84,32 @@ public class AppPayController extends BaseController {
 
     @Resource(name = "paycardService")
     private PaycardManager paycardService;
-    
+
     /**
      * 渠道信息
      */
     @Resource(name = "promotemanageService")
     private PromoteManageManager promotemanageService;
 
-    
+
     @Resource(name = "promoteAppUserService")
     public PromoteAppUserManager promoteAppUserService;
 
     @Resource(name = "accountOperService")
     public AccountOperManager accountOperService;
+
+
+    @Resource(name="userpointsService")
+    private UserPointsManager userpointsService;
+
+    @Resource(name="pointsmallService")
+    private PointsMallManager pointsmallService;
+
+    @Resource(name="pointsdetailService")
+    private PointsDetailManager pointsdetailService;
+
+    @Resource(name = "pointsrewardService")
+    private PointsRewardManager pointsrewardService;
 
 
     /**
@@ -165,11 +182,11 @@ public class AppPayController extends BaseController {
         }
 
     }
-    
-    
-    
+
+
     /**
      * 购买推广权益，提交订单接口
+     *
      * @param userId
      * @param proManageId
      * @param ctype
@@ -182,46 +199,46 @@ public class AppPayController extends BaseController {
     public JSONObject commitPromoteOrderToGold(
             @RequestParam("userId") String userId,
             @RequestParam("proManageId") String proManageId,
-            @RequestParam(value="ctype" ,required = false) String ctype,
-            @RequestParam(value = "channel" ,required = false) String channel,
-            @RequestParam(value="payType" ,required = false) String payType) {
+            @RequestParam(value = "ctype", required = false) String ctype,
+            @RequestParam(value = "channel", required = false) String channel,
+            @RequestParam(value = "payType", required = false) String payType) {
         try {
 
             AppUser appUser = appuserService.getUserByID(userId);
             if (appUser == null) {
                 return RespStatus.fail();
             }
-           
-            PageData proPd =  promotemanageService.findById(proManageId);
-            if (proPd==null){
+
+            PageData proPd = promotemanageService.findById(proManageId);
+            if (proPd == null) {
                 return RespStatus.fail();
             }
-            
+
             //判断当前用户金币余额
             int pay_gold = Integer.valueOf(proPd.getString("PAY_GOLD"));//扣减的金币数量
             int surplus_gold = Integer.valueOf(appUser.getBALANCE()) - pay_gold;
-            if(surplus_gold<0){
-            	return RespStatus.fail("金币余额不足");
+            if (surplus_gold < 0) {
+                return RespStatus.fail("金币余额不足");
             }
             //权益分成管理表
-            PageData promoteMgPd=promotemanageService.findById(proManageId);
-            
-    		//权益分成
-    		PageData promotepd= promoteAppUserService.findByUserId(appUser.getUSER_ID());
-    		if(promotepd==null){
-    			promotepd=new PageData();
-    			promotepd.put("USER_ID", appUser.getUSER_ID());
-	    		promotepd.put("PRO_MANAGE_ID", promoteMgPd.get("PRO_MANAGE_ID"));
-	    		promotepd.put("RETURN_RATIO", promoteMgPd.get("RETURN_RATIO"));
-	    		
-	    		promoteAppUserService.save(promotepd);
-    		}else{
-    			return RespStatus.fail("您已经购买过推广分成");
-    		}
-    		//扣减金币数
+            PageData promoteMgPd = promotemanageService.findById(proManageId);
+
+            //权益分成
+            PageData promotepd = promoteAppUserService.findByUserId(appUser.getUSER_ID());
+            if (promotepd == null) {
+                promotepd = new PageData();
+                promotepd.put("USER_ID", appUser.getUSER_ID());
+                promotepd.put("PRO_MANAGE_ID", promoteMgPd.get("PRO_MANAGE_ID"));
+                promotepd.put("RETURN_RATIO", promoteMgPd.get("RETURN_RATIO"));
+
+                promoteAppUserService.save(promotepd);
+            } else {
+                return RespStatus.fail("您已经购买过推广分成");
+            }
+            //扣减金币数
             appUser.setBALANCE(String.valueOf(surplus_gold));
             appuserService.updateAppUserBalanceById(appUser);
-            
+
             //更新收支表
             Payment payment = new Payment();
             payment.setGOLD("-" + pay_gold);
@@ -230,18 +247,18 @@ public class AppPayController extends BaseController {
             payment.setCOST_TYPE(Const.PlayMentCostType.cost_type20.getValue());
             payment.setREMARK("购买权益扣减：" + pay_gold);
             paymentService.reg(payment);
-            
-            
-       	 	//用户现金账户开户
-    		accountOperService.openAccountInfByUser(appUser.getUSER_ID());
-            
+
+
+            //用户现金账户开户
+            accountOperService.openAccountInfByUser(appUser.getUSER_ID());
+
             //返回
             Map<String, Object> map = new HashMap<>();
             promotepd.put("PAY_GOLD", pay_gold); //当前购买金币数量
             map.put("promoteInf", promotepd);
-            
+
             return RespStatus.successs().element("data", map);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();
         }
@@ -266,7 +283,7 @@ public class AppPayController extends BaseController {
             @RequestParam("pid") String pid,
             @RequestParam(value = "ctype", required = false) String ctype,
             @RequestParam(value = "channel", required = false) String channel,
-            @RequestParam(value="payType" ,required = false) String payType
+            @RequestParam(value = "payType", required = false) String payType
     ) {
         try {
 
@@ -282,25 +299,25 @@ public class AppPayController extends BaseController {
             String glodNum = paycard.getGOLD();//金币数量
             String amount = paycard.getAMOUNT();//金额
             boolean a = RedisUtil.getRu().exists("tradeOrder");
-            String newOrder=""; //订单号
+            String newOrder = ""; //订单号
             if (a) {
                 String tradeOrder = RedisUtil.getRu().get("tradeOrder");
                 String x = tradeOrder.substring(0, 8);//取前八位进行判断
                 if (datetime.substring(0, 8).equals(x)) {
                     String six = tradeOrder.substring(tradeOrder.length() - 6, tradeOrder.length());
                     String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
-                     newOrder = datetime + newsix;//新的订单编号
+                    newOrder = datetime + newsix;//新的订单编号
                     RedisUtil.getRu().set("tradeOrder", newOrder);
 
                 } else {
-                     newOrder = datetime + "000001";//新的订单编号
+                    newOrder = datetime + "000001";//新的订单编号
                     RedisUtil.getRu().set("tradeOrder", newOrder);
                 }
             } else {
-                 newOrder = datetime + "000001";//新的订单编号
+                newOrder = datetime + "000001";//新的订单编号
                 RedisUtil.getRu().set("tradeOrder", newOrder);
             }
-            
+
             Order order = new Order();
             order.setUSER_ID(userId);
             order.setREC_ID(newOrder);
@@ -642,7 +659,7 @@ public class AppPayController extends BaseController {
                 payment1.setCOST_TYPE("9");
                 payment1.setREMARK("奖励" + award);
                 paymentService.reg(payment1);
-                
+
                 //当前订单的用户昵称
                 o.setUserNickName(appUser.getNICKNAME());
                 o.setREGGOLD(String.valueOf(gold));
@@ -747,7 +764,7 @@ public class AppPayController extends BaseController {
                     rechare = "6480";
                     award = "2780";
                     break;
-                    default:
+                default:
             }
 
             //step4 更新账户金币余额
@@ -814,7 +831,7 @@ public class AppPayController extends BaseController {
                                     @RequestParam(value = "regGold") String regGold,
                                     @RequestParam(value = "ctype", required = false) String ctype,
                                     @RequestParam(value = "channel", required = false) String channel,
-                                    @RequestParam(value="payType" ,required = false) String payType,
+                                    @RequestParam(value = "payType", required = false) String payType,
                                     @RequestParam(value = "payOutType") String payOutType
 
     ) {
@@ -894,8 +911,10 @@ public class AppPayController extends BaseController {
         return RespStatus.successs().element("data", map);
     }
 
+
     /**
      * 支付宝回调
+     *
      * @param request
      * @param httpServletResponse
      * @return
@@ -937,11 +956,11 @@ public class AppPayController extends BaseController {
 
                     //实际收到的金额
                     amount = params.get("receipt_amount");
-                    String am =  NumberUtils.RMBYuanToCent(String.valueOf(amount));
+                    String am = NumberUtils.RMBYuanToCent(String.valueOf(amount));
                     String tb_amount = o.getREGAMOUNT();
 
-                    logger.info("实际收到的金额为:" + am+"分，分为单位");
-                    logger.info("订单支付的金额为:" + tb_amount+"分，分为单位");
+                    logger.info("实际收到的金额为:" + am + "分，分为单位");
+                    logger.info("订单支付的金额为:" + tb_amount + "分，分为单位");
                     if (!am.equals(tb_amount)) {
                         return "failure";
                     }
@@ -988,7 +1007,7 @@ public class AppPayController extends BaseController {
                 int gold = Integer.valueOf(rechare);
                 int nb = 0;
 
-                if (o.getPAYOUT_TYPE().equals(wc)){
+                if (o.getPAYOUT_TYPE().equals(wc)) {
                     //更新收支表
                     Payment payment = new Payment();
                     payment.setGOLD("+" + rechare);
@@ -998,12 +1017,12 @@ public class AppPayController extends BaseController {
                     payment.setREMARK(Const.PlayMentCostType.cost_type19.getName());
                     paymentService.reg(payment);
 
-                    Integer wd =  appUser.getWEEKS_CARD();
+                    Integer wd = appUser.getWEEKS_CARD();
                     String sdt = appUser.getWEEKS_CARD_TAG();
-                    if (sdt.equals("1")){
+                    if (sdt.equals("1")) {
                         appUser.setWEEKS_CARD(wd + 7);
                         nb = Integer.valueOf(appUser.getBALANCE()) + gold;
-                    }else {
+                    } else {
                         //更新收支表
                         Payment payment_1 = new Payment();
                         payment_1.setGOLD("+" + 20);
@@ -1020,7 +1039,7 @@ public class AppPayController extends BaseController {
                     appuserService.updateAppUserBalanceById(appUser);
 
                 }
-                if (o.getPAYOUT_TYPE().equals(mc)){
+                if (o.getPAYOUT_TYPE().equals(mc)) {
                     //更新收支表
                     Payment payment = new Payment();
                     payment.setGOLD("+" + rechare);
@@ -1030,12 +1049,12 @@ public class AppPayController extends BaseController {
                     payment.setREMARK(Const.PlayMentCostType.cost_type21.getName());
                     paymentService.reg(payment);
 
-                    Integer wd =  appUser.getMONTH_CARD();
+                    Integer wd = appUser.getMONTH_CARD();
                     String sdt = appUser.getMONTH_CARD_TAG();
-                    if (sdt.equals("1")){
+                    if (sdt.equals("1")) {
                         appUser.setMONTH_CARD(wd + 30);
                         nb = Integer.valueOf(appUser.getBALANCE()) + gold;
-                    }else {
+                    } else {
                         //更新收支表
                         Payment payment_2 = new Payment();
                         payment_2.setGOLD("+" + 33);
@@ -1053,7 +1072,7 @@ public class AppPayController extends BaseController {
 
 
                 }
-                if (o.getPAYOUT_TYPE().equals(fc)){
+                if (o.getPAYOUT_TYPE().equals(fc)) {
                     appUser.setFIRST_CHARGE("1");
                     nb = Integer.valueOf(appUser.getBALANCE()) + gold;
                     appUser.setBALANCE(String.valueOf(nb));
@@ -1069,7 +1088,7 @@ public class AppPayController extends BaseController {
                     paymentService.reg(payment);
 
                 }
-                if (o.getPAYOUT_TYPE().equals(nm)){
+                if (o.getPAYOUT_TYPE().equals(nm)) {
                     nb = Integer.valueOf(appUser.getBALANCE()) + gold;
                     appUser.setBALANCE(String.valueOf(nb));
                     appuserService.updateAppUserBalanceById(appUser);
@@ -1085,6 +1104,43 @@ public class AppPayController extends BaseController {
 
                 }
 
+                //首先查询积分列表是否有该用户信息
+
+                String userId = appUser.getUSER_ID();
+                UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
+                PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type06.getValue());
+
+                    String tag =  userPoints.getFirstPay();
+                    if (tag.equals("0")){
+                        int a = userPoints.getTodayPoints();
+                        Integer now_points = a + pointsMall.getPointsValue();
+                        userPoints.setTodayPoints(now_points);
+                        userPoints.setFirstPay("1");
+                        userpointsService.updateUserPoints(userPoints);
+                        appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
+                        appuserService.updateAppUserBalanceById(appUser);
+
+                        //增加积分记录
+                        PointsDetail pointsDetail = new PointsDetail();
+                        pointsDetail.setUserId(userId);
+                        pointsDetail.setChannel(Const.pointsMallType.points_type06.getName());
+                        pointsDetail.setType("+");
+                        pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
+                        pointsDetail.setPointsValue(pointsMall.getPointsValue());
+                        pointsdetailService.regPointsDetail(pointsDetail);
+
+                        //判断是否增加金币
+                        String r_tag = userPoints.getPointsReward_Tag();
+                        Integer goldValue = 0;
+                        Integer sum = 0;
+                        Integer ob = Integer.valueOf(appUser.getBALANCE());
+                        Integer nb_2 = 0;
+                        List<PointsReward> list = pointsrewardService.getPointsReward();
+                        userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                    }
+
+
+
                 //当前订单的用户昵称
                 o.setUserNickName(appUser.getNICKNAME());
                 o.setREGGOLD(String.valueOf(gold));
@@ -1097,25 +1153,176 @@ public class AppPayController extends BaseController {
             }
 
         }
-        return "success"   ;
+        return "success";
 
     }
+    /********************************************************************IOS支付宝H5支付******************************************************************************/
+
+    /**
+     * 支付宝下单
+     * <p>
+     * //周卡
+     * String wc = "wc";
+     * //月卡
+     * String mc = "mc";
+     * //首充用户
+     * String fc = "fc";
+     * //正常充值
+     * String nm = "nm";
+     *
+     * @param userId
+     * @param ctype
+     * @param channel
+     * @return
+     */
+    @RequestMapping(value = "/getTradeOrderAlipayForIos", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public void getTradeOrderAlipayForIos(@RequestParam("userId") String userId,
+                                          @RequestParam(value = "pid") String pid,
+                                          @RequestParam(value = "ctype", required = false) String ctype,
+                                          @RequestParam(value = "channel", required = false) String channel,
+                                          @RequestParam(value = "payType", required = false) String payType,
+                                          HttpServletResponse httpResponse
+
+    ) {
+
+        //周卡
+        String wc = "wc";
+        //月卡
+        String mc = "mc";
+        //首充用户
+        String fc = "fc";
+        //正常充值
+        String nm = "nm";
+
+        String newOrder = "";
+        try {
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser == null) {
+                //return null;
+                return;
+            }
+            String tag =  appUser.getFIRST_CHARGE();
+            String datetime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
 
+            //amount = new DecimalFormat("#0.00").format(Double.valueOf(paycard.getAMOUNT()));//金额
+            boolean a = RedisUtil.getRu().exists("tradeOrder");
+            if (a) {
+                String tradeOrder = RedisUtil.getRu().get("tradeOrder");
+                String x = tradeOrder.substring(0, 8);//取前八位进行判断
+                if (datetime.substring(0, 8).equals(x)) {
+                    String six = tradeOrder.substring(tradeOrder.length() - 6, tradeOrder.length());
+                    String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
+                    newOrder = datetime + newsix;//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
+                } else {
+                    newOrder = datetime + "000001";//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
+                }
+            } else {
+                newOrder = datetime + "000001";//新的订单编号
+                RedisUtil.getRu().set("tradeOrder", newOrder);
+            }
+            String regGold = "" ;
+            String payOutType = "";
+            Paycard paycard =  paycardService.getPayCardById(pid);
+
+            String amt = paycard.getAMOUNT();
+            if (pid.equals("8")){
+                regGold = paycard.getRECHARE();
+                payOutType = wc;
+
+            }
+            if (pid.equals("9")){
+                regGold = paycard.getRECHARE();
+                payOutType = mc;
+
+            }
+
+            if (tag.equals("0")){
+                regGold = paycard.getFIRSTAWARD_GOLD();
+                payOutType = fc ;
+            }else if(tag.equals("1") ) {
+                regGold =paycard.getGOLD();
+                payOutType = nm;
+            }
+            Order order = new Order();
+            order.setUSER_ID(userId);
+            order.setREC_ID(newOrder);
+            order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amt)); //元转分
+            order.setORDER_ID(newOrder);
+            order.setREGGOLD(regGold); //充值的金币数量
+            order.setCHANNEL(channel);
+            order.setCTYPE(ctype);
+            order.setPAY_TYPE(payType);
+            order.setPRO_USER_ID(appUser.getPRO_USER_ID());
+            order.setPAYOUT_TYPE(payOutType);
+            orderService.regmount(order);
+
+            AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID,
+                    AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
+            AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
+            //alipayRequest.setReturnUrl(AlipayConfig.ReturnUrl);
+            // 在公共参数中设置回跳和通知地址
+            alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
+            String out_trade_no = newOrder;
+            alipayRequest.setBizContent("{" +
+                    " \"out_trade_no\":\"" + out_trade_no + "\"," +
+                    " \"total_amount\":\"" + amt + "\"," +
+                    " \"subject\":\"娃娃币\"," +
+                    " \"product_code\":\"QUICK_WAP_PAY\"" +
+                    " }");//填充业务参数
+            // 调用SDK生成表单
+
+            try {
+                String form = alipayClient.pageExecute(alipayRequest).getBody();
+                httpResponse.setContentType("text/html;charset=" + "UTF-8");
+                httpResponse.getWriter().write(form);//直接将完整的表单html输出到页面
+                httpResponse.getWriter().flush();
+                httpResponse.getWriter().close();
+            } catch (AlipayApiException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping(value = "/getRecUrl", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getRecUrl(@RequestParam("userId") String userId){
+        try{
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser == null) {
+                return null;
+            }
+            String tag =  appUser.getFIRST_CHARGE();
+            if (tag.equals("1")){
+                return RespStatus.successs().element("url",nurl+userId);
+
+            }else {
+                return RespStatus.successs().element("url",furl+userId);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
 
     /********************************************************************现在支付******************************************************************************/
 
     /**
-     *
      * @param req
-     * @param userId 用户ID
-     * @param ant  金额（元）
+     * @param userId  用户ID
+     * @param ant     金额（元）
      * @param ctype
      * @param channel
      * @param payType 默认R
      * @return
      */
-    @RequestMapping(value = "/getTradeOrderxdpay",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getTradeOrderxdpay", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject getTradeOrderxdpay(
             HttpServletRequest req,
@@ -1123,8 +1330,8 @@ public class AppPayController extends BaseController {
             @RequestParam("amount") String ant,
             @RequestParam(value = "ctype", required = false) String ctype,
             @RequestParam(value = "channel", required = false) String channel,
-            @RequestParam(value="payType" ,required = false) String payType
-    ){
+            @RequestParam(value = "payType", required = false) String payType
+    ) {
         try {
             AppUser appUser = appuserService.getUserByID(userId);
             if (appUser == null) {
@@ -1135,7 +1342,7 @@ public class AppPayController extends BaseController {
                 return null;
             }
             boolean a = RedisUtil.getRu().exists("tradeOrder");
-            String newOrder=""; //订单号
+            String newOrder = ""; //订单号
             if (a) {
                 String tradeOrder = RedisUtil.getRu().get("tradeOrder");
                 String x = tradeOrder.substring(0, 8);//取前八位进行判断
@@ -1159,75 +1366,75 @@ public class AppPayController extends BaseController {
             order.setREC_ID(newOrder);
             order.setREGAMOUNT(NumberUtils.RMBYuanToCent(ant)); //元转分
             order.setORDER_ID(newOrder);
-            order.setREGGOLD(String.valueOf(Integer.valueOf(ant)*10)); //充值的金币数量
+            order.setREGGOLD(String.valueOf(Integer.valueOf(ant) * 10)); //充值的金币数量
             order.setCHANNEL(channel);
             order.setCTYPE(ctype);
             order.setPAY_TYPE(payType);
             order.setPRO_USER_ID(appUser.getPRO_USER_ID());
             orderService.regmount(order);
 
-            Map<String,Object> map = new HashMap<>();
-            map.put("funcode","WP001");//
-            map.put("version","1.0.0");//
-            map.put("appId",PropertiesUtils.getCurrProperty("nowpay.appId"));//
-            map.put("mhtOrderNo",newOrder);//
-            map.put("mhtOrderName","娃娃币");//
-            map.put("mhtOrderType","01");//
-            map.put("mhtCurrencyType","156");//
-            map.put("mhtOrderAmt",Integer.valueOf(NumberUtils.RMBYuanToCent(ant)));//
-            map.put("mhtOrderStartTime",DateUtil.getSdfTimes());//
+            Map<String, Object> map = new HashMap<>();
+            map.put("funcode", "WP001");//
+            map.put("version", "1.0.0");//
+            map.put("appId", PropertiesUtils.getCurrProperty("nowpay.appId"));//
+            map.put("mhtOrderNo", newOrder);//
+            map.put("mhtOrderName", "娃娃币");//
+            map.put("mhtOrderType", "01");//
+            map.put("mhtCurrencyType", "156");//
+            map.put("mhtOrderAmt", Integer.valueOf(NumberUtils.RMBYuanToCent(ant)));//
+            map.put("mhtOrderStartTime", DateUtil.getSdfTimes());//
             map.put("frontNotifyUrl", "http://sds");
-            map.put("notifyUrl","http://111.231.139.61:18081/pooh-web/app/pay/xdpayCallBack");//
-            map.put("mhtCharset","UTF-8");//
-            map.put("deviceType","0601");//
-            map.put("payChannelType","13");//
-            map.put("consumerId",userId);//.......
-            map.put("consumerName",appUser.getUSERNAME());//........
-            map.put("mhtSignType","MD5");//
-            map.put("outputType","2");//
-            map.put("mhtOrderDetail","娃娃币");
-            String signature = MD5Facade.getFormDataParamMD5(map,PropertiesUtils.getCurrProperty("nowpay.md5Key"),"UTF-8");
-            map.put("mhtSignature",signature);//
-            FormDateReportConvertor.postBraceFormLinkReportWithURLEncode(map,"UTF-8");
+            map.put("notifyUrl", "http://111.231.139.61:18081/pooh-web/app/pay/xdpayCallBack");//
+            map.put("mhtCharset", "UTF-8");//
+            map.put("deviceType", "0601");//
+            map.put("payChannelType", "13");//
+            map.put("consumerId", userId);//.......
+            map.put("consumerName", appUser.getUSERNAME());//........
+            map.put("mhtSignType", "MD5");//
+            map.put("outputType", "2");//
+            map.put("mhtOrderDetail", "娃娃币");
+            String signature = MD5Facade.getFormDataParamMD5(map, PropertiesUtils.getCurrProperty("nowpay.md5Key"), "UTF-8");
+            map.put("mhtSignature", signature);//
+            FormDateReportConvertor.postBraceFormLinkReportWithURLEncode(map, "UTF-8");
 
             StringBuilder toMD5StringBuilder = new StringBuilder();
             Set<String> keySet = map.keySet();
-            for(String key :keySet){
+            for (String key : keySet) {
                 String value = map.get(key).toString();
-                if(value != null && value.length()>0){
-                    toMD5StringBuilder.append(key+"="+ value+"&");
+                if (value != null && value.length() > 0) {
+                    toMD5StringBuilder.append(key + "=" + value + "&");
                 }
             }
-            toMD5StringBuilder.delete(toMD5StringBuilder.length()-1,toMD5StringBuilder.length());
+            toMD5StringBuilder.delete(toMD5StringBuilder.length() - 1, toMD5StringBuilder.length());
             String s = toMD5StringBuilder.toString();
-            logger.info("发送的参数"+s);
-            System.out.println("发送的参数:"+s+"------------");
-            String Code =  NowPayUtil.doPost(s);
-            logger.info("Code---------------"+Code);
+            logger.info("发送的参数" + s);
+            System.out.println("发送的参数:" + s + "------------");
+            String Code = NowPayUtil.doPost(s);
+            logger.info("Code---------------" + Code);
             Map<String, Object> map_1 = new HashMap<>();
             map_1.put("Order", getOrderInfo(order.getORDER_ID()));
-            return RespStatus.successs().element("data", map_1).element("nowpayData",map);
+            return RespStatus.successs().element("data", map_1).element("nowpayData", map);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();
         }
     }
 
-    @RequestMapping(value = "/xdpayCallBack",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/xdpayCallBack", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public String xdpayCallBack(HttpServletRequest req) {
-        try{
+        try {
             BufferedReader reader = req.getReader();
             StringBuilder reportBuilder = new StringBuilder();
             String tempStr = "";
-            while((tempStr = reader.readLine()) != null){
+            while ((tempStr = reader.readLine()) != null) {
                 reportBuilder.append(tempStr);
             }
 
             String reportContent = reportBuilder.toString();
 
-            Map<String,String> dataMap = FormDateReportConvertor.parseFormDataPatternReportWithDecode(reportContent, "UTF-8", "UTF-8");
+            Map<String, String> dataMap = FormDateReportConvertor.parseFormDataPatternReportWithDecode(reportContent, "UTF-8", "UTF-8");
 
             //dataMap.remove("signType");
             String signature = dataMap.remove("signature");
@@ -1236,17 +1443,17 @@ public class AppPayController extends BaseController {
             Properties properties = new Properties();
             properties.load(propertiesInput);
             String md5Key = (String) properties.get("md5Key");*/
-            String md5Key =  PropertiesUtils.getCurrProperty("nowpay.md5Key");
-            boolean isValidSignature = MD5Facade.validateFormDataParamMD5(dataMap,md5Key,signature);
-            logger.info("验签结果：----------------------------->"+isValidSignature);
-            if (isValidSignature){
+            String md5Key = PropertiesUtils.getCurrProperty("nowpay.md5Key");
+            boolean isValidSignature = MD5Facade.validateFormDataParamMD5(dataMap, md5Key, signature);
+            logger.info("验签结果：----------------------------->" + isValidSignature);
+            if (isValidSignature) {
                 try {
                     Order o = orderService.getOrderById(dataMap.get("mhtOrderNo"));
                     if (o.getSTATUS().equals("1")) {
                         return "success=Y";
                     }
                     //通过金币卡ID来查询
-                    String pid =  o.getADD_INFO();
+                    String pid = o.getADD_INFO();
                     Paycard paycard = paycardService.getPayCardById(pid);
                     int gold = Integer.valueOf(paycard.getGOLD());
                     String award = paycard.getAWARD();
@@ -1283,11 +1490,11 @@ public class AppPayController extends BaseController {
                     e.printStackTrace();
                 }
                 return "success=Y";
-            }else {
+            } else {
                 return "success=N";
             }
-    }catch (Exception e){
-            logger.info("程序异常"+e);
+        } catch (Exception e) {
+            logger.info("程序异常" + e);
             e.printStackTrace();
             return "error";
         }
@@ -1295,46 +1502,28 @@ public class AppPayController extends BaseController {
     }
 
     public static void main(String[] args) {
-        Double a  = Double.valueOf("0.1")*10;
-        int a2 =  a.intValue();
-       String a3  =  String.valueOf(a2);
-        System.out.print(a3);
 
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID,
+                AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
+        AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
+        alipayRequest.setReturnUrl("https://xxx.xxx.xxx/open-pay/open-pay/aggregate/pay/QRPay");
+        // 在公共参数中设置回跳和通知地址
+        alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
+        String out_trade_no = "1234560000000000";
+        alipayRequest.setBizContent("{" +
+                " \"out_trade_no\":\"" + out_trade_no + "\"," +
+                " \"total_amount\":\"" + 12 + "\"," +
+                " \"subject\":\"娃娃币\"," +
+                " \"product_code\":\"QUICK_WAP_PAY\"" +
+                " }");//填充业务参数
+        // 调用SDK生成表单
 
-
-
+        try {
+            String form = alipayClient.pageExecute(alipayRequest).getBody();
+            System.out.println(form);
+    }catch (AlipayApiException e){
+        e.printStackTrace();}
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

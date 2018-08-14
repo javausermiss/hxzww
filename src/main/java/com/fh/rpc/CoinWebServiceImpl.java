@@ -1,16 +1,18 @@
 package com.fh.rpc;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.fh.entity.system.AppUser;
-import com.fh.entity.system.CoinPusher;
-import com.fh.entity.system.Doll;
-import com.fh.entity.system.Payment;
+import com.fh.entity.system.*;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.coinpusher.CoinPusherManager;
+import com.fh.service.system.costgoldrewardpoints.CostGoldRewardPointsManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
+import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
+import com.fh.util.PageData;
+import com.fh.util.wwjUtil.MyUUID;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcReturnCode;
 import com.iot.game.pooh.web.rpc.interfaces.CoinRpcService;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -32,6 +35,12 @@ public class CoinWebServiceImpl implements CoinRpcService {
     private CoinPusherManager coinpusherService;
     @Resource(name = "paymentService")
     private PaymentManager paymentService;
+    @Resource(name = "userpointsService")
+    private UserPointsManager userpointsService;
+    @Resource(name="costgoldrewardpointsService")
+    private CostGoldRewardPointsManager costgoldrewardpointsService;
+    @Resource(name="pointsdetailService")
+    private PointsDetailManager pointsdetailService;
 
     /**
      * @param roomId
@@ -41,85 +50,13 @@ public class CoinWebServiceImpl implements CoinRpcService {
      */
     @Override
     public RpcCommandResult checkCoin(String roomId, String userId, Integer bat) {
-
-        log.info("用户:" + userId + "-------------------->" + roomId + "开始投币，数量为" + bat);
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
-        try {
-            //查找娃娃机信息
-            Doll doll = dollService.getDollByID(roomId);
-            if (doll == null) {
-                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                rpcCommandResult.setInfo("设备不存在");
-                return rpcCommandResult;
-            }
-            //获取用户信息
-            AppUser appUser = appuserService.getUserByID(userId);
-            if (appUser == null) {
-                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                rpcCommandResult.setInfo("用户不存在");
-                return rpcCommandResult;
-            }
-            //判断金币是否充足,用户选择投一个币，相当于消费10个娃娃币
-
-            int balance = Integer.valueOf(appUser.getBALANCE());
-            int costGold = bat * 10;
-            if (balance < costGold) {
-                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                rpcCommandResult.setInfo("余额不足");
-                return rpcCommandResult;
-            }
-
-            //修改金币数量
-            appUser.setBALANCE(String.valueOf(balance - costGold));
-            appuserService.updateAppUserBalanceById(appUser);
-
-            //添加游戏金币明细记录
-            Payment payment = new Payment();
-            payment.setCOST_TYPE("0");
-            payment.setDOLLID(roomId);
-            payment.setUSERID(userId);
-            payment.setGOLD("-" + String.valueOf(costGold));
-            payment.setREMARK(doll.getDOLL_NAME() + "游戏");
-            paymentService.reg(payment);
-
-            //增加用户的推币机游戏记录
-
-            CoinPusher cp = coinpusherService.getLatestRecordForId(roomId);
-            String newId;
-            if (cp == null) {
-                Date currentTime1 = new Date();
-                SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
-                String dateString1 = formatter1.format(currentTime1);
-                String num = "0001";
-                newId = dateString1 + num;
-            } else {
-                String guessid = cp.getId();//获取到场次ID 201712100001
-                Date currentTime = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-                String dateString = formatter.format(currentTime);
-                String x = guessid.substring(0, 8);//取前八位进行判断
-                if (x.equals(dateString)) {
-                    newId = String.valueOf(Long.parseLong(guessid) + 1);
-                } else {
-                    Date current = new Date();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-                    String date = format.format(current);
-                    newId = date + "0001";
-                }
-            }
-
-            CoinPusher coinPusher = new CoinPusher();
-            coinPusher.setId(newId);
-            coinPusher.setRoomId(roomId);
-            coinPusher.setUserId(userId);
-            coinPusher.setCostGold(String.valueOf(bat));
-            coinpusherService.reg(coinPusher);
-
-            rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
-            rpcCommandResult.setInfo("SUCCESS");
-            return rpcCommandResult;
-        } catch (Exception e) {
+       try {
+            rpcCommandResult = coinpusherService.doPusherGame(roomId,userId,bat);
+            return  rpcCommandResult;
+       } catch (Exception e) {
             e.printStackTrace();
+            log.info("error",e);
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
             rpcCommandResult.setInfo("程序异常");
             return rpcCommandResult;
@@ -228,7 +165,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                     paymentService.reg(payment);
                 }
             }
-
+            userpointsService.doCostRewardPoints(appUser,userId);
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo("SUCCESS");
             return rpcCommandResult;

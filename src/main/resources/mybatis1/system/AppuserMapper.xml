@@ -46,7 +46,11 @@
 		MONTH_CARD,
 		MONTH_CARD_TAG,
 		OPEN_TYPE,
-		BDPHONE
+		BDPHONE,
+		POINTS,
+		POINTS_MULTIPLES,
+		TODAY_GUESS,
+		TODAY_POOH
 	</sql>
 
     <!-- 字段值 -->
@@ -87,7 +91,11 @@
 		#{MONTH_CARD},
 		#{MONTH_CARD_TAG},
 		#{OPEN_TYPE},
-		#{BDPHONE}
+		#{BDPHONE},
+		#{POINTS},
+		#{POINTS_MULTIPLES},
+		#{TODAY_GUESS},
+		#{TODAY_POOH}
 	</sql>
 
     <!-- 角色表 -->
@@ -461,6 +469,12 @@
         <if test="MONTH_CARD != null and MONTH_CARD != ''">
             ,MONTH_CARD = #{MONTH_CARD}
         </if>
+        <if test="POINTS != null and POINTS != ''">
+            ,POINTS = #{POINTS}
+        </if>
+        <if test="POINTS_MULTIPLES != null">
+            ,POINTS_MULTIPLES = #{POINTS_MULTIPLES}
+        </if>
         WHERE
         USER_ID = #{USER_ID}
     </update>
@@ -470,6 +484,7 @@
         update
         <include refid="tableName"/>
         set
+        TODAY_POOH = #{TODAY_POOH},
         DOLLTOTAL = #{DOLLTOTAL}
         WHERE
         USER_ID = #{USER_ID}
@@ -491,6 +506,23 @@
         ASC
         limit
         0,20
+    </select>
+    <!-- 查询当日前20名抓娃娃最多的用户 -->
+    <select id="rankListToday" resultType="com.fh.entity.system.AppUser">
+        select
+        <include refid="Field"/>
+        from
+        <include refid="tableName"/>
+        where
+        DOLLTOTAL >= 0
+        ORDER BY
+        TODAY_POOH
+        DESC,
+        CREATETIME
+        ASC
+        limit
+        0,20
+
     </select>
 
     <!--更新收货人信息地址-->
@@ -562,7 +594,9 @@
 		SIGN_TAG = #{SIGN_TAG},
 		COIN_MULTIPLES = #{COIN_MULTIPLES},
 		WEEKS_CARD_TAG = #{WEEKS_CARD_TAG},
-		MONTH_CARD_TAG = #{MONTH_CARD_TAG}
+		MONTH_CARD_TAG = #{MONTH_CARD_TAG},
+		TODAY_POOH = #{TODAY_POOH},
+		TODAY_GUESS = #{TODAY_GUESS}
 		WHERE
 		USER_ID = #{USER_ID}
     </update>
@@ -593,6 +627,15 @@
         (select u.user_id,u.nickname ,u.dolltotal,u.image_url,
         (@rownum := @rowNum + 1) as RANK from sys_app_user u , (select (@rownum := 0))
         b order by dolltotal desc ,createtime ) p
+        where
+        p.user_id = #{USER_ID}
+    </select>
+    <!--获取个人排名-->
+    <select id="getAppUserRanklistToday" parameterType="String" resultType="com.fh.entity.system.AppUser">
+        select * from
+        (select u.user_id,u.nickname ,u.today_pooh,u.image_url,
+        (@rownum := @rowNum + 1) as RANK from sys_app_user u , (select (@rownum := 0))
+        b order by today_pooh desc ,createtime ) p
         where
         p.user_id = #{USER_ID}
     </select>
@@ -685,7 +728,8 @@
         BALANCE,
         PASSWORD,
         CHANNEL_NUM,
-        BDPHONE
+        BDPHONE,
+        POINTS
         ) values (
         #{USER_ID},
         #{PHONE},
@@ -696,7 +740,8 @@
         #{BALANCE},
         #{PASSWORD},
         #{CHANNEL_NUM},
-        #{BDPHONE}
+        #{BDPHONE},
+        #{POINTS}
         )
 
 
@@ -746,6 +791,22 @@
         limit
         0,20
     </select>
+    <!-- 查询当日前20名竞猜获胜最多的用户 -->
+    <select id="rankBetListToday" resultType="pd">
+        select
+        BET_NUM,NICKNAME,IMAGE_URL,USER_ID
+        from
+        <include refid="tableName"/>
+        where
+        BET_NUM >= 0
+        ORDER BY
+        TODAY_GUESS
+        DESC,
+        createtime
+        ASC
+        limit
+        0,20
+    </select>
 
     <!--获取竞猜个人排名-->
     <select id="getAppUserBetRanklist" parameterType="String" resultType="pd">
@@ -753,6 +814,16 @@
         (select u.USER_ID,u.NICKNAME ,u.BET_NUM,u.IMAGE_URL,
         (@rownum := @rowNum + 1) as RANK from sys_app_user u , (select (@rownum := 0))
         b order by bet_num desc ,createtime ) p
+        where
+        p.user_id = #{USER_ID}
+    </select>
+
+    <!--获取当日竞猜个人排名-->
+    <select id="getAppUserBetRanklistToday" parameterType="String" resultType="pd">
+        select * from
+        (select u.USER_ID,u.NICKNAME ,u.TODAY_GUESS,u.IMAGE_URL,
+        (@rownum := @rowNum + 1) as RANK from sys_app_user u , (select (@rownum := 0))
+        b order by TODAY_GUESS desc ,createtime ) p
         where
         p.user_id = #{USER_ID}
     </select>
@@ -771,7 +842,8 @@
         <include refid="tableName"/>
         set
         BALANCE = #{BALANCE},
-        BET_NUM = #{BET_NUM}
+        BET_NUM = #{BET_NUM},
+        TODAY_GUESS = #{TODAY_GUESS}
         WHERE
         USER_ID = #{USER_ID}
 

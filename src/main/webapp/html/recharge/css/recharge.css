@@ -1,0 +1,27 @@
+.recharge-main{width: 100%;margin: 0 auto;font-family: "黑体";color: #272727;}
+.recharge-head{width: 100%;height: 1.15rem;line-height: 1.15rem; background-color: #fed801;text-align: center;font-size: 0.48rem;position: relative;}
+.recharge-back{position: absolute;width: 0.23rem;height: 0.38rem;top: 0.39rem;left: 0.34rem;}
+.recharge-mingxi{font-size: 0.3rem;position: absolute;top: 0.5rem;right: 0.34rem;line-height: initial;}
+.recharge-yuecont{width: 100%;height: 2.81rem;background: url(../img/02.jpg) 0 0 no-repeat;background-size: 100%;}
+.recharge-yuecont div{text-align: center;font-size: 0.36rem;padding: 0.33rem 0 0.17rem;}
+.recharge-yuecont p{text-align: center;font-size: 0.30rem;}
+.recharge-yuecont p span{text-align: center;font-size: 0.48rem;margin-right: 0.15rem;}
+.recharge-fenleicont{padding: 0.35rem;background-color: #fed900;}
+.recharge-ka{overflow: hidden;}
+.recharge-ka li{width: 3.17rem;height: 1.66rem;position: relative;}
+.recharge-ka li:nth-child(1){float: left;background: url(../img/03.png) 0 0 no-repeat;background-size: 100%;}
+.recharge-ka li:nth-child(2){float: right;background: url(../img/04.png) 0 0 no-repeat;background-size: 100%;}
+.recharge-ka li div:nth-child(1){text-align: right;padding: 0.16rem 0.29rem 0.08rem 0;font-size: 0.24rem;}
+.recharge-ka li div:nth-child(1) span{font-size: 0.36rem;}
+.recharge-ka li div:nth-child(2){text-align: right;padding: 0rem 0.29rem 0.10rem 0;font-size: 0.31rem;color: #de2e2e;}
+.recharge-ka li div:nth-child(3){text-align: center;font-size: 0.3rem;color: #fff;position: absolute;bottom: 0.03rem;left: 0.75rem;}
+.recharge-ka li:nth-child(2) div:nth-child(2){color: #72c6ff;}
+.recharge-zhu{width: 100%;height: 0.58rem;line-height: 0.58rem;font-size: 0.16rem;color: #575a4c;border-bottom: 1px solid #fff;}
+.recharge-chong{overflow: hidden;margin-top: 0.3rem;}
+.recharge-chong li{width: 3.03rem;height: 1.78rem;background: url(../img/05.png) 0 0 no-repeat;background-size: 100%;position: relative;}
+.recharge-chong li:nth-child(1){float: left;}
+.recharge-chong li:nth-child(2){float: right;}
+.recharge-chong li div:nth-child(1){text-align: right;padding: 0.30rem 0.22rem 0.14rem 0;font-size: 0.20rem;color: #3f3f3f;}
+.recharge-chong li div:nth-child(1) span{font-size: 0.34rem;}
+.recharge-chong li div:nth-child(2){text-align: right;padding: 0rem 0.22rem 0.26rem 0;font-size: 0.24rem;color: #dc2f2f;}
+.recharge-chong li div:nth-child(3){text-align: center;font-size: 0.3rem;color: #3f3f3f;position: absolute;bottom: 0.05rem;left: 0.75rem;}

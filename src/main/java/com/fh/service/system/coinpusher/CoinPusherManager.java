@@ -3,6 +3,7 @@ package com.fh.service.system.coinpusher;
 import com.fh.entity.Page;
 import com.fh.entity.system.CoinPusher;
 import com.fh.util.PageData;
+import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
 
 import java.util.List;
 
@@ -103,6 +104,18 @@ public interface CoinPusherManager {
 	 * @throws Exception
 	 */
 	public CoinPusher getSumCoinOneDay(CoinPusher coinPusher) throws Exception;
+
+
+	/**
+	 * RPC推币机开始游戏
+	 * @param roomId
+	 * @param userId
+	 * @param bat
+	 * @return
+	 * @throws Exception
+	 */
+
+	public RpcCommandResult doPusherGame(String roomId, String userId, Integer bat)throws Exception;
 	
 }
 

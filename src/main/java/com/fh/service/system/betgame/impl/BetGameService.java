@@ -11,10 +11,15 @@ import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playback.PlayBackManage;
 import com.fh.service.system.playdetail.PlayDetailManage;
+import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pointsmall.PointsMallManager;
+import com.fh.service.system.pointsreward.PointsRewardManager;
 import com.fh.service.system.pond.PondManager;
+import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
 import com.fh.util.PageData;
+import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RespStatus;
 import com.iot.game.pooh.server.rpc.interfaces.LotteryServerRpcService;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
@@ -25,10 +30,9 @@ import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("betGameService")
 @Slf4j
@@ -53,6 +57,17 @@ public class BetGameService extends BaseController implements BetGameManager {
     private LotteryServerRpcService lotteryServerRpcService;
     @Resource(name = "afterVotingService")
     private AfterVotingManager afterVotingService;
+    @Resource(name="pointsmallService")
+    private PointsMallManager pointsmallService;
+    @Resource(name="pointsrewardService")
+    private PointsRewardManager pointsrewardService;
+    @Resource(name="userpointsService")
+    private UserPointsManager userpointsService;
+    @Resource(name="pointsdetailService")
+    private PointsDetailManager pointsdetailService;
+
+
+
 
 
     /**
@@ -309,6 +324,63 @@ public class BetGameService extends BaseController implements BetGameManager {
         pond1.setGUESS_ID(guessId);
         pond1.setDOLL_ID(dollId);
         Pond pond = pondService.getPondByPlayId(pond1);
+
+        //用户的消费总金币对应增加积分
+        userpointsService.doCostRewardPoints(appUser,userId);
+
+        UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
+        PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
+
+        //查询消费金币数
+        String now = DateUtil.getDay();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
+        String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+        PageData pageData = new PageData();
+        pageData.put("userId",userId);
+        pageData.put("beginDate",now);
+        pageData.put("endDate",tomorrow);
+        String gm = "0";
+        PageData pageData1 =  userpointsService.getCostGoldSum(pageData);
+        if (pageData1 != null){
+            double aa = (double)pageData1.get("godsum");
+            gm = new DecimalFormat("0").format(aa).substring(1);
+        }
+        int cgs =   Integer.valueOf(gm);
+        if (cgs >= 200 && userPoints.getCostGoldSum_Tag().equals("0")){
+            //增加积分记录
+            PointsDetail pointsDetail_cgs = new PointsDetail();
+            pointsDetail_cgs.setUserId(userId);
+            pointsDetail_cgs.setChannel(Const.pointsMallType.points_type05.getName());
+            pointsDetail_cgs.setType("+");
+            pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
+            pointsDetail_cgs.setPointsValue(pointsMall.getPointsValue());
+            pointsdetailService.regPointsDetail(pointsDetail_cgs);
+
+            userPoints.setCostGoldSum_Tag("1");
+            PointsMall pointsMall_Cost =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
+            userPoints.setTodayPoints( pointsMall_Cost.getPointsValue()+userPoints.getTodayPoints());
+            userpointsService.updateUserPoints(userPoints);
+
+            appUser = appuserService.getUserByID(userId);
+            appUser.setPOINTS(appUser.getPOINTS() + pointsMall_Cost.getPointsValue());
+            appuserService.updateAppUserBalanceById(appUser);
+
+            //判断是否增加金币
+            userPoints = userpointsService.getUserPointsFinish(userId);
+            Integer now_points = userPoints.getTodayPoints();
+            String r_tag = userPoints.getPointsReward_Tag();
+            Integer goldValue = 0;
+            Integer sum = 0;
+            Integer ob = Integer.valueOf(appUser.getBALANCE());
+            Integer nb_2 = 0;
+            List<PointsReward> list = pointsrewardService.getPointsReward();
+            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+            userPoints.setPointsReward_Tag(n_rtag);
+            userpointsService.updateUserPoints(userPoints);
+
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("pond", getPondInfo(pond.getPOND_ID()));
         map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
@@ -368,6 +440,7 @@ public class BetGameService extends BaseController implements BetGameManager {
             AppUser appUser = appuserService.getUserByID(play_user_Id);
             Integer new_dolltotal = appUser.getDOLLTOTAL() + 1;
             appUser.setDOLLTOTAL(new_dolltotal);
+            appUser.setTODAY_POOH(appUser.getTODAY_POOH()+1);
             appuserService.updateAppUserDollTotalById(appUser);
         }
 
@@ -415,6 +488,7 @@ public class BetGameService extends BaseController implements BetGameManager {
                 String new_balance = String.valueOf(Integer.valueOf(old_balance) + reword);
                 appUser.setBALANCE(new_balance);
                 appUser.setBET_NUM(new_betnum);
+                appUser.setTODAY_GUESS(appUser.getTODAY_GUESS()+1);
                 appuserService.updateAppUserBlAndBnById(appUser);
 
                 logger.info("获奖用户ID------------->" + guess_win_user);

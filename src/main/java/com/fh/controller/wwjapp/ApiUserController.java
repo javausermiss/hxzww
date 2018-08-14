@@ -8,10 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fh.entity.system.AppUser;
 import com.fh.service.system.appuser.AppuserManager;
@@ -177,7 +174,7 @@ public class ApiUserController {
                 return RespStatus.successs().element("data", map);
             } else {
                 List<AppUser> userExist = appuserService.getAppUserByNickNameList(name);
-                if (userExist != null) {
+                if (userExist.size() !=0) {
                     return RespStatus.fail("该昵称已经存在");
                 } else {
                     user.setNICKNAME(name);
@@ -206,6 +203,7 @@ public class ApiUserController {
      * @param userId
      * @return
      */
+    @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/getUserInfo", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject getUserInfo(

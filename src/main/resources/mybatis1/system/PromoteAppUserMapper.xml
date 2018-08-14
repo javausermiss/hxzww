@@ -106,7 +106,12 @@
 		a.USER_ID,
 		u.NICKNAME,
 		u.PRO_USER_ID,
-		u.CREATETIME
+		u.CREATETIME,
+		u.BALANCE,
+		u.BDPHONE,
+		u.STATUS,
+		u.NAME,
+		u.CHANNEL_CODE
 		from 
 		SYS_WWJ_PROMOTE_APPUSER a LEFT JOIN SYS_APP_USER u on a.USER_ID=u.PRO_USER_ID
 		where 1=1
@@ -116,6 +121,9 @@
 			or
 			u.PRO_USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 		</if>
+		AND
+		u.PRO_USER_ID = #{pd.PRO_USER_ID}
+
 	</select>
 	
 	

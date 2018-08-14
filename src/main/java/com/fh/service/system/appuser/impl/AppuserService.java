@@ -433,9 +433,8 @@ public class AppuserService implements AppuserManager{
      */
     public PageData getAppUserForAppByUserId(String userid)throws Exception{
     	PageData pd=(PageData) dao.findForObject("AppuserMapper.getAppUserForAppByUserId",userid);
-    	
     	if(pd !=null && StringUtils.isNotEmpty(pd.getString("BDPHONE"))){
-    		pd.put("BDPHONE", pd.getString("BDPHONE").replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2"));
+    		pd.put("BDPHONE", pd.getString("BDPHONE"));
     	}else{
     		pd.put("BDPHONE","");
     	}
@@ -458,8 +457,18 @@ public class AppuserService implements AppuserManager{
 	}
 
 	@Override
+	public List<PageData> rankBetListToday()throws  Exception {
+		return (List<PageData>)dao.findForList("AppuserMapper.rankBetListToday",null);
+	}
+
+	@Override
 	public PageData getAppUserBetRanklist(String userid) throws Exception {
 		return (PageData) dao.findForObject("AppuserMapper.getAppUserBetRanklist",userid);
+	}
+
+	@Override
+	public PageData getAppUserBetRanklistToday(String userid)throws Exception {
+		return (PageData) dao.findForObject("AppuserMapper.getAppUserBetRanklistToday",userid);
 	}
 
 	@Override
@@ -485,6 +494,16 @@ public class AppuserService implements AppuserManager{
 	@Override
 	public List<AppUser> getMonthCardPeoples() throws Exception{
 		return (List<AppUser>)dao.findForList("AppuserMapper.getMonthCardPeoples",null);
+	}
+
+	@Override
+	public List<AppUser> rankListToday() throws Exception{
+		return (List<AppUser>)dao.findForList("AppuserMapper.rankListToday",null);
+	}
+
+	@Override
+	public AppUser getAppUserRanklistToday(String userId) throws Exception {
+		return (AppUser)dao.findForObject("AppuserMapper.getAppUserRanklistToday",userId);
 	}
 }
 

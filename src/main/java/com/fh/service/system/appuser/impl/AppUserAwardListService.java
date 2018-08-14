@@ -4,12 +4,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.fh.entity.system.*;
+import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pointsmall.PointsMallManager;
+import com.fh.service.system.pointsreward.PointsRewardManager;
+import com.fh.service.system.userpoints.UserPointsManager;
+import com.fh.util.Const;
+import com.fh.util.wwjUtil.MyUUID;
 import org.springframework.stereotype.Service;
 
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
-import com.fh.entity.system.AppUser;
-import com.fh.entity.system.Payment;
 import com.fh.service.system.appuser.AppUserAwardListManager;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.payment.PaymentManager;
@@ -39,7 +44,17 @@ public class AppUserAwardListService implements AppUserAwardListManager{
 
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
-	
+
+	@Resource(name="userpointsService")
+	private UserPointsManager userpointsService;
+	@Resource(name="pointsmallService")
+	private PointsMallManager pointsmallService;
+	@Resource(name="pointsdetailService")
+	private PointsDetailManager pointsdetailService;
+	@Resource(name = "pointsrewardService")
+	private PointsRewardManager pointsrewardService;
+
+
 	/**新增
 	 * @param pd
 	 * @throws Exception
@@ -111,7 +126,7 @@ public class AppUserAwardListService implements AppUserAwardListManager{
 	
 	/**
 	 * 查询用户Id是否已经兑换
-	 * @param pd
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
@@ -121,7 +136,7 @@ public class AppUserAwardListService implements AppUserAwardListManager{
 	
 	/**
 	 * 查询用户APP是否已经兑换
-	 * @param pd
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
@@ -188,9 +203,45 @@ public class AppUserAwardListService implements AppUserAwardListManager{
         int userBlance2 = Integer.valueOf(appUser.getBALANCE()) + invite_awardNum;
         appUser.setBALANCE(String.valueOf(userBlance2));
         appuserService.updateAppUserBalanceById(appUser);
-        
-     
-        payment = new Payment();
+
+		//首先查询积分列表是否有该用户信息
+
+		UserPoints userPoints =  userpointsService.getUserPointsFinish(awarkPd.getString("USER_ID"));
+		PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type02.getValue());
+
+			String tag =  userPoints.getInviteGame();
+			if (tag.equals("0")){
+				int a = userPoints.getTodayPoints();
+				Integer now_points = a + pointsMall.getPointsValue();
+				userPoints.setTodayPoints(now_points);
+				userPoints.setInviteGame("1");
+				userpointsService.updateUserPoints(userPoints);
+				appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
+				appuserService.updateAppUserBalanceById(appUser);
+
+				//增加积分记录
+				PointsDetail pointsDetail = new PointsDetail();
+				pointsDetail.setUserId(awarkPd.getString("USER_ID"));
+				pointsDetail.setChannel(Const.pointsMallType.points_type02.getName());
+				pointsDetail.setType("+");
+				pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
+				pointsDetail.setPointsValue(pointsMall.getPointsValue());
+				pointsdetailService.regPointsDetail(pointsDetail);
+
+				//判断是否增加金币
+				String r_tag = userPoints.getPointsReward_Tag();
+				Integer goldValue = 0;
+				Integer sum = 0;
+				Integer ob = Integer.valueOf(appUser.getBALANCE());
+				Integer nb = 0;
+				List<PointsReward> list = pointsrewardService.getPointsReward();
+				String n_rtag = userpointsService.doGoldReward(r_tag, goldValue, sum, ob, list, now_points, nb, appUser);
+				userPoints.setPointsReward_Tag(n_rtag);
+				userpointsService.updateUserPoints(userPoints);
+
+		}
+
+		payment = new Payment();
         payment.setGOLD("+" + invite_awardNum);
         payment.setUSERID(awarkPd.getString("USER_ID"));
         payment.setDOLLID(null);

@@ -100,12 +100,12 @@
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
 													<c:if test="${QX.cha == 1 }">
-														<a class="btn btn-xs btn-success" title="下级用户" onclick="proUserList('${var.USERID}');">
+														<a class="btn btn-xs btn-success" title="下级用户" onclick="proUserList('${var.USER_ID}');">
 															下级用户
 														</a>
 													</c:if>
 													<c:if test="${QX.cha == 1 }">
-														<a class="btn btn-xs btn-success" title="我的佣金" onclick="proEarningsList('${var.USERID}');">
+														<a class="btn btn-xs btn-success" title="我的佣金" onclick="proEarningsList('${var.USER_ID}');">
 															我的佣金
 														</a>
 													</c:if>

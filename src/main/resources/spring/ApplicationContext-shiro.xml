@@ -48,6 +48,7 @@
 					/uploadFiles/paycard/** = anon
 					/api/** = anon
 					/app/** = anon
+					/html/** = anon
 					/** = authc
 				</value>
 			</property>

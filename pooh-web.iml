@@ -320,5 +320,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: alipay-wap-sdk:alipay-wap-sdk:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/main/webapp/WEB-INF/lib/alipay-sdk-java-3.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

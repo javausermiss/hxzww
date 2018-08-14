@@ -51,7 +51,15 @@ public class AppUser {
     //绑定的银行卡手机号码
     private String BDPHONE;
 
-    
+    //积分
+    private Integer POINTS;
+    //消费金币奖励倍数标签
+    private Integer POINTS_MULTIPLES;
+    //今日抓娃娃总数
+    private Integer TODAY_POOH ;
+
+    private Integer TODAY_GUESS;
+
     public AppUser() {
     }
 
@@ -87,7 +95,23 @@ public class AppUser {
                 '}';
     }
 
-    public AppUser(String USER_ID, String PHONE, String CREATETIME, String USERNAME, String NICKNAME ,String IMAGE_URL,String BALANCE) {
+    public Integer getTODAY_GUESS() {
+        return TODAY_GUESS;
+    }
+
+    public void setTODAY_GUESS(Integer TODAY_GUESS) {
+        this.TODAY_GUESS = TODAY_GUESS;
+    }
+
+    public Integer getTODAY_POOH() {
+        return TODAY_POOH;
+    }
+
+    public void setTODAY_POOH(Integer TODAY_POOH) {
+        this.TODAY_POOH = TODAY_POOH;
+    }
+
+    public AppUser(String USER_ID, String PHONE, String CREATETIME, String USERNAME, String NICKNAME , String IMAGE_URL, String BALANCE) {
         this.USER_ID = USER_ID;
         this.PHONE = PHONE;
         this.CREATETIME = CREATETIME;
@@ -95,6 +119,22 @@ public class AppUser {
         this.NICKNAME = NICKNAME;
         this.IMAGE_URL = IMAGE_URL;
         this.BALANCE = BALANCE;
+    }
+
+    public Integer getPOINTS_MULTIPLES() {
+        return POINTS_MULTIPLES;
+    }
+
+    public void setPOINTS_MULTIPLES(Integer POINTS_MULTIPLES) {
+        this.POINTS_MULTIPLES = POINTS_MULTIPLES;
+    }
+
+    public Integer getPOINTS() {
+        return POINTS;
+    }
+
+    public void setPOINTS(Integer POINTS) {
+        this.POINTS = POINTS;
     }
 
     public String getBDPHONE() {

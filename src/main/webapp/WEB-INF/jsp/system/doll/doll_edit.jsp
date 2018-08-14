@@ -32,7 +32,7 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:200px;text-align: right;padding-top: 13px;">娃娃机机SN:</td>
+								<td style="width:200px;text-align: right;padding-top: 13px;">娃娃机SN:</td>
 								<td><input type="text" name="DOLL_SN" id="DOLL_SN" value="${pd.DOLL_SN}" maxlength="50" placeholder="这里输入娃娃机SN" title="sn" style="width:98%;"/></td>
 							</tr>
 							<tr>

@@ -84,6 +84,8 @@ public class AppSignController {
                 appUser.setCOIN_MULTIPLES(0);
                 appUser.setWEEKS_CARD_TAG("0");
                 appUser.setMONTH_CARD_TAG("0");
+                appUser.setTODAY_GUESS(0);
+                appUser.setTODAY_POOH(0);
                 appuserService.updateAppUserSign(appUser);
             }
 
@@ -158,6 +160,11 @@ public class AppSignController {
         }
 
     }
+
+
+
+
+
 
 
 

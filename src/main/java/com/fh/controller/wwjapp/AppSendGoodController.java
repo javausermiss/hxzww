@@ -15,10 +15,12 @@ import com.fh.util.wwjUtil.RespStatus;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -221,6 +223,12 @@ public class AppSendGoodController {
             e.printStackTrace();
             return RespStatus.fail();
         }
+    }
+@RequestMapping(value = "/success",method = RequestMethod.GET)
+    public ModelAndView test(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("test1");
+        return modelAndView;
     }
 
 

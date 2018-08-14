@@ -631,6 +631,15 @@
             <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/commons-logging-1.1.1.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>alipay-wap-sdk</groupId>
+            <artifactId>alipay-wap-sdk</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/alipay-sdk-java-3.3.0.jar</systemPath>
+        </dependency>
+
+
     </dependencies>
     <build>
         <finalName>pooh-web</finalName>

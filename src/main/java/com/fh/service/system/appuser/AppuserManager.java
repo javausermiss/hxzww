@@ -360,6 +360,12 @@ public interface AppuserManager {
      * @throws Exception
      */
     public List<PageData> rankBetList()throws Exception;
+    /**
+     * 竞猜当日获胜排行榜
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> rankBetListToday()throws Exception;
 
     /**
      * 查询竞猜个人名次
@@ -368,6 +374,14 @@ public interface AppuserManager {
      * @throws Exception
      */
     public PageData getAppUserBetRanklist(String userid)throws Exception;
+
+    /**
+     * 查询当日竞猜个人名次
+     * @param userid
+     * @return
+     * @throws Exception
+     */
+    public PageData getAppUserBetRanklistToday(String userid)throws Exception;
 
     /**
      * 用户忘记密码，更改密码
@@ -408,6 +422,11 @@ public interface AppuserManager {
      * @throws Exception
      */
     public List<AppUser> getMonthCardPeoples()throws Exception;
+
+
+    public List<AppUser> rankListToday()throws Exception;
+
+    public AppUser getAppUserRanklistToday(String userId)throws Exception;
 
 
 

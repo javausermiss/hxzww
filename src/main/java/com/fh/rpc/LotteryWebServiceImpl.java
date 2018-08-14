@@ -8,9 +8,16 @@ import com.fh.service.system.betgame.BetGameManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playdetail.PlayDetailManage;
+import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pointsmall.PointsMallManager;
+import com.fh.service.system.pointsreward.PointsRewardManager;
 import com.fh.service.system.pond.PondManager;
+import com.fh.service.system.userpoints.UserPointsManager;
+import com.fh.util.Const;
 import com.fh.util.DateUtil;
+import com.fh.util.PageData;
 import com.fh.util.StringUtils;
+import com.fh.util.wwjUtil.MyUUID;
 import com.iot.game.pooh.server.entity.json.enums.PoohAbnormalStatus;
 import com.iot.game.pooh.server.entity.json.enums.PoohNormalStatus;
 import com.iot.game.pooh.server.rpc.interfaces.LotteryServerRpcService;
@@ -20,7 +27,9 @@ import com.iot.game.pooh.web.rpc.interfaces.LotteryWebRpcService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +52,16 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
     private LotteryServerRpcService lotteryServerRpcService;
     @Resource(name = "afterVotingService")
     private AfterVotingManager afterVotingService;
+    @Resource(name="userpointsService")
+    private UserPointsManager userpointsService;
+    @Resource(name="pointsmallService")
+    private PointsMallManager pointsmallService;
+
+    @Resource(name="pointsdetailService")
+    private PointsDetailManager pointsdetailService;
+
+    @Resource(name = "pointsrewardService")
+    private PointsRewardManager pointsrewardService;
 
     /**
      * 开始竞猜(点击开始 start )
@@ -76,7 +95,6 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
             int userBalance = Integer.valueOf(appUserBalance);
             //抓取金币额度
             int dollGold = doll.getDOLL_GOLD();
-          
             
             if (Integer.valueOf(userBalance) < dollGold) {
             	 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
@@ -180,6 +198,96 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                 }
 
             }
+            //用户的消费总金币对应增加积分
+            userpointsService.doCostRewardPoints(appUser,userId);
+
+            //首先查询积分列表是否有该用户信息
+
+            UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
+            PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type03.getValue());
+            String tag =  userPoints.getPoohGame();
+            if(tag.equals("0")){
+                int a = userPoints.getTodayPoints();
+                userPoints.setTodayPoints(a + pointsMall.getPointsValue());
+                userPoints.setPoohGame("1");
+                userpointsService.updateUserPoints(userPoints);
+                appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
+                appuserService.updateAppUserBalanceById(appUser);
+
+                //增加积分记录
+                PointsDetail pointsDetail = new PointsDetail();
+                pointsDetail.setUserId(appUser.getUSER_ID());
+                pointsDetail.setChannel(Const.pointsMallType.points_type03.getName());
+                pointsDetail.setType("+");
+                pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
+                pointsDetail.setPointsValue(pointsMall.getPointsValue());
+                pointsdetailService.regPointsDetail(pointsDetail);
+
+                //判断是否增加金币
+                userPoints = userpointsService.getUserPointsFinish(appUser.getUSER_ID());
+                Integer now_points = userPoints.getTodayPoints();
+                String r_tag = userPoints.getPointsReward_Tag();
+                Integer goldValue = 0;
+                Integer sum = 0;
+                Integer ob = Integer.valueOf(appUser.getBALANCE());
+                Integer nb_2 = 0;
+                List<PointsReward> list = pointsrewardService.getPointsReward();
+                String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                userPoints.setPointsReward_Tag(n_rtag);
+                userpointsService.updateUserPoints(userPoints);
+
+            }
+
+                //查询消费金币数
+                String now = DateUtil.getDay();
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, 1);
+                String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+                PageData pageData = new PageData();
+                pageData.put("userId",userId);
+                pageData.put("beginDate",now);
+                pageData.put("endDate",tomorrow);
+                String gm = "0";
+                PageData pageData1 =  userpointsService.getCostGoldSum(pageData);
+                if (pageData1 != null){
+                    double aa = (double)pageData1.get("godsum");
+                    gm = new DecimalFormat("0").format(aa).substring(1);
+                }
+                int cgs =   Integer.valueOf(gm);
+                if (cgs >= 200 && userPoints.getCostGoldSum_Tag().equals("0")){
+                    //增加积分记录
+                    PointsDetail pointsDetail_cgs = new PointsDetail();
+                    pointsDetail_cgs.setUserId(userId);
+                    pointsDetail_cgs.setChannel(Const.pointsMallType.points_type05.getName());
+                    pointsDetail_cgs.setType("+");
+                    pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
+                    pointsDetail_cgs.setPointsValue(pointsMall.getPointsValue());
+                    pointsdetailService.regPointsDetail(pointsDetail_cgs);
+
+                    userPoints =  userpointsService.getUserPointsFinish(userId);
+                    userPoints.setCostGoldSum_Tag("1");
+                    PointsMall pointsMall_Cost =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
+                    userPoints.setTodayPoints( pointsMall_Cost.getPointsValue()+userPoints.getTodayPoints());
+                    userpointsService.updateUserPoints(userPoints);
+
+                    appUser = appuserService.getUserByID(userId);
+                    appUser.setPOINTS(appUser.getPOINTS() + pointsMall_Cost.getPointsValue());
+                    appuserService.updateAppUserBalanceById(appUser);
+
+                    //判断是否增加金币
+                    userPoints = userpointsService.getUserPointsFinish(userId);
+                    Integer now_points = userPoints.getTodayPoints();
+                    String r_tag = userPoints.getPointsReward_Tag();
+                    Integer goldValue = 0;
+                    Integer sum = 0;
+                    Integer ob = Integer.valueOf(appUser.getBALANCE());
+                    Integer nb_2 = 0;
+                    List<PointsReward> list = pointsrewardService.getPointsReward();
+                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                    userPoints.setPointsReward_Tag(n_rtag);
+                    userpointsService.updateUserPoints(userPoints);
+                }
 
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo(newGuessID); ///这里写期号

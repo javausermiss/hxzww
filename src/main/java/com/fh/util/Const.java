@@ -49,7 +49,7 @@ public class Const {
 	public static final String FILEPATHFILE = "uploadFiles/file/";			//文件上传路径
 	public static final String FILEPATHFILEOA = "uploadFiles/uploadFile/";	//文件上传路径(oa管理)
 	public static final String FILEPATHTWODIMENSIONCODE = "uploadFiles/twoDimensionCode/"; //二维码存放路径
-	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(sms)|(api)|(gateway)|(code)|(app)|(weixin)|(static)|(paycard)|(main)|(DollImage)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
+	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(sms)|(html)|(api)|(gateway)|(code)|(app)|(weixin)|(static)|(paycard)|(main)|(DollImage)|(websocket)|(uploadImgs)|(srs)).*";	//不对匹配该值的访问路径拦截（正则）
 	public static ApplicationContext WEB_APP_CONTEXT = null; //该值会在web容器启动时由WebAppContextListener初始化
 	
 	
@@ -125,6 +125,42 @@ public class Const {
 			return null;
 		}
 	}
+
+	public enum pointsMallType{
+
+		points_type00("登录游戏",1),
+		points_type01("分享游戏",2),
+		points_type02("邀请好友",3),
+		points_type03("首次抓娃娃",4),
+		points_type04("推币机",5),
+		points_type05("每日消费金币奖励",6),
+		points_type06("每日充值",7),
+		points_type07("兑换礼品",8),
+		points_type08("累积消费金币奖励",9);
+		private  String name;
+		private  Integer value;
+
+		pointsMallType(String name,Integer value){
+			this.name = name;
+			this.value = value;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public Integer getValue() {
+			return value;
+		}
+
+		public void setValue(Integer value) {
+			this.value = value;
+		}
+	}
 	
 	/**
 	 * 
@@ -156,7 +192,8 @@ public class Const {
 		cost_type21("充值月卡","21"),
 		cost_type22("周卡每日赠送","22"),
 		cost_type23("月卡每日赠送","23"),
-		cost_type24("用户首充","24");
+		cost_type24("用户首充","24"),
+		cost_type25("集积分送金币","25");
 
 		
 		private  String name;

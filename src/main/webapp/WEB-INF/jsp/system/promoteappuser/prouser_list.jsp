@@ -85,11 +85,11 @@
                                             <c:forEach items="${userList}" var="user" varStatus="vs">
                                                 <tr>
                                                     <td class='center' style="width: 30px;">${vs.index+1}</td>
-                                                    <td class="center">${user.NICKNAME }</td>
-                                                    <td class="center">${user.NAME }</td>
-                                                    <td class="center">${user.CHANNEL_CODE }</td>
-                                                    <td class="center">${user.CREATETIME }</td>
-                                                    <td class="center">${user.PHONE }</td>
+                                                    <td class="center">${user.NICKNAME}</td>
+                                                    <td class="center">${user.NAME}</td>
+                                                    <td class="center">${user.CHANNEL_CODE}</td>
+                                                    <td class="center">${user.CREATETIME}</td>
+                                                    <td class="center">${user.BDPHONE}</td>
                                                     <td class="center">${user.STATUS}</td>
                                                     <td class="center">${user.BALANCE}</td>
                                                 </tr>
