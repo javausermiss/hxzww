@@ -279,15 +279,23 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                     userPoints = userpointsService.getUserPointsFinish(userId);
                     Integer now_points = userPoints.getTodayPoints();
                     String r_tag = userPoints.getPointsReward_Tag();
-                    Integer goldValue = 0;
-                    Integer sum = 0;
-                    Integer ob = Integer.valueOf(appUser.getBALANCE());
-                    Integer nb_2 = 0;
-                    List<PointsReward> list = pointsrewardService.getPointsReward();
-                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                    userPoints.setPointsReward_Tag(n_rtag);
-                    userpointsService.updateUserPoints(userPoints);
+                    if (Integer.valueOf(r_tag) < 5){
+                        Integer goldValue = 0;
+                        Integer sum = 0;
+                        Integer ob = Integer.valueOf(appUser.getBALANCE());
+                        Integer nb_2 = 0;
+                        List<PointsReward> list = pointsrewardService.getPointsReward();
+                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                        userPoints.setPointsReward_Tag(n_rtag);
+                        userpointsService.updateUserPoints(userPoints);
+                    }
                 }
+
+
+
+
+
+
 
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo(newGuessID); ///这里写期号

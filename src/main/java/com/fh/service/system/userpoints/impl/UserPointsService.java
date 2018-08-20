@@ -1,6 +1,8 @@
 package com.fh.service.system.userpoints.impl;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Resource;
 
@@ -9,8 +11,10 @@ import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.costgoldrewardpoints.CostGoldRewardPointsManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pointsreward.PointsRewardManager;
 import com.fh.util.Const;
 import com.fh.util.wwjUtil.MyUUID;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.stereotype.Service;
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
@@ -36,6 +40,8 @@ public class UserPointsService implements UserPointsManager{
 	private CostGoldRewardPointsManager costgoldrewardpointsService;
 	@Resource(name="pointsdetailService")
 	private PointsDetailManager pointsdetailService;
+	@Resource(name = "pointsrewardService")
+	private PointsRewardManager pointsrewardService;
 	
 	/**新增
 	 * @param pd
@@ -370,7 +376,6 @@ public class UserPointsService implements UserPointsManager{
 				new_r_tag = "5";
 			}
 		}
-		//金币增加记录
 		//更新收支表
 		if (sum!=0){
 			Payment payment = new Payment();
@@ -380,9 +385,9 @@ public class UserPointsService implements UserPointsManager{
 			payment.setCOST_TYPE(Const.PlayMentCostType.cost_type25.getValue());
 			payment.setREMARK(Const.PlayMentCostType.cost_type25.getName());
 			paymentService.reg(payment);
+			appUser.setBALANCE(String.valueOf(nb));
+			appuserService.updateAppUserBalanceById(appUser);
 		}
-		appUser.setBALANCE(String.valueOf(nb));
-		appuserService.updateAppUserBalanceById(appUser);
 		return new_r_tag;
 
 	}
@@ -424,7 +429,36 @@ public class UserPointsService implements UserPointsManager{
 			pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
 			pointsDetail_cgs.setPointsValue(regPoints);
 			pointsdetailService.regPointsDetail(pointsDetail_cgs);
+
+			up =  this.getUserPointsFinish(userId);
+			String r_tag =  up.getPointsReward_Tag();
+			if (Integer.valueOf(r_tag) < 5){
+				Integer goldValue = 0;
+				Integer sum = 0;
+				Integer ob = Integer.valueOf(appUser.getBALANCE());
+				Integer nb_2 = 0;
+				List<PointsReward> list = pointsrewardService.getPointsReward();
+				String n_rtag =  this.doGoldReward(r_tag,goldValue,sum,ob,list,up.getTodayPoints(),nb_2,appUser);
+				up.setPointsReward_Tag(n_rtag);
+				this.updateUserPoints(up);
+			}
+
 		}
+
+	}
+
+	public static void main(String[] a){
+		List<String> a1 = new ArrayList();
+		a1.add("1");
+		a1.add("2");
+		a1.add("3");
+		a1.add("4");
+		a1.add("5");
+		int summ = 0;
+		for (int i = 4; i < a1.size(); i++) {
+			summ += i;
+		}
+		System.out.println(summ);
 
 	}
 }

@@ -309,6 +309,9 @@ public class AppLoginController extends BaseController {
             // String phone = new String(Base64Util.decryptBASE64(aPhone));
             AppUser appUser = appuserService.getUserByID(userId);
             if (appUser != null) {
+                if (appUser.getSTATUS() != null&&appUser.getSTATUS().equals("0")){
+                    return RespStatus.fail("该用户已被冻结");
+                }
                 String sessionID = MyUUID.createSessionId();
                 RedisUtil.getRu().set("sessionId:appUser:" + userId, sessionID);
 
@@ -337,14 +340,16 @@ public class AppLoginController extends BaseController {
                     userPoints = userpointsService.getUserPointsFinish(userId);
                     Integer now_points = userPoints.getTodayPoints();
                     String r_tag = userPoints.getPointsReward_Tag();
-                    Integer goldValue = 0;
-                    Integer sum = 0;
-                    Integer ob = Integer.valueOf(appUser.getBALANCE());
-                    Integer nb_2 = 0;
-                    List<PointsReward> list = pointsrewardService.getPointsReward();
-                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                    userPoints.setPointsReward_Tag(n_rtag);
-                    userpointsService.updateUserPoints(userPoints);
+                    if (Integer.valueOf(r_tag) < 5){
+                        Integer goldValue = 0;
+                        Integer sum = 0;
+                        Integer ob = Integer.valueOf(appUser.getBALANCE());
+                        Integer nb_2 = 0;
+                        List<PointsReward> list = pointsrewardService.getPointsReward();
+                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                        userPoints.setPointsReward_Tag(n_rtag);
+                        userpointsService.updateUserPoints(userPoints);
+                    }
 
                 }else {
                     String tag =  userPoints.getLoginGame();
@@ -369,14 +374,16 @@ public class AppLoginController extends BaseController {
                         //判断是否增加金币
                         userPoints = userpointsService.getUserPointsFinish(userId);
                         String r_tag = userPoints.getPointsReward_Tag();
-                        Integer goldValue = 0;
-                        Integer sum = 0;
-                        Integer ob = Integer.valueOf(appUser.getBALANCE());
-                        Integer nb_2 = 0;
-                        List<PointsReward> list = pointsrewardService.getPointsReward();
-                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                        userPoints.setPointsReward_Tag(n_rtag);
-                        userpointsService.updateUserPoints(userPoints);
+                        if (Integer.valueOf(r_tag) < 5){
+                            Integer goldValue = 0;
+                            Integer sum = 0;
+                            Integer ob = Integer.valueOf(appUser.getBALANCE());
+                            Integer nb_2 = 0;
+                            List<PointsReward> list = pointsrewardService.getPointsReward();
+                            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                            userPoints.setPointsReward_Tag(n_rtag);
+                            userpointsService.updateUserPoints(userPoints);
+                        }
                     }
 
                 }
@@ -528,14 +535,16 @@ public class AppLoginController extends BaseController {
                 userPoints = userpointsService.getUserPointsFinish(userId);
                 Integer now_points = userPoints.getTodayPoints();
                 String r_tag = userPoints.getPointsReward_Tag();
-                Integer goldValue = 0;
-                Integer sum = 0;
-                Integer ob = Integer.valueOf(appUser1.getBALANCE());
-                Integer nb_2 = 0;
-                List<PointsReward> list = pointsrewardService.getPointsReward();
-                String n_rtag = userpointsService.doGoldReward(r_tag, goldValue, sum, ob, list, now_points, nb_2, appUser1);
-                userPoints.setPointsReward_Tag(n_rtag);
-                userpointsService.updateUserPoints(userPoints);
+                if (Integer.valueOf(r_tag) < 5){
+                    Integer goldValue = 0;
+                    Integer sum = 0;
+                    Integer ob = Integer.valueOf(appUser1.getBALANCE());
+                    Integer nb_2 = 0;
+                    List<PointsReward> list = pointsrewardService.getPointsReward();
+                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser1);
+                    userPoints.setPointsReward_Tag(n_rtag);
+                    userpointsService.updateUserPoints(userPoints);
+                }
             }
 
 
@@ -587,6 +596,10 @@ public class AppLoginController extends BaseController {
             }
             AppUser appUser = appuserService.getUserByPhone(phone);
             if (appUser != null) {
+
+                if (appUser.getSTATUS() != null&&appUser.getSTATUS().equals("0")){
+                    return RespStatus.fail("该用户已被冻结");
+                }
                 String password = appUser.getPASSWORD();
                 String pwmd5 = MD5.md5(pw);
                 logger.info("password--------" + password);
@@ -620,14 +633,16 @@ public class AppLoginController extends BaseController {
                         userPoints = userpointsService.getUserPointsFinish(userId);
                         Integer now_points = userPoints.getTodayPoints();
                         String r_tag = userPoints.getPointsReward_Tag();
-                        Integer goldValue = 0;
-                        Integer sum = 0;
-                        Integer ob = Integer.valueOf(appUser.getBALANCE());
-                        Integer nb_2 = 0;
-                        List<PointsReward> list = pointsrewardService.getPointsReward();
-                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                        userPoints.setPointsReward_Tag(n_rtag);
-                        userpointsService.updateUserPoints(userPoints);
+                        if (Integer.valueOf(r_tag) < 5){
+                            Integer goldValue = 0;
+                            Integer sum = 0;
+                            Integer ob = Integer.valueOf(appUser.getBALANCE());
+                            Integer nb_2 = 0;
+                            List<PointsReward> list = pointsrewardService.getPointsReward();
+                            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                            userPoints.setPointsReward_Tag(n_rtag);
+                            userpointsService.updateUserPoints(userPoints);
+                        }
 
                     }else {
                         String tag =  userPoints.getLoginGame();
@@ -652,14 +667,16 @@ public class AppLoginController extends BaseController {
                             userPoints = userpointsService.getUserPointsFinish(userId);
                             Integer now_points = userPoints.getTodayPoints();
                             String r_tag = userPoints.getPointsReward_Tag();
-                            Integer goldValue = 0;
-                            Integer sum = 0;
-                            Integer ob = Integer.valueOf(appUser.getBALANCE());
-                            Integer nb_2 = 0;
-                            List<PointsReward> list = pointsrewardService.getPointsReward();
-                            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                            userPoints.setPointsReward_Tag(n_rtag);
-                            userpointsService.updateUserPoints(userPoints);
+                            if (Integer.valueOf(r_tag) < 5){
+                                Integer goldValue = 0;
+                                Integer sum = 0;
+                                Integer ob = Integer.valueOf(appUser.getBALANCE());
+                                Integer nb_2 = 0;
+                                List<PointsReward> list = pointsrewardService.getPointsReward();
+                                String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                                userPoints.setPointsReward_Tag(n_rtag);
+                                userpointsService.updateUserPoints(userPoints);
+                            }
                         }
 
                     }
@@ -731,6 +748,9 @@ public class AppLoginController extends BaseController {
             AppUser appUser = appuserService.getUserByID(uid);
             logger.info("头像URL-----------------------》"+imgUrl);
             String newFace = "";
+
+            //首先查询积分列表是否有该用户信息
+            UserPoints userPoints =  userpointsService.getUserPointsFinish(uid);
             if (appUser == null) {
                 appUser = new AppUser();
                 if (imgUrl == null || imgUrl.equals("")) {
@@ -747,7 +767,49 @@ public class AppLoginController extends BaseController {
                 appUser.setBALANCE("0");
              //   appUser.setPOINTS(pointsMall.getPointsValue());
                 appuserService.regwx(appUser); //未注册用户 先注册用户
+
+                if (userPoints==null){
+                    UserPoints regUserInfo = new UserPoints();
+                    regUserInfo.setId(MyUUID.getUUID32());
+                    regUserInfo.setUserId(uid);
+                    regUserInfo.setLoginGame("1");
+                    regUserInfo.setTodayPoints(pointsMall.getPointsValue());
+                    userpointsService.regUserInfo(regUserInfo);
+
+                    AppUser appUser1 = appuserService.getUserByID(uid);
+                    appUser1.setPOINTS(pointsMall.getPointsValue());
+                    appuserService.updateAppUserBalanceById(appUser1);
+
+                    //增加积分记录
+                    PointsDetail pointsDetail = new PointsDetail();
+                    pointsDetail.setUserId(uid);
+                    pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
+                    pointsDetail.setType("+");
+                    pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
+                    pointsDetail.setPointsValue(pointsMall.getPointsValue());
+                    pointsdetailService.regPointsDetail(pointsDetail);
+
+                    //判断是否增加金币
+                    userPoints = userpointsService.getUserPointsFinish(uid);
+                    Integer now_points = userPoints.getTodayPoints();
+                    String r_tag = userPoints.getPointsReward_Tag();
+                    if (Integer.valueOf(r_tag) < 5){
+                        Integer goldValue = 0;
+                        Integer sum = 0;
+                        Integer ob = Integer.valueOf(appUser1.getBALANCE());
+                        Integer nb_2 = 0;
+                        List<PointsReward> list = pointsrewardService.getPointsReward();
+                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser1);
+                        userPoints.setPointsReward_Tag(n_rtag);
+                        userpointsService.updateUserPoints(userPoints);
+                    }
+
+                }
+
             } else {
+                if (appUser.getSTATUS() != null&&appUser.getSTATUS().equals("0")){
+                    return RespStatus.fail("该用户已被冻结");
+                }
 
                 //如果传过来的头像url是否为空
                 if (imgUrl == null || imgUrl.equals("")) {
@@ -767,44 +829,7 @@ public class AppLoginController extends BaseController {
                 appuserService.updateTencentUser(appUser); //已注册用户 更新用户昵称和头像
             }
 
-            //首先查询积分列表是否有该用户信息
 
-            UserPoints userPoints =  userpointsService.getUserPointsFinish(uid);
-            if (userPoints==null){
-                UserPoints regUserInfo = new UserPoints();
-                regUserInfo.setId(MyUUID.getUUID32());
-                regUserInfo.setUserId(uid);
-                regUserInfo.setLoginGame("1");
-                regUserInfo.setTodayPoints(pointsMall.getPointsValue());
-                userpointsService.regUserInfo(regUserInfo);
-
-                AppUser appUser1 = appuserService.getUserByID(uid);
-                appUser1.setPOINTS(pointsMall.getPointsValue());
-                appuserService.updateAppUserBalanceById(appUser1);
-
-                //增加积分记录
-                PointsDetail pointsDetail = new PointsDetail();
-                pointsDetail.setUserId(uid);
-                pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                pointsDetail.setType("+");
-                pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                pointsdetailService.regPointsDetail(pointsDetail);
-
-                //判断是否增加金币
-                userPoints = userpointsService.getUserPointsFinish(uid);
-                Integer now_points = userPoints.getTodayPoints();
-                String r_tag = userPoints.getPointsReward_Tag();
-                Integer goldValue = 0;
-                Integer sum = 0;
-                Integer ob = Integer.valueOf(appUser.getBALANCE());
-                Integer nb_2 = 0;
-                List<PointsReward> list = pointsrewardService.getPointsReward();
-                String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser1);
-                userPoints.setPointsReward_Tag(n_rtag);
-                userpointsService.updateUserPoints(userPoints);
-
-            }else {
                 String tag =  userPoints.getLoginGame();
                 if (tag.equals("0")){
                     int a = userPoints.getTodayPoints();
@@ -827,17 +852,19 @@ public class AppLoginController extends BaseController {
                     userPoints = userpointsService.getUserPointsFinish(uid);
                     Integer now_points = userPoints.getTodayPoints();
                     String r_tag = userPoints.getPointsReward_Tag();
-                    Integer goldValue = 0;
-                    Integer sum = 0;
-                    Integer ob = Integer.valueOf(appUser.getBALANCE());
-                    Integer nb_2 = 0;
-                    List<PointsReward> list = pointsrewardService.getPointsReward();
-                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                    userPoints.setPointsReward_Tag(n_rtag);
-                    userpointsService.updateUserPoints(userPoints);
+                    if (Integer.valueOf(r_tag) < 5){
+                        Integer goldValue = 0;
+                        Integer sum = 0;
+                        Integer ob = Integer.valueOf(appUser.getBALANCE());
+                        Integer nb_2 = 0;
+                        List<PointsReward> list = pointsrewardService.getPointsReward();
+                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                        userPoints.setPointsReward_Tag(n_rtag);
+                        userpointsService.updateUserPoints(userPoints);
+                    }
                 }
 
-            }
+
 
             //登录日志
             AppuserLogin appuserLogin = new AppuserLogin();

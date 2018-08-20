@@ -257,15 +257,16 @@ public class CoinPusherService implements CoinPusherManager {
 
                 //判断是否增加金币
                 String r_tag = userPoints.getPointsReward_Tag();
-                Integer goldValue = 0;
-                Integer sum = 0;
-                Integer ob = Integer.valueOf(appUser.getBALANCE());
-                Integer nb_2 = 0;
-                List<PointsReward> list = pointsrewardService.getPointsReward();
-                String n_rtag = userpointsService.doGoldReward(r_tag, goldValue, sum, ob, list, userPoints.getTodayPoints() + pointsMall.getPointsValue(), nb_2, appUser);
-                userPoints.setPointsReward_Tag(n_rtag);
-                userpointsService.updateUserPoints(userPoints);
-
+                if (Integer.valueOf(r_tag) < 5){
+                    Integer goldValue = 0;
+                    Integer sum = 0;
+                    Integer ob = Integer.valueOf(appUser.getBALANCE());
+                    Integer nb_2 = 0;
+                    List<PointsReward> list = pointsrewardService.getPointsReward();
+                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,userPoints.getTodayPoints() + pointsMall.getPointsValue(),nb_2,appUser);
+                    userPoints.setPointsReward_Tag(n_rtag);
+                    userpointsService.updateUserPoints(userPoints);
+                }
             }
             //查询消费金币数
             String now = DateUtil.getDay();
@@ -309,14 +310,16 @@ public class CoinPusherService implements CoinPusherManager {
                 userPoints = userpointsService.getUserPointsFinish(userId);
                 Integer now_points = userPoints.getTodayPoints();
                 String r_tag = userPoints.getPointsReward_Tag();
-                Integer goldValue = 0;
-                Integer sum = 0;
-                Integer ob = Integer.valueOf(appUser.getBALANCE());
-                Integer nb_2 = 0;
-                List<PointsReward> list = pointsrewardService.getPointsReward();
-                String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                userPoints.setPointsReward_Tag(n_rtag);
-                userpointsService.updateUserPoints(userPoints);
+                if (Integer.valueOf(r_tag) < 5){
+                    Integer goldValue = 0;
+                    Integer sum = 0;
+                    Integer ob = Integer.valueOf(appUser.getBALANCE());
+                    Integer nb_2 = 0;
+                    List<PointsReward> list = pointsrewardService.getPointsReward();
+                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                    userPoints.setPointsReward_Tag(n_rtag);
+                    userpointsService.updateUserPoints(userPoints);
+                }
             }
 
 

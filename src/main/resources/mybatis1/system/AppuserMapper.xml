@@ -453,7 +453,10 @@
         update
         <include refid="tableName"/>
         set
-        BALANCE = #{BALANCE}
+            USER_ID = #{USER_ID}
+        <if test="BALANCE !=null and BALANCE != ''">
+            ,BALANCE = #{BALANCE}
+        </if>
         <if test="FIRST_CHARGE != null and FIRST_CHARGE != ''">
             ,FIRST_CHARGE = #{FIRST_CHARGE}
         </if>
@@ -794,11 +797,11 @@
     <!-- 查询当日前20名竞猜获胜最多的用户 -->
     <select id="rankBetListToday" resultType="pd">
         select
-        BET_NUM,NICKNAME,IMAGE_URL,USER_ID
+        TODAY_GUESS,NICKNAME,IMAGE_URL,USER_ID
         from
         <include refid="tableName"/>
         where
-        BET_NUM >= 0
+        TODAY_GUESS >= 0
         ORDER BY
         TODAY_GUESS
         DESC,

@@ -21,11 +21,21 @@ public class Order {
     private String OUT_ORDER_ID; //外部订单信息
     private String PAYOUT_TYPE;//支付所属类型，月卡，周卡或者其他
 
+    private String APPVERSION;//app版本号
+
     
     /***业务扩展字段***/
     private String userNickName;
 
     public Order() {
+    }
+
+    public String getAPPVERSION() {
+        return APPVERSION;
+    }
+
+    public void setAPPVERSION(String APPVERSION) {
+        this.APPVERSION = APPVERSION;
     }
 
     public String getPAYOUT_TYPE() {

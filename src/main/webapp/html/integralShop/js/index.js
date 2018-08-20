@@ -9,7 +9,7 @@ function getProList () {
 		dataType: 'json',	            
         success: function (data) {			        	
         	var arrProList=data.data.pointsGoodsList;
-        	console.log(arrProList);
+        	console.log(data);
         	for (var i=0;i<arrProList.length;i++) {
         		strProList+='<li class="proli" data-id = "'+arrProList[i].GOODSNUM+'"><a href="pro-details.html?'+userid+'"><div class="shop-procont"><img src="http://111.231.139.61:8888/'+arrProList[i].IMGURL+'"/><p>'+arrProList[i].GOODSNAME+'</p><div>'+arrProList[i].POINTS+'积分</div></div></a></li>';
         	};

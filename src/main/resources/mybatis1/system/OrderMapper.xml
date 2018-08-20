@@ -39,7 +39,8 @@
 		PRO_USER_ID,
         ADD_INFO,
         OUT_ORDER_ID,
-        PAYOUT_TYPE
+        PAYOUT_TYPE,
+        APPVERSION
         )
         VALUES
         (
@@ -55,7 +56,8 @@
 		#{PRO_USER_ID},
         #{ADD_INFO},
         #{OUT_ORDER_ID},
-        #{PAYOUT_TYPE}
+        #{PAYOUT_TYPE},
+        #{APPVERSION}
         )
     </insert>
 

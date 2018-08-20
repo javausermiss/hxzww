@@ -36,17 +36,17 @@ function getTask () {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[0].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[0].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
         	};
         	if (obj.userPoints.shareGame=='0') {
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[1].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[1].pointsValue+'积分</div><div class="task-record-stateyes" onclick="f1()">去完成</div></div>'
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[1].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[1].pointsValue+'积分</div><div class="task-record-stateyes" onclick="share()">去完成</div></div>'
         	} else{
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[1].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[1].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
         	};
         	if (obj.userPoints.inviteGame=='0') {
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[2].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[2].pointsValue+'积分</div><div class="task-record-stateyes" onclick="f2()">去完成</div></div>'
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[2].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[2].pointsValue+'积分</div><div class="task-record-stateyes" onclick="invite()">去完成</div></div>'
         	} else{
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[2].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[2].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
         	};
         	if (obj.userPoints.poohGame=='0') {
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[3].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[3].pointsValue+'积分</div><div class="task-record-stateyes" onclick="f3()">去完成</div></div>'
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[3].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[3].pointsValue+'积分</div><div class="task-record-stateyes" onclick="fist()">去完成</div></div>'
         	} else{
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[3].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[3].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
         	};
@@ -61,7 +61,7 @@ function getTask () {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[5].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[5].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
         	};
         	if (obj.userPoints.firstPay=='0') {
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes" onclick="f4()">去完成</div></div>'
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes" onclick="recharge()">去完成</div></div>'
         	} else{
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
         	};
@@ -224,7 +224,7 @@ function getChangeRecord () {
         	var arr=data.data.PointsSendGoodsList;
         	console.log(arr);
         	for (var i=0;i<arr.length;i++) {
-        		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://47.100.15.18:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
+        		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
         	};
         	$('.duihuan-list-cont').append($(strChangeRecord));
         },

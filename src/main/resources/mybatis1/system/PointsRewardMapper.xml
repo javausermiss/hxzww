@@ -105,5 +105,9 @@
 		<include refid="Field"/>
 		from
 		<include refid="tableName"/>
+		ORDER BY
+		tb_pointsreward.POINTSREWARD_ID
+		ASC
+
 	</select>
 </mapper>
