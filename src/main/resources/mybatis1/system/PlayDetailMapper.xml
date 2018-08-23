@@ -212,7 +212,7 @@
     <!--获取玩家的抓中记录信息-->
     <select id="getPlaylist" parameterType="String" resultType="com.fh.entity.system.PlayDetail">
             SELECT h.* FROM (select
-            d.DOLL_NAME, d.doll_url, dd.ID, dd.USERID, dd.GUESS_ID, dd.DOLLID, dd.STATE, dd.CREATE_DATE, dd.GOLD, dd.CAMERA_DATE,
+            d.DOLL_NAME, d.MACHINE_TYPE, d.doll_url, dd.ID, dd.USERID, dd.GUESS_ID, dd.DOLLID, dd.STATE, dd.CREATE_DATE, dd.GOLD, dd.CAMERA_DATE,
             dd.STOP_FLAG,dd.CONVERSIONGOLD,dd.POST_STATE,dd.SENDGOODS,dd.SEND_ORDER_ID,u.NICKNAME,u.IMAGE_URL
             from
             tb_doll_play_detail as dd

@@ -84,6 +84,18 @@
 									</span>
 								</td>
 							</tr>
+							<tr>
+							<td style="width:75px;text-align: right;padding-top: 13px;">设备类型:</td>
+								<td>
+								<span style="font-size:12px;">
+									<select id="MACHINE_TYPE" name="MACHINE_TYPE">
+										<option value="1" <c:if test="${pd.MACHINE_TYPE == '1' }">selected</c:if>>娃娃机</option>
+										<option value="2" <c:if test="${pd.MACHINE_TYPE == '2' }">selected</c:if>>推币机</option>
+										<option value="3" <c:if test="${pd.MACHINE_TYPE == '3' }">selected</c:if>>金币机</option>
+									</select>
+									</span>
+								</td>
+							</tr>
 							<td style="width:75px;text-align: right;padding-top: 13px;">发布渠道:</td>
 								<td>
 									<span style="font-size:12px;">

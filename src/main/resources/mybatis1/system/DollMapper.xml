@@ -18,7 +18,8 @@
         <result column="DOLL_TAG" property="dollTag"/>
         <result column="DEVICE_TYPE" property="deviceType"/>
 		<!-- <result column="TOY_ID" property="toy_id"/> -->
-		<result column="DOLL_TYPE" property="DOLL_TYPE"/>	
+		<result column="DOLL_TYPE" property="DOLL_TYPE"/>
+		<result column="DEVICE_STATE" property="DEVICE_STATE"/>
 		<collection property="cameras" column="DOLL_ID" ofType="com.fh.vo.system.CameraVo">
 	        <id property="cameraId" column="CAMERA_ID"/>
 	        <result property="rtmpUrl" column="RTMP_URL"/>
@@ -26,6 +27,7 @@
 	        <result property="serverName" column="SERVER_NAME"/>
 	        <result property="livestream" column="LIVESTREAM"/>
 	        <result property="cameraType" column="CAMERA_TYPE"/>
+	        <result property="machine_type" column="MACHINE_TYPE"/>
 	        <result property="deviceState" column="DEVICE_STATE"/>
 	    </collection>
 	</resultMap>
@@ -55,6 +57,7 @@
 		RELEASE_STATUS,
 		DOLL_TAG,
 		DOLL_TYPE,
+		MACHINE_TYPE,
 		COINPUSHER_REWORD
 	</sql>
 
@@ -74,6 +77,7 @@
 		#{RELEASE_STATUS},
 		#{DOLL_TAG},
 		#{DOLL_TYPE},
+		#{MACHINE_TYPE},
 		#{COINPUSHER_REWORD}
 	</sql>
 
@@ -125,15 +129,15 @@
         <if test="ROOM_ID != null and ROOM_ID != ''">
         	ROOM_ID = #{ROOM_ID},
         </if>
-        
-        <if test="TOY_ID != null and TOY_ID != ''">
+         
+		<if test="TOY_ID != null and TOY_ID != ''">
         	TOY_ID = #{TOY_ID},
          </if>
-
+		
         <if test="COINPUSHER_REWORD != null and COINPUSHER_REWORD != ''">
             COINPUSHER_REWORD = #{COINPUSHER_REWORD},
         </if>
-        
+        MACHINE_TYPE = #{MACHINE_TYPE},
         DOLL_TYPE = #{DOLL_TYPE}
         
         where
