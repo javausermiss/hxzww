@@ -14,7 +14,7 @@ function getTask () {
         success: function (data) {			        	
         	var obj=data.data;
         	console.log(data);
-        	$('.task-tasknum').html(obj.userPoints.todayPoints);
+        	$('.task-tasknum').html(obj.userPoints.todayPoints);        	
         	//设置进度条
         	if (obj.userPoints.todayPoints>=0&&obj.userPoints.todayPoints<5) {
         		$('.task-img').attr('src','img/jindu0.png');
@@ -75,7 +75,6 @@ function getTask () {
     })
 };
 getTask();
-
 //选择收货信息js
 var shouhuoIfo=JSON.parse(localStorage.getItem('info'));
 if (shouhuoIfo) {
@@ -173,7 +172,8 @@ function getPoints () {
         success: function (data) {
         	console.log(data)
         	var coin=data.data.appUser.POINTS
-        	$('#jifen').html(coin)	                
+        	$('#jifen').html(coin);
+        	$('.alljifen').html(coin);
         },
         error: function (res) {
 			console.log(res);
@@ -224,7 +224,8 @@ function getChangeRecord () {
         	var arr=data.data.PointsSendGoodsList;
         	console.log(arr);
         	for (var i=0;i<arr.length;i++) {
-        		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
+        		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div></div>'
+//      		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
         	};
         	$('.duihuan-list-cont').append($(strChangeRecord));
         },
@@ -234,7 +235,7 @@ function getChangeRecord () {
     })
 };
 getChangeRecord();
-$('.duihuan-list').live('click',function () {
-	var proId=$(this).attr('data-id');
-	localStorage.setItem('proId',proId)
-});
+//$('.duihuan-list').live('click',function () {
+//	var proId=$(this).attr('data-id');
+//	localStorage.setItem('proId',proId)
+//});

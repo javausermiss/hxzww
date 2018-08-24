@@ -60,6 +60,10 @@ public class AppUser {
 
     private Integer TODAY_GUESS;
 
+    private String JCID;
+
+    private String JDNUM;
+
     public AppUser() {
     }
 
@@ -119,6 +123,22 @@ public class AppUser {
         this.NICKNAME = NICKNAME;
         this.IMAGE_URL = IMAGE_URL;
         this.BALANCE = BALANCE;
+    }
+
+    public String getJDNUM() {
+        return JDNUM;
+    }
+
+    public void setJDNUM(String JDNUM) {
+        this.JDNUM = JDNUM;
+    }
+
+    public String getJCID() {
+        return JCID;
+    }
+
+    public void setJCID(String JCID) {
+        this.JCID = JCID;
     }
 
     public Integer getPOINTS_MULTIPLES() {

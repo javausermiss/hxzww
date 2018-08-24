@@ -2,9 +2,13 @@ package com.fh.service.system.appuser;
 
 import com.fh.entity.Page;
 import com.fh.entity.system.AppUser;
+import com.fh.entity.system.PointsMall;
+import com.fh.entity.system.UserPoints;
 import com.fh.util.Const;
 import com.fh.util.PageData;
+import net.sf.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -428,7 +432,13 @@ public interface AppuserManager {
 
     public AppUser getAppUserRanklistToday(String userId)throws Exception;
 
+    public JSONObject doRegTencentUser(AppUser appUser, String imgUrl, String newFace, String nickname, String uid, String channelNum, String gender, String regChannel, UserPoints userPoints, PointsMall pointsMall)throws Exception;
 
+    public void doRegSMSUser(AppUser appUser,PointsMall pointsMall ,String sessionId ,HttpServletRequest httpServletRequest)throws Exception;
+
+    public JSONObject doUserPassLogin(String phone,String pw,HttpServletRequest httpServletRequest)throws Exception;
+
+    public JSONObject dogetDoll(String appUser ,HttpServletRequest httpServletRequest)throws Exception;
 
 
 

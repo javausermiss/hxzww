@@ -306,120 +306,10 @@ public class AppLoginController extends BaseController {
     @ResponseBody
     public JSONObject getDoll(@RequestParam("userId") String userId, HttpServletRequest httpServletRequest) {
         try {
-            // String phone = new String(Base64Util.decryptBASE64(aPhone));
-            AppUser appUser = appuserService.getUserByID(userId);
-            if (appUser != null) {
-                if (appUser.getSTATUS() != null&&appUser.getSTATUS().equals("0")){
-                    return RespStatus.fail("该用户已被冻结");
-                }
-                String sessionID = MyUUID.createSessionId();
-                RedisUtil.getRu().set("sessionId:appUser:" + userId, sessionID);
-
-                //首先查询积分列表是否有该用户信息
-                UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
-                PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type00.getValue());
-                if (userPoints==null){
-                    UserPoints regUserInfo = new UserPoints();
-                    regUserInfo.setId(MyUUID.getUUID32());
-                    regUserInfo.setUserId(userId);
-                    regUserInfo.setLoginGame("1");
-                    regUserInfo.setTodayPoints(pointsMall.getPointsValue());
-                    userpointsService.regUserInfo(regUserInfo);
-                    appUser.setPOINTS(appUser.getPOINTS()+pointsMall.getPointsValue());
-                    appuserService.updateAppUserBalanceById(appUser);
-                    //增加积分记录
-                    PointsDetail pointsDetail = new PointsDetail();
-                    pointsDetail.setUserId(userId);
-                    pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                    pointsDetail.setType("+");
-                    pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                    pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                    pointsdetailService.regPointsDetail(pointsDetail);
-
-                    //判断是否增加金币
-                    userPoints = userpointsService.getUserPointsFinish(userId);
-                    Integer now_points = userPoints.getTodayPoints();
-                    String r_tag = userPoints.getPointsReward_Tag();
-                    if (Integer.valueOf(r_tag) < 5){
-                        Integer goldValue = 0;
-                        Integer sum = 0;
-                        Integer ob = Integer.valueOf(appUser.getBALANCE());
-                        Integer nb_2 = 0;
-                        List<PointsReward> list = pointsrewardService.getPointsReward();
-                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                        userPoints.setPointsReward_Tag(n_rtag);
-                        userpointsService.updateUserPoints(userPoints);
-                    }
-
-                }else {
-                    String tag =  userPoints.getLoginGame();
-                    if (tag.equals("0")){
-                        int a = userPoints.getTodayPoints();
-                        Integer now_points = a + pointsMall.getPointsValue();
-                        userPoints.setTodayPoints(now_points);
-                        userPoints.setLoginGame("1");
-                        userpointsService.updateUserPoints(userPoints);
-                        appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
-                        appuserService.updateAppUserBalanceById(appUser);
-
-                        //增加积分记录
-                        PointsDetail pointsDetail = new PointsDetail();
-                        pointsDetail.setUserId(userId);
-                        pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                        pointsDetail.setType("+");
-                        pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                        pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                        pointsdetailService.regPointsDetail(pointsDetail);
-
-                        //判断是否增加金币
-                        userPoints = userpointsService.getUserPointsFinish(userId);
-                        String r_tag = userPoints.getPointsReward_Tag();
-                        if (Integer.valueOf(r_tag) < 5){
-                            Integer goldValue = 0;
-                            Integer sum = 0;
-                            Integer ob = Integer.valueOf(appUser.getBALANCE());
-                            Integer nb_2 = 0;
-                            List<PointsReward> list = pointsrewardService.getPointsReward();
-                            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                            userPoints.setPointsReward_Tag(n_rtag);
-                            userpointsService.updateUserPoints(userPoints);
-                        }
-                    }
-
-                }
-
-                //登录日志
-                AppuserLogin appuserLogin = new AppuserLogin();
-                appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
-                appuserLogin.setUSER_ID(appUser.getUSER_ID());
-                appuserLogin.setACCESS_TOKEN(sessionID);
-                appuserLogin.setCHANNEL(httpServletRequest.getParameter("channel"));
-                appuserLogin.setCTYPE(httpServletRequest.getParameter("ctype"));
-                appuserLogin.setNICKNAME(appUser.getNICKNAME());
-                appuserLogin.setONLINE_TYPE("1");
-                appuserlogininfoService.insertLoginLog(appuserLogin);
-
-
-                //SRS推流
-                SrsConnectModel sc = new SrsConnectModel();
-                long time = System.currentTimeMillis();
-                sc.setType("U");
-                sc.setTid(userId);
-                sc.setExpire(3600 * 24);
-                sc.setTime(time);
-                sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
-                Map<String, Object> map = new LinkedHashMap<>();
-                map.put("sessionID", sessionID);
-                map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
-                map.put("srsToken", sc);
-                return RespStatus.successs().element("data", map);
-            } else {
-                return RespStatus.fail("此用户尚未注册！");
-            }
+            return appuserService.dogetDoll(userId,httpServletRequest);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.exception();
-
         }
 
     }
@@ -468,7 +358,8 @@ public class AppLoginController extends BaseController {
     public JSONObject userPassLogin(@RequestParam("phone") String phone,
                                     @RequestParam("password") String pw,
                                     @RequestParam("smsCode") String smsCode,
-                                    @RequestParam(value = "channelNum", required = false, defaultValue = "100001") String channelNum
+                                    @RequestParam(value = "channelNum", required = false, defaultValue = "100001") String channelNum,
+                                    HttpServletRequest httpServletRequest
     ) {
         try {
             if (phone == null || phone.trim().length() <= 0) {
@@ -495,10 +386,8 @@ public class AppLoginController extends BaseController {
             //注册用户
             AppUser appUser1 = new AppUser();
             String face = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
-            // appUser1.setBALANCE("3");
             appUser1.setPASSWORD(MD5.md5(pw));
             appUser1.setNICKNAME(phone.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
-
             String n_userId = MyUUID.createSessionId();
             appUser1.setUSER_ID(n_userId);
             appUser1.setIMAGE_URL(face);
@@ -508,46 +397,11 @@ public class AppLoginController extends BaseController {
             appUser1.setCHANNEL_NUM(channelNum);
             appUser1.setBDPHONE(phone);
             appUser1.setPOINTS(pointsMall.getPointsValue());
-            appuserService.regAppUser(appUser1);
+            //sessionId
+            String sessionID = MyUUID.createSessionId();
+            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser1.getUSER_ID(), sessionID);
 
-            //首先查询积分列表是否有该用户信息
-
-            String userId = appUser1.getUSER_ID();
-            UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
-            if (userPoints==null) {
-                UserPoints regUserInfo = new UserPoints();
-                regUserInfo.setId(MyUUID.getUUID32());
-                regUserInfo.setUserId(userId);
-                regUserInfo.setLoginGame("1");
-                regUserInfo.setTodayPoints(pointsMall.getPointsValue());
-                userpointsService.regUserInfo(regUserInfo);
-
-                //增加积分记录
-                PointsDetail pointsDetail = new PointsDetail();
-                pointsDetail.setUserId(userId);
-                pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                pointsDetail.setType("+");
-                pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                pointsdetailService.regPointsDetail(pointsDetail);
-
-                //判断是否增加金币
-                userPoints = userpointsService.getUserPointsFinish(userId);
-                Integer now_points = userPoints.getTodayPoints();
-                String r_tag = userPoints.getPointsReward_Tag();
-                if (Integer.valueOf(r_tag) < 5){
-                    Integer goldValue = 0;
-                    Integer sum = 0;
-                    Integer ob = Integer.valueOf(appUser1.getBALANCE());
-                    Integer nb_2 = 0;
-                    List<PointsReward> list = pointsrewardService.getPointsReward();
-                    String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser1);
-                    userPoints.setPointsReward_Tag(n_rtag);
-                    userpointsService.updateUserPoints(userPoints);
-                }
-            }
-
-
+            appuserService.doRegSMSUser(appUser1,pointsMall,sessionID,httpServletRequest);
             //SRS推流
             SrsConnectModel sc = new SrsConnectModel();
             long time = System.currentTimeMillis();
@@ -557,9 +411,7 @@ public class AppLoginController extends BaseController {
             sc.setTime(time);
             sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
 
-            //sessionId
-            String sessionID = MyUUID.createSessionId();
-            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser1.getUSER_ID(), sessionID);
+
 
             Map<String, Object> map = new HashMap<>();
             map.put("sessionID", sessionID);
@@ -586,141 +438,10 @@ public class AppLoginController extends BaseController {
     @ResponseBody
     public JSONObject userPassLogin(@RequestParam("phone") String phone, @RequestParam("pw") String pw, HttpServletRequest httpServletRequest) {
         try {
-
-            if (phone == null || phone.trim().length() <= 0) {
-                return RespStatus.fail("手机号不能为空！");
-            } else if (!phone.matches("^1(3|4|5|7|8)\\d{9}$")) {
-                return RespStatus.fail("手机号码格式错误！");
-            } else if (pw == null || pw.trim().length() <= 0) {
-                return RespStatus.fail("密码不能为空！");
-            }
-            AppUser appUser = appuserService.getUserByPhone(phone);
-            if (appUser != null) {
-
-                if (appUser.getSTATUS() != null&&appUser.getSTATUS().equals("0")){
-                    return RespStatus.fail("该用户已被冻结");
-                }
-                String password = appUser.getPASSWORD();
-                String pwmd5 = MD5.md5(pw);
-                logger.info("password--------" + password);
-                logger.info("pwmd5----------" + pwmd5);
-                if (pwmd5.equals(password)) {
-                    //首先查询积分列表是否有该用户信息
-
-                    String userId = appUser.getUSER_ID();
-                    UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
-                    PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type00.getValue());
-                    if (userPoints==null){
-                        UserPoints regUserInfo = new UserPoints();
-                        regUserInfo.setId(MyUUID.getUUID32());
-                        regUserInfo.setUserId(userId);
-                        regUserInfo.setLoginGame("1");
-                        regUserInfo.setTodayPoints(pointsMall.getPointsValue());
-                        userpointsService.regUserInfo(regUserInfo);
-                        appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
-                        appuserService.updateAppUserBalanceById(appUser);
-
-                        //增加积分记录
-                        PointsDetail pointsDetail = new PointsDetail();
-                        pointsDetail.setUserId(userId);
-                        pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                        pointsDetail.setType("+");
-                        pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                        pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                        pointsdetailService.regPointsDetail(pointsDetail);
-
-                        //判断是否增加金币
-                        userPoints = userpointsService.getUserPointsFinish(userId);
-                        Integer now_points = userPoints.getTodayPoints();
-                        String r_tag = userPoints.getPointsReward_Tag();
-                        if (Integer.valueOf(r_tag) < 5){
-                            Integer goldValue = 0;
-                            Integer sum = 0;
-                            Integer ob = Integer.valueOf(appUser.getBALANCE());
-                            Integer nb_2 = 0;
-                            List<PointsReward> list = pointsrewardService.getPointsReward();
-                            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                            userPoints.setPointsReward_Tag(n_rtag);
-                            userpointsService.updateUserPoints(userPoints);
-                        }
-
-                    }else {
-                        String tag =  userPoints.getLoginGame();
-                        if (tag.equals("0")){
-                            int a = userPoints.getTodayPoints();
-                            userPoints.setTodayPoints(a + pointsMall.getPointsValue());
-                            userPoints.setLoginGame("1");
-                            userpointsService.updateUserPoints(userPoints);
-                            appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
-                            appuserService.updateAppUserBalanceById(appUser);
-
-                            //增加积分记录
-                            PointsDetail pointsDetail = new PointsDetail();
-                            pointsDetail.setUserId(userId);
-                            pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                            pointsDetail.setType("+");
-                            pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                            pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                            pointsdetailService.regPointsDetail(pointsDetail);
-
-                            //判断是否增加金币
-                            userPoints = userpointsService.getUserPointsFinish(userId);
-                            Integer now_points = userPoints.getTodayPoints();
-                            String r_tag = userPoints.getPointsReward_Tag();
-                            if (Integer.valueOf(r_tag) < 5){
-                                Integer goldValue = 0;
-                                Integer sum = 0;
-                                Integer ob = Integer.valueOf(appUser.getBALANCE());
-                                Integer nb_2 = 0;
-                                List<PointsReward> list = pointsrewardService.getPointsReward();
-                                String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                                userPoints.setPointsReward_Tag(n_rtag);
-                                userpointsService.updateUserPoints(userPoints);
-                            }
-                        }
-
-                    }
-
-                    //sessionId
-                    String sessionID = MyUUID.createSessionId();
-                    RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + appUser.getUSER_ID(), sessionID);
-                    //登录日志
-                    AppuserLogin appuserLogin = new AppuserLogin();
-                    appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
-                    appuserLogin.setUSER_ID(appUser.getUSER_ID());
-                    appuserLogin.setACCESS_TOKEN(sessionID);
-                    appuserLogin.setCHANNEL(httpServletRequest.getParameter("channel"));
-                    appuserLogin.setCTYPE(httpServletRequest.getParameter("ctype"));
-                    appuserLogin.setNICKNAME(appUser.getNICKNAME());
-                    appuserLogin.setONLINE_TYPE("1");
-                    appuserlogininfoService.insertLoginLog(appuserLogin);
-
-                    //SRS推流
-                    SrsConnectModel sc = new SrsConnectModel();
-                    long time = System.currentTimeMillis();
-                    sc.setType("U");
-                    sc.setTid(appUser.getUSER_ID());
-                    sc.setExpire(3600 * 24);
-                    sc.setTime(time);
-                    sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
-
-
-                    Map<String, Object> map = new LinkedHashMap<>();
-                    map.put("sessionID", sessionID);
-                    map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
-                    map.put("srsToken", sc);
-                    return RespStatus.successs().element("data", map);
-                } else {
-                    return RespStatus.fail("账号密码错误");
-                }
-            } else {
-                return RespStatus.fail("无此用户");
-            }
-
+            return appuserService.doUserPassLogin(phone,pw,httpServletRequest);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.exception();
-
         }
     }
 
@@ -748,149 +469,9 @@ public class AppLoginController extends BaseController {
             AppUser appUser = appuserService.getUserByID(uid);
             logger.info("头像URL-----------------------》"+imgUrl);
             String newFace = "";
-
             //首先查询积分列表是否有该用户信息
             UserPoints userPoints =  userpointsService.getUserPointsFinish(uid);
-            if (appUser == null) {
-                appUser = new AppUser();
-                if (imgUrl == null || imgUrl.equals("")) {
-                    newFace = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
-                } else {
-                    newFace = FaceImageUtil.downloadImage(imgUrl);
-                }
-                appUser.setNICKNAME(nickname);
-                appUser.setIMAGE_URL(newFace);
-                appUser.setUSER_ID(uid);
-                appUser.setCHANNEL_NUM(channelNum);
-                appUser.setGENDER(gender);
-                appUser.setOPEN_TYPE(regChannel);
-                appUser.setBALANCE("0");
-             //   appUser.setPOINTS(pointsMall.getPointsValue());
-                appuserService.regwx(appUser); //未注册用户 先注册用户
-
-                if (userPoints==null){
-                    UserPoints regUserInfo = new UserPoints();
-                    regUserInfo.setId(MyUUID.getUUID32());
-                    regUserInfo.setUserId(uid);
-                    regUserInfo.setLoginGame("1");
-                    regUserInfo.setTodayPoints(pointsMall.getPointsValue());
-                    userpointsService.regUserInfo(regUserInfo);
-
-                    AppUser appUser1 = appuserService.getUserByID(uid);
-                    appUser1.setPOINTS(pointsMall.getPointsValue());
-                    appuserService.updateAppUserBalanceById(appUser1);
-
-                    //增加积分记录
-                    PointsDetail pointsDetail = new PointsDetail();
-                    pointsDetail.setUserId(uid);
-                    pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                    pointsDetail.setType("+");
-                    pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                    pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                    pointsdetailService.regPointsDetail(pointsDetail);
-
-                    //判断是否增加金币
-                    userPoints = userpointsService.getUserPointsFinish(uid);
-                    Integer now_points = userPoints.getTodayPoints();
-                    String r_tag = userPoints.getPointsReward_Tag();
-                    if (Integer.valueOf(r_tag) < 5){
-                        Integer goldValue = 0;
-                        Integer sum = 0;
-                        Integer ob = Integer.valueOf(appUser1.getBALANCE());
-                        Integer nb_2 = 0;
-                        List<PointsReward> list = pointsrewardService.getPointsReward();
-                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser1);
-                        userPoints.setPointsReward_Tag(n_rtag);
-                        userpointsService.updateUserPoints(userPoints);
-                    }
-
-                }
-
-            } else {
-                if (appUser.getSTATUS() != null&&appUser.getSTATUS().equals("0")){
-                    return RespStatus.fail("该用户已被冻结");
-                }
-
-                //如果传过来的头像url是否为空
-                if (imgUrl == null || imgUrl.equals("")) {
-                    newFace = PropertiesUtils.getCurrProperty("user.default.header.url"); //默认头像
-                } else {
-                    newFace = FaceImageUtil.downloadImage(imgUrl);
-                }
-                //如果当前用户图像不是默认头像，则先删除，再上传
-                if (newFace != null && appUser.getIMAGE_URL() != null) {
-                    String defaultUrl = PropertiesUtils.getCurrProperty("user.default.header.url"); //获取默认头像Id
-                    if (!defaultUrl.equals(appUser.getIMAGE_URL())) {
-                        FastDFSClient.deleteFile(appUser.getIMAGE_URL());
-                    }
-                }
-                appUser.setNICKNAME(nickname);
-                appUser.setIMAGE_URL(newFace);
-                appuserService.updateTencentUser(appUser); //已注册用户 更新用户昵称和头像
-            }
-
-
-                String tag =  userPoints.getLoginGame();
-                if (tag.equals("0")){
-                    int a = userPoints.getTodayPoints();
-                    userPoints.setTodayPoints(a + pointsMall.getPointsValue());
-                    userPoints.setLoginGame("1");
-                    userpointsService.updateUserPoints(userPoints);
-                    appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
-                    appuserService.updateAppUserBalanceById(appUser);
-
-                    //增加积分记录
-                    PointsDetail pointsDetail = new PointsDetail();
-                    pointsDetail.setUserId(uid);
-                    pointsDetail.setChannel(Const.pointsMallType.points_type00.getName());
-                    pointsDetail.setType("+");
-                    pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
-                    pointsDetail.setPointsValue(pointsMall.getPointsValue());
-                    pointsdetailService.regPointsDetail(pointsDetail);
-
-                    //判断是否增加金币
-                    userPoints = userpointsService.getUserPointsFinish(uid);
-                    Integer now_points = userPoints.getTodayPoints();
-                    String r_tag = userPoints.getPointsReward_Tag();
-                    if (Integer.valueOf(r_tag) < 5){
-                        Integer goldValue = 0;
-                        Integer sum = 0;
-                        Integer ob = Integer.valueOf(appUser.getBALANCE());
-                        Integer nb_2 = 0;
-                        List<PointsReward> list = pointsrewardService.getPointsReward();
-                        String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                        userPoints.setPointsReward_Tag(n_rtag);
-                        userpointsService.updateUserPoints(userPoints);
-                    }
-                }
-
-
-
-            //登录日志
-            AppuserLogin appuserLogin = new AppuserLogin();
-            appuserLogin.setAPPUSERLOGININFO_ID(MyUUID.getUUID32());
-            appuserLogin.setUSER_ID(uid);
-            appuserlogininfoService.insertLoginLog(appuserLogin);
-
-            //SRS推流
-            SrsConnectModel sc = new SrsConnectModel();
-            long time = System.currentTimeMillis();
-            sc.setType("U");
-            sc.setTid(appUser.getUSER_ID());
-            sc.setExpire(3600 * 24);
-            sc.setTime(time);
-            sc.setToken(SrsSignUtil.genSign(sc, SrsConstants.SRS_CONNECT_KEY));
-
-            //sessionId
-            String sessionID = MyUUID.createSessionId();
-            RedisUtil.getRu().set(Const.REDIS_APPUSER_SESSIONID + uid, sessionID);
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("sessionID", sessionID);
-            map.put("appUser", appuserService.getUserByID(uid));
-            map.put("srsToken", sc);
-            return RespStatus.successs().element("data", map);
-
+            return appuserService.doRegTencentUser(appUser,imgUrl,newFace,nickname,uid,channelNum,gender,regChannel,userPoints,pointsMall);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();

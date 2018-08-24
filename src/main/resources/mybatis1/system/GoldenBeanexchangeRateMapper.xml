@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="PointsDetailMapper">
+<mapper namespace="GoldenBeanexchangeRateMapper">
 	
 	<!--表名 -->
 	<sql id="tableName">
-		TB_POINTSDETAIL
+		TB_GOLDENBEANEXCHANGERATE
 	</sql>
 	
 	<!-- 字段 -->
 	<sql id="Field">
-		USERID,	
-		CHANNEL,	
-		POINTSVALUE,	
-		TYPE,	
-		CREATETIME,	
-		POINTSDETAIL_ID
+		RATE,	
+		GOLDENBEANEXCHANGERATE_ID
 	</sql>
 	
 	<!-- 字段值 -->
 	<sql id="FieldValue">
-		#{USERID},	
-		#{CHANNEL},	
-		#{POINTSVALUE},	
-		#{TYPE},	
-		#{CREATETIME},	
-		#{POINTSDETAIL_ID}
+		#{RATE},	
+		#{GOLDENBEANEXCHANGERATE_ID}
 	</sql>
 	
 	<!-- 新增-->
@@ -43,7 +35,7 @@
 		delete from
 		<include refid="tableName"></include>
 		where 
-			POINTSDETAIL_ID = #{POINTSDETAIL_ID}
+			GOLDENBEANEXCHANGERATE_ID = #{GOLDENBEANEXCHANGERATE_ID}
 	</delete>
 	
 	<!-- 修改 -->
@@ -51,14 +43,10 @@
 		update
 		<include refid="tableName"></include>
 		set 
-			USERID = #{USERID},
-			CHANNEL = #{CHANNEL},
-			POINTSVALUE = #{POINTSVALUE},
-			TYPE = #{TYPE},
-			CREATETIME = #{CREATETIME},
-		POINTSDETAIL_ID = POINTSDETAIL_ID
+			RATE = #{RATE},
+		GOLDENBEANEXCHANGERATE_ID = GOLDENBEANEXCHANGERATE_ID
 		where 
-		POINTSDETAIL_ID = #{POINTSDETAIL_ID}
+		GOLDENBEANEXCHANGERATE_ID = #{GOLDENBEANEXCHANGERATE_ID}
 	</update>
 	
 	<!-- 通过ID获取数据 -->
@@ -68,7 +56,7 @@
 		from 
 		<include refid="tableName"></include>
 		where 
-			POINTSDETAIL_ID = #{POINTSDETAIL_ID}
+			GOLDENBEANEXCHANGERATE_ID = #{GOLDENBEANEXCHANGERATE_ID}
 	</select>
 	
 	<!-- 列表 -->
@@ -78,7 +66,6 @@
 		from 
 		<include refid="tableName"></include>
 		where 1=1
-		ORDER BY CREATETIME DESC
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and
 				(
@@ -89,10 +76,6 @@
 				-->
 				)
 		</if>
-		order by
-		CREATETIME
-		DESC
-
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -101,9 +84,6 @@
 		<include refid="Field"></include>
 		from 
 		<include refid="tableName"></include>
-		order by
-		CREATETIME
-		DESC
 	</select>
 	
 	<!-- 批量删除 -->
@@ -111,52 +91,19 @@
 		delete from
 		<include refid="tableName"></include>
 		where 
-			POINTSDETAIL_ID in
+			GOLDENBEANEXCHANGERATE_ID in
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
                  #{item}
 		</foreach>
 	</delete>
 
 
-	<insert id="regPointsDetail" parameterType="com.fh.entity.system.PointsDetail">
-		insert into
-		<include refid="tableName"></include>
-		(
-		USERID,
-		CHANNEL,
-		POINTSVALUE,
-		TYPE,
-		CREATETIME,
-		POINTSDETAIL_ID
-		)
-		values
-		(
-		#{userId},
-		#{channel},
-		#{pointsValue},
-		#{type},
-		now(),
-		#{pointsDetail_Id}
-		)
-
-	</insert>
-
-	<select id="getPointsDetail" parameterType="String" resultType="com.fh.entity.system.PointsDetail">
+	<select id="getBeanRate" resultType="com.fh.entity.system.BeanRate">
 		select
-		USERID,
-		CHANNEL,
-		POINTSVALUE,
-		TYPE,
-		DATE_FORMAT(CREATETIME,'%Y-%m-%d %H:%i:%s') as CREATETIME,
-		POINTSDETAIL_ID
+		<include refid="Field"/>
 		from
-		<include refid="tableName"></include>
-		where
-		userId = #{userId}
-		order
-		BY
-		CREATETIME
-		desc
+		<include refid="tableName"/>
 	</select>
+	
 
 </mapper>

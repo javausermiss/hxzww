@@ -371,7 +371,7 @@ public class BetGameService extends BaseController implements BetGameManager {
             userPoints = userpointsService.getUserPointsFinish(userId);
             Integer now_points = userPoints.getTodayPoints();
             String r_tag = userPoints.getPointsReward_Tag();
-            if (Integer.valueOf(r_tag) < 5){
+
                 Integer goldValue = 0;
                 Integer sum = 0;
                 Integer ob = Integer.valueOf(appUser.getBALANCE());
@@ -380,7 +380,7 @@ public class BetGameService extends BaseController implements BetGameManager {
                 String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
                 userPoints.setPointsReward_Tag(n_rtag);
                 userpointsService.updateUserPoints(userPoints);
-            }
+
         }
         Map<String, Object> map = new HashMap<>();
         map.put("pond", getPondInfo(pond.getPOND_ID()));

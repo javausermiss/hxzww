@@ -15,6 +15,7 @@ import com.fh.util.Const;
 import com.fh.util.DateUtil;
 import com.fh.util.PageData;
 import com.fh.util.wwjUtil.MyUUID;
+import com.fh.util.wwjUtil.RedisUtil;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcReturnCode;
 import lombok.extern.slf4j.Slf4j;
@@ -169,42 +170,42 @@ public class CoinPusherService implements CoinPusherManager {
         log.info("用户:" + userId + "-------------------->" + roomId + "开始投币，数量为" + bat);
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
 
-        //查找娃娃机信息
-        Doll doll = dollService.getDollByID(roomId);
-        if (doll == null) {
-            rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-            rpcCommandResult.setInfo("设备不存在");
-            return rpcCommandResult;
-        }
-        //获取用户信息
-        AppUser appUser = appuserService.getUserByID(userId);
-        if (appUser == null) {
-            rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-            rpcCommandResult.setInfo("用户不存在");
-            return rpcCommandResult;
-        }
-        //判断金币是否充足,用户选择投一个币，相当于消费10个娃娃币
+            //查找娃娃机信息
+            Doll doll = dollService.getDollByID(roomId);
+            if (doll == null) {
+                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
+                rpcCommandResult.setInfo("设备不存在");
+                return rpcCommandResult;
+            }
+            //获取用户信息
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser == null) {
+                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
+                rpcCommandResult.setInfo("用户不存在");
+                return rpcCommandResult;
+            }
+            //判断金币是否充足,用户选择投一个币，相当于消费10个娃娃币
 
-        int balance = Integer.valueOf(appUser.getBALANCE());
-        int costGold = bat * 10;
-        if (balance < costGold) {
-            rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-            rpcCommandResult.setInfo("余额不足");
-            return rpcCommandResult;
-        }
+            int balance = Integer.valueOf(appUser.getBALANCE());
+            int costGold = bat * 10;
+            if (balance < costGold) {
+                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
+                rpcCommandResult.setInfo("余额不足");
+                return rpcCommandResult;
+            }
 
-        //修改金币数量
-        appUser.setBALANCE(String.valueOf(balance - costGold));
-        appuserService.updateAppUserBalanceById(appUser);
+            //修改金币数量
+            appUser.setBALANCE(String.valueOf(balance - costGold));
+            appuserService.updateAppUserBalanceById(appUser);
 
-        //添加游戏金币明细记录
-        Payment payment = new Payment();
-        payment.setCOST_TYPE("0");
-        payment.setDOLLID(roomId);
-        payment.setUSERID(userId);
-        payment.setGOLD("-" + String.valueOf(costGold));
-        payment.setREMARK(doll.getDOLL_NAME() + "游戏");
-        paymentService.reg(payment);
+            //添加游戏金币明细记录
+            Payment payment = new Payment();
+            payment.setCOST_TYPE("0");
+            payment.setDOLLID(roomId);
+            payment.setUSERID(userId);
+            payment.setGOLD("-" + String.valueOf(costGold));
+            payment.setREMARK(doll.getDOLL_NAME() + "游戏");
+            paymentService.reg(payment);
 
         //增加用户的推币机游戏记录
 
@@ -233,8 +234,8 @@ public class CoinPusherService implements CoinPusherManager {
         }
 
 
-        UserPoints userPoints = userpointsService.getUserPointsFinish(userId);
-        PointsMall pointsMall = pointsmallService.getInfoById(Const.pointsMallType.points_type04.getValue());
+            UserPoints userPoints = userpointsService.getUserPointsFinish(userId);
+            PointsMall pointsMall = pointsmallService.getInfoById(Const.pointsMallType.points_type04.getValue());
 
             int a = userPoints.getTodayPoints();
             int newpg = userPoints.getPusherGame() + 1;
@@ -322,15 +323,13 @@ public class CoinPusherService implements CoinPusherManager {
                 }
             }
 
-
-
-
-        CoinPusher coinPusher = new CoinPusher();
-        coinPusher.setId(newId);
-        coinPusher.setRoomId(roomId);
-        coinPusher.setUserId(userId);
-        coinPusher.setCostGold(String.valueOf(bat));
-        this.reg(coinPusher);
+            CoinPusher coinPusher = new CoinPusher();
+            coinPusher.setId(newId);
+            coinPusher.setRoomId(roomId);
+            coinPusher.setUserId(userId);
+            coinPusher.setCostGold(String.valueOf(bat));
+            coinPusher.setCreateTime(DateUtil.getTimeSSS());
+            this.reg(coinPusher);
 
         rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
         rpcCommandResult.setInfo("SUCCESS");

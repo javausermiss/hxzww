@@ -15,6 +15,7 @@
 		<result column="RETURNGOLD" property="returnGold"/>
 		<result column="FINISH_FLAG" property="finishFlag"/>
 		<result column="sum" property="sum"/>
+		<result column="CREATE_DATE" property="createTime"/>
 	</resultMap>
 
 	<!-- 字段 -->
@@ -158,7 +159,7 @@
 		#{roomId},
 		#{userId},
 		#{costGold},
-		now()
+		#{createTime}
 		)
 	</insert>
 	

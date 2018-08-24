@@ -1,9 +1,9 @@
 /*首页CSS*/
 .shop-main{width: 100%;margin: 0 auto;font-family: "黑体";color: #282828;}
-.shop-head{width: 100%;height: 1.1rem;line-height: 1.1rem; background-color: #fed201;text-align: center;color: #fff;font-size: 0.36rem;position: relative;}
+.shop-head{width: 100%;height: 1.1rem;line-height: 1.1rem; background-color: #fed201;text-align: center;color: #fff;font-size: 0.36rem;position: fixed;top: 0;right: 0;}
 .shop-backout{width: 1.4rem;height: 1.1rem;position: absolute;top: 0;left: 0;}
 .shop-back{position: absolute;width: 0.23rem;height: 0.38rem;top: 0.37rem;left: 0.34rem;}
-.shop-nav{width: 100%;height: 0.8rem;overflow: hidden;}
+.shop-nav{width: 100%;height: 0.8rem;overflow: hidden;margin-top: 1.1rem;}
 .shop-nav div.shop-jifen{float: left;width: 50%;height: 0.8rem;line-height: 0.8rem;background: url(../img/2.png) 1.28rem 0.22rem no-repeat;background-size: 0.36rem 0.39rem;font-size: 0.26rem;border-right: 2px solid #e6e6e6;box-sizing: border-box}
 .shop-nav div.shop-jilu{float: left;width: 50%;height: 0.8rem;line-height: 0.8rem;background: url(../img/3.png) 1.17rem 0.22rem no-repeat;background-size: 0.30rem 0.38rem;font-size: 0.26rem;}
 .shop-jifen div{margin-left: 1.72rem;margin-top: 0.03rem;color: #282828;}
@@ -33,7 +33,7 @@
 .pro-message div{font-size: 0.6rem;color: #e04d0e;}
 .pro-message div strong{font-size: 0.3rem;color: #e04d0e;margin-left: 0.14rem;margin-right: 0.3rem;}
 .pro-message div span.jiage{font-size: 0.3rem;color: #c6c6c6;text-decoration: line-through;}
-.pro-banner{width: 100%;height: 3.5rem;}
+.pro-banner{width: 100%;height: 3.5rem;margin-top: 1.1rem;}
 .pro-banner img{width: 100%;height: 3.5rem;}
 .pro-dizhi{padding: 0.35rem 0 0.4rem;width: 92%;margin: 0 auto;font-size: 0.3rem;color: #969696;}
 .pro-dizhi p{margin-bottom: 0.4rem;}
@@ -44,7 +44,7 @@
 .pro-detail-img img{float: left;width: 100%;}
 .buy-btn{width: 78.4%;height: 0.86rem;font-size: 0.36rem; line-height: 0.86rem;margin: 0.3rem auto;text-align: center;background-color: #fed201;color: #fff;border-radius: 0.42rem;}
 /*积分记录CSS*/
-.jifen-numcont{height: 1.53rem;background-color: #fed201;padding-top: 0.37rem;}
+.jifen-numcont{height: 1.53rem;background-color: #fed201;padding-top: 0.37rem;margin-top: 1.05rem;}
 .jifen-numcont div{font-size: 0.26rem;color: #fff;text-align: center;margin-bottom: 0.26rem;}
 .jifen-numcont p{font-size: 0.6rem;color: #fff;text-align: center;}
 .jifen-numcont p span.jifen-fen{font-size: 0.3rem;color: #fff;text-align: center;}
@@ -55,6 +55,7 @@
 .jifen-record-why{font-size: 0.18rem;color: #fe732f;position: absolute;top: 0.27rem;right: 0.36rem;}
 .jifen-record-num{font-size: 0.30rem;color: #fe732f;position: absolute;top: 0.52rem;right: 0.36rem;}
 /*兑换记录css*/
+.duihuan-list-cont{margin-top: 1.1rem;}
 .duihuan-list{height: 1.6rem;padding: 0.2rem 0.34rem;overflow: hidden;position: relative;border-bottom: 2px solid #f5f5f5;background-color: #fff;}
 .duihuan-list-left,.duihuan-list-right{float: left;}
 .duihuan-list-left img{width: 1.59rem;height: 1.59rem;}
@@ -64,6 +65,7 @@
 .duihuan-list-btn{width: 0.23rem;height: 0.38rem;position: absolute;top: 0.8rem;right: 0.36rem;}
 .duihuan-list-nomore{font-size: 0.24rem;color: #818181;margin-top: 0.24rem;text-align: center;padding-bottom: 0.1rem;}
 /*萌宠专区css*/
+.more-list-cont{margin-top: 1.1rem;}
 .more-list{height: 1.6rem;padding: 0.2rem 0.34rem;overflow: hidden;position: relative;border-bottom: 2px solid #f5f5f5;background-color: #fff;}
 .more-list-left,.more-list-right{float: left;}
 .more-list-left img{width: 2.1rem;height: 1.6rem;}
@@ -74,7 +76,7 @@
 .more-btnban{width: 0.86rem;height: 0.52rem;line-height: 0.52rem;text-align: center;font-size: 0.3rem;color: #ccc;border: 1px solid #ccc;border-radius: 0.12rem; position: absolute;top: 0.66rem;right: 0.24rem;}
 .more-list-nomore{font-size: 0.24rem;color: #818181;margin-top: 0.24rem;text-align: center;}
 /*积分任务css*/
-.task-jinducont{width: 100%;height: 3.48rem;background: url(../img/17.jpg) 0 0 no-repeat;background-size: 100%;border-bottom: 0.14rem solid #f4f4f4;}
+.task-jinducont{position: relative;width: 100%;height: 3.48rem;background: url(../img/17.jpg) 0 0 no-repeat;background-size: 100%;border-bottom: 0.14rem solid #f4f4f4;margin-top: 1.1rem;}
 .task-jinducont p{padding: 0.36rem 0 0.18rem;font-size: 0.24rem;color: #383838;text-align: center;}
 .task-jinducont div.task-tasknum{font-size: 0.48rem;color: #383838;text-align: center;}
 .task-img{width: 100%;height: 1.76rem;margin-top: 0.22rem;}
@@ -82,7 +84,11 @@
 .task-record-name{font-size: 0.3rem;color: #474747;}
 .task-record-jifennum{font-size: 0.24rem;color: #cdcdcd;}
 .task-record-stateyes{width: 1.44rem;height: 0.44rem;line-height: 0.44rem;text-align: center;font-size: 0.24rem;color: #fff;background-color: #fed201;border-radius: 0.21rem; position: absolute;top: 0.28rem;right: 0.15rem;}
+.alljifencont{position: absolute;font-size: 0.16rem;color: #2a2a2a;top: 0.60rem;right: 0.16rem;}
+.prowall{width: 1.25rem;height: 0.35rem;position: absolute;top: 0.9rem;right: 0rem;}
 /*新增地址css*/
+.shop-headdr{width: 100%;height: 1.1rem;line-height: 1.1rem; background-color: #fed201;text-align: center;color: #fff;font-size: 0.36rem;position: relative;}
+/*.address-cont{margin-top: 1.1rem;}*/
 .address-name,.address-phone,.address-diqu{font-size: 0.3rem;color: #333;height: 1.2rem;line-height: 1.2rem;border-bottom: 2px solid #f5f5f5;padding-bottom: 0.02rem;position: relative;background-color: #fff;}
 .address-name span,.address-phone span,.address-diqu span{margin-left: 0.35rem;}
 .address-name input,.address-phone input,.address-diqu input{border: 0;outline: 0;-webkit-appearance: none;padding-left: 0.3rem;width: 5rem;height: 1.2rem;line-height: 1.2rem;}

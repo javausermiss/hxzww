@@ -132,8 +132,8 @@ public class Const {
 		points_type01("分享游戏",2),
 		points_type02("邀请好友",3),
 		points_type03("首次抓娃娃",4),
-		points_type04("推币机",5),
-		points_type05("每日消费金币奖励",6),
+		points_type04("每日10次推币机游戏",5),
+		points_type05("每日消费金币满200奖励",6),
 		points_type06("每日充值",7),
 		points_type07("兑换礼品",8),
 		points_type08("累积消费金币奖励",9);
@@ -193,7 +193,9 @@ public class Const {
 		cost_type22("周卡每日赠送","22"),
 		cost_type23("月卡每日赠送","23"),
 		cost_type24("用户首充","24"),
-		cost_type25("集积分送金币","25");
+		cost_type25("集积分送金币","25"),
+		cost_type26("兑换金豆","26");
+
 
 		
 		private  String name;
