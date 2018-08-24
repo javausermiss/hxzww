@@ -20,6 +20,7 @@ public class Doll {
     private String RELEASE_STATUS;//发布状态
     private String DOLL_TYPE;
     private String DEVICE_TYPE;//设备类型，用来区分娃娃机（1），推币机（2）
+    private String MACHINE_TYPE;  //娃娃机类型：1、娃娃机 2、推币机 3、金币机
     private Integer COINPUSHER_REWORD;//推币机奖励金额
     
     public Doll() {
@@ -142,6 +143,14 @@ public class Doll {
 
 	public void setDOLL_TYPE(String DOLL_TYPE) {
 		this.DOLL_TYPE = DOLL_TYPE;
+	}
+
+	public String getMACHINE_TYPE() {
+		return MACHINE_TYPE;
+	}
+
+	public void setMACHINE_TYPE(String mACHINE_TYPE) {
+		MACHINE_TYPE = mACHINE_TYPE;
 	}
 	
 }

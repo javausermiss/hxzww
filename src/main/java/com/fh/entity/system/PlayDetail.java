@@ -27,7 +27,8 @@ public class PlayDetail {
     private String SEND_ORDER_ID;//发货订单主键ID
     private Integer TOY_ID;//娃娃编号
     private String REWARD_NUM;//开奖号码
-
+    private String MACHINE_TYPE;  //娃娃机类型：1、娃娃机 2、推币机 3、金币机
+    
     public String getREWARD_NUM() {
         return REWARD_NUM;
     }
@@ -206,4 +207,14 @@ public class PlayDetail {
     public void setCREATE_DATE(String CREATE_DATE) {
         this.CREATE_DATE = CREATE_DATE;
     }
+
+	public String getMACHINE_TYPE() {
+		return MACHINE_TYPE;
+	}
+
+	public void setMACHINE_TYPE(String mACHINE_TYPE) {
+		MACHINE_TYPE = mACHINE_TYPE;
+	}
+
+	
 }
