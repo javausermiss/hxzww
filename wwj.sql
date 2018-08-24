@@ -174,10 +174,12 @@ CREATE TABLE `tb_bankcard_inf` (
 PRIMARY KEY (`BANKCARD_ID`)
 );
 
-ALTER TABLE `tb_bankcard_inf`
+ALTER TABLE `tb_bankcard_inf`.
 ADD COLUMN `IS_DEFAULT`  varchar(5) NULL AFTER `USER_REA_NAME`,
 ADD COLUMN `UPDATE_TIME`  timestamp NULL ON UPDATE CURRENT_TIMESTAMP AFTER `IS_DEFAULT`;
 ;
 
 ALTER TABLE `tb_bankcard_inf`
 ADD COLUMN `BANK_PHONE`  varchar(50) NULL AFTER `UPDATE_TIME`;
+
+ALTER TABLE `sys_app_doll` ADD COLUMN `MACHINE_TYPE`  varchar(255) NULL COMMENT '娃娃机类型：1、娃娃机 2、推币机 3、金币机';

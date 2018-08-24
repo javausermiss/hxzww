@@ -19,7 +19,7 @@
         <result column="DEVICE_TYPE" property="deviceType"/>
 		<!-- <result column="TOY_ID" property="toy_id"/> -->
 		<result column="DOLL_TYPE" property="DOLL_TYPE"/>
-		<result column="DEVICE_STATE" property="DEVICE_STATE"/>
+		<result column="MACHINE_TYPE" property="MACHINE_TYPE"/>
 		<collection property="cameras" column="DOLL_ID" ofType="com.fh.vo.system.CameraVo">
 	        <id property="cameraId" column="CAMERA_ID"/>
 	        <result property="rtmpUrl" column="RTMP_URL"/>
