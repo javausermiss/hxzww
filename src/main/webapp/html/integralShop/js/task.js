@@ -33,41 +33,41 @@ function getTask () {
         	if (obj.userPoints.loginGame=='0') {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[0].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[0].pointsValue+'积分</div><div class="task-record-stateyes">去完成</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[0].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[0].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[0].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[0].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	if (obj.userPoints.shareGame=='0') {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[1].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[1].pointsValue+'积分</div><div class="task-record-stateyes" onclick="share()">去完成</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[1].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[1].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[1].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[1].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	if (obj.userPoints.inviteGame=='0') {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[2].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[2].pointsValue+'积分</div><div class="task-record-stateyes" onclick="invite()">去完成</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[2].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[2].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[2].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[2].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	if (obj.userPoints.poohGame=='0') {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[3].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[3].pointsValue+'积分</div><div class="task-record-stateyes" onclick="fist()">去完成</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[3].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[3].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[3].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[3].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	if (obj.userPoints.pusherGame<10) {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[4].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[4].pointsValue+'积分</div><div class="task-record-stateyes">'+obj.userPoints.pusherGame+'/10</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[4].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[4].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[4].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[4].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	if (obj.userPoints.costGoldSum<200) {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[5].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[5].pointsValue+'积分</div><div class="task-record-stateyes">'+obj.userPoints.costGoldSum+'/200</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[5].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[5].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[5].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[5].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	if (obj.userPoints.firstPay=='0') {
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes" onclick="recharge()">去完成</div></div>'
         	} else{
-        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes">已完成√</div></div>'		        		
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
         	$('.task-list-cont').append($(strhtml));
-        	$('.task-record-stateyes:contains("去完成")').css('background','#fed201');
-			$('.task-record-stateyes:contains("已完成√")').css('background','#66ec1c');
+        	$('.task-record-stateyes:contains("去完成")').css('backgroundColor','#fed201');
+			$('.task-record-stateyes:contains("已完成")').css('background','url(img/dui.png) 1.1rem center no-repeat').css('background-size','0.24rem 0.18rem').css('backgroundColor','#66ec1c');
         },
         error: function (res) {
 			console.log(res);

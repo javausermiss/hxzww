@@ -78,7 +78,6 @@
 		from 
 		<include refid="tableName"></include>
 		where 1=1
-		ORDER BY CREATETIME DESC
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and
 				(
