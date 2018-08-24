@@ -144,6 +144,7 @@ public class AppPointsMall extends BaseController {
                     userpointsService.updateUserPoints(userPoints);
 
                     appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
+                    appuserService.updateAppUserBalanceById(appUser);
 
 
                     //增加积分记录

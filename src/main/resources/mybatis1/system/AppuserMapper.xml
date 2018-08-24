@@ -50,7 +50,8 @@
 		POINTS,
 		POINTS_MULTIPLES,
 		TODAY_GUESS,
-		TODAY_POOH
+		TODAY_POOH,
+		JCID
 	</sql>
 
     <!-- 字段值 -->
@@ -95,7 +96,8 @@
 		#{POINTS},
 		#{POINTS_MULTIPLES},
 		#{TODAY_GUESS},
-		#{TODAY_POOH}
+		#{TODAY_POOH},
+		#{JCID}
 	</sql>
 
     <!-- 角色表 -->
@@ -257,7 +259,6 @@
         <if test="PASSWORD != null and PASSWORD != ''">
             ,PASSWORD = #{PASSWORD}
         </if>
-       
         where
         USER_ID = #{USER_ID}
     </update>
@@ -453,10 +454,8 @@
         update
         <include refid="tableName"/>
         set
-            USER_ID = #{USER_ID}
-        <if test="BALANCE !=null and BALANCE != ''">
-            ,BALANCE = #{BALANCE}
-        </if>
+          BALANCE = #{BALANCE}
+
         <if test="FIRST_CHARGE != null and FIRST_CHARGE != ''">
             ,FIRST_CHARGE = #{FIRST_CHARGE}
         </if>
@@ -477,6 +476,9 @@
         </if>
         <if test="POINTS_MULTIPLES != null">
             ,POINTS_MULTIPLES = #{POINTS_MULTIPLES}
+        </if>
+        <if test="JCID !=null and JCID != ''">
+            ,JCID = #{JCID}
         </if>
         WHERE
         USER_ID = #{USER_ID}

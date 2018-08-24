@@ -18,4 +18,5 @@ public class CoinPusher {
     private String beginDate;
     private String endDate;
     private Integer sum;
+    private String createTime;
 }

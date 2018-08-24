@@ -265,7 +265,7 @@ public class AppPayController extends BaseController {
         }
     }
 
-    /**
+   /* *//**
      * 订单新接口，以编号获取相应的金币数
      *
      * @param userId
@@ -274,7 +274,7 @@ public class AppPayController extends BaseController {
      * @param ctype
      * @param channel
      * @return
-     */
+     *//*
 
     @RequestMapping(value = "/getTradeOrder_new", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -342,7 +342,7 @@ public class AppPayController extends BaseController {
 
     }
 
-    /**
+    *//**
      * 支付回调接口
      *
      * @param chid         201609081254001(由CP自己分配相应渠道号；SDK只负责相应的渠道统计；并不做逻辑判断)
@@ -371,7 +371,7 @@ public class AppPayController extends BaseController {
      * @param sign_type    固定值”MD5”
      * @param sign         参数签名，见签名方式
      * @return
-     */
+     *//*
 
     @RequestMapping(value = "/orderCallBack", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -510,7 +510,7 @@ public class AppPayController extends BaseController {
     }
 
 
-    /**
+    *//**
      * ios h5 支付回调接口
      *
      * @param chid         201609081254001(由CP自己分配相应渠道号；SDK只负责相应的渠道统计；并不做逻辑判断)
@@ -539,7 +539,7 @@ public class AppPayController extends BaseController {
      * @param sign_type    固定值”MD5”
      * @param sign         参数签名，见签名方式
      * @return
-     */
+     *//*
 
     @RequestMapping(value = "/i5OrderCallBack", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -679,7 +679,7 @@ public class AppPayController extends BaseController {
     }
 
 
-    /**
+    *//**
      * 微玩8游戏平台 支付回调接口
      * <p>
      * username	string	用户名
@@ -692,7 +692,7 @@ public class AppPayController extends BaseController {
      * remarks	string	CP方的扩展参数
      *
      * @return
-     */
+     *//*
 
     @RequestMapping(value = "/w8OrderCallBack", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -805,7 +805,7 @@ public class AppPayController extends BaseController {
             e.printStackTrace();
             return "SYSTEM ERROR";
         }
-    }
+    }*/
 
     /**
      * 支付宝下单
@@ -889,17 +889,14 @@ public class AppPayController extends BaseController {
                 order.setPAYOUT_TYPE(payOutType);
                 orderService.regmount(order);
 
-            } else {
-                return RespStatus.fail("数据不合法");
-            }
-            if (payOutType.equals("fc") &&
+            } else if (payOutType.equals("fc") &&
                     ((amt.equals("10") && regGold.equals("200"))
                             || (amt.equals("20") && regGold.equals("400"))
                             || (amt.equals("50") && regGold.equals("1000"))
                             || (amt.equals("100") && regGold.equals("2000"))
                             || (amt.equals("200") && regGold.equals("4000"))
                             || (amt.equals("500") && regGold.equals("10000"))
-                            || (amt.equals("1000") && regGold.equals("20000")))) {
+                            || (amt.equals("1000") && regGold.equals("20000")))){
                 Order order = new Order();
                 order.setUSER_ID(userId);
                 order.setREC_ID(newOrder);
@@ -913,10 +910,7 @@ public class AppPayController extends BaseController {
                 order.setPAYOUT_TYPE(payOutType);
                 orderService.regmount(order);
 
-            } else {
-                return RespStatus.fail("数据不合法");
-            }
-            if (payOutType.equals("mc") && amt.equals("98") && regGold.equals("980")) {
+            }else if (payOutType.equals("mc") && amt.equals("98") && regGold.equals("980")) {
                 Order order = new Order();
                 order.setUSER_ID(userId);
                 order.setREC_ID(newOrder);
@@ -930,10 +924,7 @@ public class AppPayController extends BaseController {
                 order.setPAYOUT_TYPE(payOutType);
                 orderService.regmount(order);
 
-            } else {
-                return RespStatus.fail("数据不合法");
-            }
-            if (payOutType.equals("wc") && amt.equals("28") && regGold.equals("280")) {
+            } else if (payOutType.equals("wc") && amt.equals("28") && regGold.equals("280")){
                 Order order = new Order();
                 order.setUSER_ID(userId);
                 order.setREC_ID(newOrder);
@@ -946,7 +937,6 @@ public class AppPayController extends BaseController {
                 order.setPRO_USER_ID(appUser.getPRO_USER_ID());
                 order.setPAYOUT_TYPE(payOutType);
                 orderService.regmount(order);
-
             } else {
                 return RespStatus.fail("数据不合法");
             }
@@ -1756,7 +1746,6 @@ public class AppPayController extends BaseController {
                             userPoints.setPointsReward_Tag(n_rtag);
                             userpointsService.updateUserPoints(userPoints);
                         }
-
                     }
 
                     //当前订单的用户昵称
@@ -2042,5 +2031,31 @@ public class AppPayController extends BaseController {
                     return RespStatus.fail();
                 }
         }
+
+        public static void main(String[] a){
+
+        String payOutType = "nm";
+        String amt = "10";
+        String regGold = "100";
+
+            if (payOutType.equals("nm") &&
+                    ((amt.equals("10") && regGold.equals("100"))
+                            || (amt.equals("20") && regGold.equals("210"))
+                            || (amt.equals("50") && regGold.equals("550"))
+                            || (amt.equals("100") && regGold.equals("1125"))
+                            || (amt.equals("200") && regGold.equals("2280"))
+                            || (amt.equals("500") && regGold.equals("5750"))
+                            || (amt.equals("1000") && regGold.equals("12000")))) {
+                System.out.println("s");
+
+            } else {
+               System.out.println("f");
+            }
+
+
+
+
+        }
+
 
 }

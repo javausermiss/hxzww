@@ -83,7 +83,9 @@ $(function () {
 		        	goodsNum:goodsNum
 		        },
 		        success: function (data) {
-		        	bAlert('提示', data.data,{type:'info'});
+		        	bAlert('提示', data.data,{type:'info'},function () {
+		        		history.go(0);
+		        	});
 		        	console.log(data);
 		        },
 		        error: function (res) {

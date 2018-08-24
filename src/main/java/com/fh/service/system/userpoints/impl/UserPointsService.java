@@ -215,6 +215,7 @@ public class UserPointsService implements UserPointsManager{
 			if (tag.equals("1")){
 				break;
 			}
+			break;
 		}
 
 		while (r_tag.equals("1")) {
@@ -280,6 +281,7 @@ public class UserPointsService implements UserPointsManager{
 			if (tag.equals("1")){
 				break;
 			}
+			break;
 
 		}
 		while (r_tag.equals("2")) {
@@ -328,6 +330,7 @@ public class UserPointsService implements UserPointsManager{
 			if (tag.equals("1")){
 				break;
 			}
+			break;
 		}
 		while (r_tag.equals("3")) {
 
@@ -361,7 +364,7 @@ public class UserPointsService implements UserPointsManager{
 			if (tag.equals("1")){
 				break;
 			}
-
+			break;
 		}
 		if (r_tag.equals("4")) {
 			PointsReward pointsReward = list.get(list.size() - 1);
@@ -432,7 +435,7 @@ public class UserPointsService implements UserPointsManager{
 
 			up =  this.getUserPointsFinish(userId);
 			String r_tag =  up.getPointsReward_Tag();
-			if (Integer.valueOf(r_tag) < 5){
+
 				Integer goldValue = 0;
 				Integer sum = 0;
 				Integer ob = Integer.valueOf(appUser.getBALANCE());
@@ -441,7 +444,7 @@ public class UserPointsService implements UserPointsManager{
 				String n_rtag =  this.doGoldReward(r_tag,goldValue,sum,ob,list,up.getTodayPoints(),nb_2,appUser);
 				up.setPointsReward_Tag(n_rtag);
 				this.updateUserPoints(up);
-			}
+
 
 		}
 
@@ -461,5 +464,6 @@ public class UserPointsService implements UserPointsManager{
 		System.out.println(summ);
 
 	}
+
 }
 

@@ -43,10 +43,10 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">礼品名称:</td>
 								<td><input type="text" name="GOODSNAME" id="GOODSNAME" value="${pd.GOODSNAME}" maxlength="255" placeholder="这里输入礼品名称" title="礼品名称" style="width:98%;"/></td>
 							</tr>
-							<tr>
+							<%--<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">礼品数量:</td>
 								<td><input type="number" name="QUANTITYOFGOODS" id="QUANTITYOFGOODS" value="${pd.QUANTITYOFGOODS}" maxlength="32" placeholder="这里输入礼品数量" title="礼品数量" style="width:98%;"/></td>
-							</tr>
+							</tr>--%>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">收货人:</td>
 								<td><input type="text" name="CONSIGNEE" id="CONSIGNEE" value="${pd.CONSIGNEE}" maxlength="255" placeholder="这里输入收货人" title="收货人" style="width:98%;"/></td>
@@ -73,7 +73,12 @@
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">是否发货:</td>
-								<td><input type="text" name="SENDTAG" id="SENDTAG" value="${pd.SENDTAG}" maxlength="255" placeholder="这里输入是否发货" title="是否发货" style="width:98%;"/></td>
+								<td>
+									<select id="SENDTAG" name="SENDTAG">
+										<option value="0" <c:if test="${pd.SENDTAG == '0' || pd.SENDTAG == '' }">selected</c:if>>未发货</option>
+										<option value="1" <c:if test="${pd.SENDTAG == '1' }">selected</c:if>>已发货</option>
+									</select>
+								</td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
@@ -144,7 +149,7 @@
 				$("#GOODSNAME").focus();
 			return false;
 			}
-			if($("#QUANTITYOFGOODS").val()==""){
+			/*if($("#QUANTITYOFGOODS").val()==""){
 				$("#QUANTITYOFGOODS").tips({
 					side:3,
 		            msg:'请输入礼品数量',
@@ -153,7 +158,7 @@
 		        });
 				$("#QUANTITYOFGOODS").focus();
 			return false;
-			}
+			}*/
 			if($("#CONSIGNEE").val()==""){
 				$("#CONSIGNEE").tips({
 					side:3,
@@ -224,7 +229,7 @@
 				$("#SENDTAG").focus();
 			return false;
 			}
-			if($("#REMARK").val()==""){
+			/*if($("#REMARK").val()==""){
 				$("#REMARK").tips({
 					side:3,
 		            msg:'请输入备注',
@@ -233,7 +238,7 @@
 		        });
 				$("#REMARK").focus();
 			return false;
-			}
+			}*/
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
