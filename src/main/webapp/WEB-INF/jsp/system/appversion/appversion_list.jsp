@@ -70,8 +70,9 @@
 									<th class="center">APK文件URL</th>
 									<th class="center">更新内容</th>
 									<th class="center">版本号</th>
+									<th class="center">是否使用</th>
 									<th class="center">创建时间</th>
-									<th class="center">更新时间</th>
+
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -90,8 +91,12 @@
 											<td class='center'>${var.DOWNLOAD_URL}</td>
 											<td class='center'>${var.CONTENT}</td>
 											<td class='center'>${var.VERSION}</td>
+											<td class='center'>
+												<c:if test="${var.STATE == '0'}">未发布</c:if>
+												<c:if test="${var.STATE == '1'}">已发布</c:if>
+											</td>
+											</td>
 											<td class='center'>${var.CREATE_TIME}</td>
-											<td class='center'>${var.UPDATE_DATE}</td>
 
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">

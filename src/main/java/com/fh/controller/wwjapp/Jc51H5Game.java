@@ -5,13 +5,20 @@ import com.fh.entity.system.*;
 
 import com.fh.service.system.appuser.AppuserManager;
 
+import com.fh.service.system.coinpusher.CoinPusherManager;
+import com.fh.service.system.costgoldrewardpoints.CostGoldRewardPointsManager;
+import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.goldenbeanexchangerate.GoldenBeanexchangeRateManager;
 import com.fh.service.system.payment.PaymentManager;
 
+import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
+import com.fh.util.DateUtil;
 import com.fh.util.PropertiesUtils;
 import com.fh.util.wwjUtil.JcjdUtil;
 
+import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RespStatus;
 
 import io.netty.handler.codec.EncoderException;
@@ -22,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +50,20 @@ public class Jc51H5Game extends BaseController {
 
     @Resource(name = "paymentService")
     private PaymentManager paymentService;
+
+
+    @Resource(name = "dollService")
+    private DollManager dollService;
+    @Resource(name = "coinpusherService")
+    private CoinPusherManager coinpusherService;
+
+    @Resource(name = "userpointsService")
+    private UserPointsManager userpointsService;
+    @Resource(name="costgoldrewardpointsService")
+    private CostGoldRewardPointsManager costgoldrewardpointsService;
+    @Resource(name="pointsdetailService")
+    private PointsDetailManager pointsdetailService;
+
 
     @RequestMapping(value = "/login",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -127,5 +150,52 @@ public class Jc51H5Game extends BaseController {
 
     }
 
+    /**
+     * 金豆兑换金币（.net后台调取）
+     * @param userId
+     * @param goldNum
+     * @return
+     */
+    @RequestMapping(value = "/beanExchangeGold",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject beanExchangeGold (@RequestParam("userId") String userId,
+                                        @RequestParam("goldNum") Integer goldNum
+                                       ) {
+
+        try {
+            AppUser appUser = appuserService.getUserByID(userId);
+            appUser.setBALANCE(String.valueOf(goldNum + Integer.valueOf(appUser.getBALANCE())));
+            appuserService.updateAppUserBalanceById(appUser);
+            //添加游戏金币明细记录
+            Payment payment = new Payment();
+            payment.setCOST_TYPE(Const.PlayMentCostType.cost_type27.getValue());
+            payment.setDOLLID("");
+            payment.setUSERID(userId);
+            payment.setGOLD("+" + String.valueOf(goldNum));
+            payment.setREMARK(Const.PlayMentCostType.cost_type27.getName());
+            paymentService.reg(payment);
+            return RespStatus.successs();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+
+    }
+
+    /**
+     * 获取金豆金币兑换比例
+     * @return
+     */
+    @RequestMapping(value = "/getExchangeRate",method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getExchangeRate(){
+        try {
+            BeanRate beanRate = goldenrateService.getBeanRate();
+            return  RespStatus.successs().element("data",JSONObject.fromObject(beanRate));
+        }catch (Exception e){
+            return RespStatus.fail();
+        }
+
+    }
 
 }

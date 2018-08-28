@@ -209,9 +209,9 @@ public class CoinPusherService implements CoinPusherManager {
 
         //增加用户的推币机游戏记录
 
-        CoinPusher cp = this.getLatestRecordForId(roomId);
-        String newId;
-        if (cp == null) {
+     //   CoinPusher cp = this.getLatestRecordForId(roomId);
+
+        /*if (cp == null) {
             Date currentTime1 = new Date();
             SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
             String dateString1 = formatter1.format(currentTime1);
@@ -231,7 +231,7 @@ public class CoinPusherService implements CoinPusherManager {
                 String date = format.format(current);
                 newId = date + "0001";
             }
-        }
+        }*/
 
 
             UserPoints userPoints = userpointsService.getUserPointsFinish(userId);
@@ -323,13 +323,6 @@ public class CoinPusherService implements CoinPusherManager {
                 }
             }
 
-            CoinPusher coinPusher = new CoinPusher();
-            coinPusher.setId(newId);
-            coinPusher.setRoomId(roomId);
-            coinPusher.setUserId(userId);
-            coinPusher.setCostGold(String.valueOf(bat));
-            coinPusher.setCreateTime(DateUtil.getTimeSSS());
-            this.reg(coinPusher);
 
         rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
         rpcCommandResult.setInfo("SUCCESS");

@@ -151,7 +151,9 @@
 		ROOMID,
 		USER_ID,
 		COSTGOLD,
-		CREATE_DATE
+		CREATE_DATE,
+		FINISH_FLAG,
+		RETURNGOLD
 		)
 		values
 		(
@@ -159,7 +161,9 @@
 		#{roomId},
 		#{userId},
 		#{costGold},
-		#{createTime}
+		#{createTime},
+		#{finishFlag},
+		#{returnGold}
 		)
 	</insert>
 	

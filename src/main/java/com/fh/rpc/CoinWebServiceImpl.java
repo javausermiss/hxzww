@@ -92,18 +92,17 @@ public class CoinWebServiceImpl implements CoinRpcService {
             }
             //出币数统计，并进行换算娃娃币比例 1:10
 
+            String newId = MyUUID.getUUID32();
             CoinPusher coinPusher = new CoinPusher();
+            coinPusher.setId(newId);
             coinPusher.setRoomId(roomId);
             coinPusher.setUserId(userId);
-            CoinPusher coinPusher1 = coinpusherService.getLatestRecord(coinPusher);
-            if (coinPusher1 == null) {
-                rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
-                rpcCommandResult.setInfo("无此记录");
-                return rpcCommandResult;
-            }
-            coinPusher1.setReturnGold(String.valueOf(bingo));
-            coinPusher1.setFinishFlag("Y");
-            coinpusherService.updateOutCoin(coinPusher1);
+            coinPusher.setCostGold(String.valueOf(bat));
+            coinPusher.setCreateTime(DateUtil.getTime());
+            coinPusher.setFinishFlag("Y");
+            coinPusher.setReturnGold(String.valueOf(bingo));
+            coinpusherService.reg(coinPusher);
+
             //娃娃币换算
             if (bingo != 0) {
                 String now = DateUtil.getDay();
@@ -120,7 +119,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 int mp_old = appUser.getCOIN_MULTIPLES();
                 int newBalance;
                 int wwb ;
-                if (mp_old != mp_new) {
+                if (mp_old != mp_new && mp_new != 0 ) {
                     wwb = bingo * 10;
                     int reward = (mp_new - mp_old) * doll.getCOINPUSHER_REWORD();
                     newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb + reward;

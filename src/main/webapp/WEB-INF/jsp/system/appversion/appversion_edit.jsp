@@ -48,8 +48,8 @@
 								<td>
 								<span style="font-size:12px;">
 									<select id="STATE" name="STATE">
-										<option value="0" <c:if test="${pd.DEVICE_STATE == '1' }">selected</c:if>>不可用</option>
-										<option value="1" <c:if test="${pd.DEVICE_STATE == '0' }">selected</c:if>>可用</option>
+										<option value="0" <c:if test="${pd.STATE == '0' }">selected</c:if>>未发布</option>
+										<option value="1" <c:if test="${pd.STATE == '1' }">selected</c:if>>发布</option>
 									</select>
 									</span>
 								</td>

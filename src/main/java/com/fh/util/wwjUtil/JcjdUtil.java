@@ -3,6 +3,7 @@ package com.fh.util.wwjUtil;
 import com.fh.entity.system.AppUser;
 import net.sf.json.JSONObject;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -148,4 +149,32 @@ public class JcjdUtil{
         httpClient.close();
         return jcid;
     }
+
+    /**
+     * 查询用户当前的金豆数量
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public static String getUserBean(AppUser appUser)throws Exception{
+        String jdnum= "";
+        //注册
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet httpPost = new HttpGet("http://106.75.129.211/WebService/WwjRegister.asmx/GetJD?uid="+appUser.getJCID());
+        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+        CloseableHttpResponse response = httpClient.execute(httpPost);
+        String code = String.valueOf(response.getStatusLine().getStatusCode());
+        System.out.println(code);
+        if (code.equals("200")) {
+            //读返回数据
+            String conResult = EntityUtils.toString(response.getEntity());
+            JSONObject object = JSONObject.fromObject(conResult);
+            jdnum = object.getString("msg");
+        }
+        response.close();
+        httpClient.close();
+        return jdnum;
+
+    }
+
 }

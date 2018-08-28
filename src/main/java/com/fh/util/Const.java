@@ -194,7 +194,8 @@ public class Const {
 		cost_type23("月卡每日赠送","23"),
 		cost_type24("用户首充","24"),
 		cost_type25("集积分送金币","25"),
-		cost_type26("兑换金豆","26");
+		cost_type26("金币兑换金豆","26"),
+		cost_type27("金豆兑换金币","27");
 
 
 		
