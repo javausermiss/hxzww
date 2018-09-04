@@ -1,6 +1,7 @@
 package com.fh.service.system.betgame;
 
 import com.fh.entity.Page;
+import com.fh.entity.system.AppUser;
 import com.fh.entity.system.GuessDetailL;
 import com.fh.util.PageData;
 import com.iot.game.pooh.server.rpc.interfaces.bean.RpcCommandResult;
@@ -140,6 +141,10 @@ public interface BetGameManager {
     public List<GuessDetailL> getWinByNum(GuessDetailL num)throws Exception;
 
     public List<GuessDetailL> getFailerByNum(GuessDetailL num)throws Exception;
+/**
+ * 封装消费金币送积分，当天累积消费200金币，送积分
+ */
+    public void doCostGoldGetPoints(AppUser appUser,String userId)throws Exception;
 
 
 }

@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<title>积分商城</title>
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/all.css">
+		<script type="text/javascript" src="js/angular.js"></script>		
+		<script type="text/javascript" src="js/jquery.1.8.3.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+		<script>
+			(function () {
+			　　　function changeRootFont() {
+			　　　   var designWidth = 750, rem2px = 100;
+			　　　   document.documentElement.style.fontSize =((window.innerWidth / designWidth) * rem2px) + 'px';
+			　　　}
+			　　　changeRootFont();
+			　　　window.addEventListener('resize', changeRootFont,false);
+			})();
+			function goBack() {
+			    history.go(-1);
+			}			
+		</script>
+		<script type="text/javascript">
+			var href = window.location.href;
+			var useridO = href.split('?')[1];
+			var userid=useridO.split('=')[1];
+	    	var app = angular.module('myApp', []);
+	    	app.controller('M1',['$scope',function ($scope) {
+		    		$scope.auth = userid;	    		
+	    	}])	
+	    </script>
+	    <script>			
+	      function onBack(){
+	      	history.go(-1);
+	        AndroidWebView.onBack();
+	      };	      
+	   </script>
+	</head>
+	<body ng-controller="M1">
+		<div class="shop-main">
+			<div class="shop-head">
+				积分商城
+				<div class="shop-backout" onclick="onBack()">
+					<img src="img/1.png" alt="" class="shop-back"/>
+				</div>				
+			</div>
+			<div class="shop-nav">
+				<a href="IntegralRecord.html?{{auth}}">
+					<div class="shop-jifen">
+						<div>积分<span class="shop-jifenNum" id="jifen"></span></div>
+					</div>
+				</a>				
+				<a href="changeRecord.html?{{auth}}">
+					<div class="shop-jilu">
+						<div>兑换记录</div>
+					</div>
+				</a>				
+			</div>
+			<div class="shop-fenlei">
+				<ul>
+					<li>
+						<a href="IntegralTask.html?{{auth}}">
+							<img src="img/4.jpg"/>
+							<p>积分任务</p>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<img src="img/5.jpg"/>
+							<p>小仙女必备</p>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<img src="img/6.jpg"/>
+							<p>实用品</p>
+						</a>
+					</li>
+					<li>
+						<a href="more.html?{{auth}}">
+							<img src="img/7.jpg"/>
+							<p>萌宠专区</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="shop-pro">
+				<h2>精选推荐<span>POPULAR</span></h2>
+				<div class="shop-pro-listCont">
+					<ul class="shop-pro-list">
+								
+					</ul>	
+				</div>				
+			</div>
+		</div>
+	</body>	
+</html>

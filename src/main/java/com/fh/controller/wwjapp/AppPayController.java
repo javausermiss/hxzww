@@ -25,10 +25,7 @@ import com.fh.util.wwjUtil.*;
 import com.fh.util.xdpayutil.FormDateReportConvertor;
 import com.fh.util.xdpayutil.MD5Facade;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -54,12 +51,13 @@ import com.fh.service.system.trans.AccountOperManager;
 import net.sf.json.JSONObject;
 
 @Controller
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = "/app/pay")
 public class AppPayController extends BaseController {
 
     public static AlipayTradeAppPayResponse response;
-    private static final String nurl = "http://111.231.139.61:18081/pooh-web/html/recharge/Recharge.html?userId=";
-    private static final String furl = "http://111.231.139.61:18081/pooh-web/html/recharge/fistRecharge.html?userId=";
+    private static final String nurl = PropertiesUtils.getCurrProperty("service.address")+"/pooh-web/html/recharge/Recharge.html?userId=";
+    private static final String furl = PropertiesUtils.getCurrProperty("service.address")+"/pooh-web/html/recharge/fistRecharge.html?userId=";
 
     //  private final String ckey = "y3WfBKF1FY4=";
     @Resource(name = "appuserService")
@@ -1292,7 +1290,11 @@ public class AppPayController extends BaseController {
             String regGold = "";
             String payOutType = "";
             Paycard paycard = paycardService.getPayCardById(pid);
-
+            String _pid[] = {"1","2","3","4","5","6","7","8","9"};
+            boolean iscon = Arrays.asList(_pid).contains(pid);
+            if (!iscon){
+                return;
+            }
             String amt = paycard.getAMOUNT();
             if (pid.equals("8")) {
                 regGold = paycard.getRECHARE();
@@ -1358,7 +1360,8 @@ public class AppPayController extends BaseController {
 
     @RequestMapping(value = "/getRecUrl", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public JSONObject getRecUrl(@RequestParam("userId") String userId) {
+    public JSONObject getRecUrl(@RequestParam("userId") String userId,
+                                @RequestParam(value = "appVersion" ,required = false,defaultValue = "default") String appVersion ) {
         try {
             AppUser appUser = appuserService.getUserByID(userId);
             if (appUser == null) {
@@ -1366,10 +1369,10 @@ public class AppPayController extends BaseController {
             }
             String tag = appUser.getFIRST_CHARGE();
             if (tag.equals("1")) {
-                return RespStatus.successs().element("url", nurl + userId);
+                return RespStatus.successs().element("url", nurl + userId+"&appVersion="+appVersion);
 
             } else {
-                return RespStatus.successs().element("url", furl + userId);
+                return RespStatus.successs().element("url", furl + userId+"&appVersion="+appVersion);
             }
 
         } catch (Exception e) {
@@ -1899,7 +1902,7 @@ public class AppPayController extends BaseController {
     }
 
 
-    /******************************************************************现在支付微信新接口20180820************************************************************************************************************************/
+    /******************************************************************现在支付App微信新接口20180820************************************************************************************************************************/
 
     @RequestMapping(value = "/getTradeOrderxdpayVer", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -1912,150 +1915,485 @@ public class AppPayController extends BaseController {
             @RequestParam(value = "appVersion", required = false) String appVersion,
             @RequestParam(value = "payChannelType") String payChannelType
     ) {
-            //周卡
-            String wc = "wc";
-            //月卡
-            String mc = "mc";
-            //首充用户
-            String fc = "fc";
-            //正常充值
-            String nm = "nm";
+        //周卡
+        String wc = "wc";
+        //月卡
+        String mc = "mc";
+        //首充用户
+        String fc = "fc";
+        //正常充值
+        String nm = "nm";
 
-            String newOrder = "";
-            String amt = "";
-            try {
-                AppUser appUser = appuserService.getUserByID(userId);
-                if (appUser == null) {
-                    return null;
-                }
-                String tag = appUser.getFIRST_CHARGE();
-                String datetime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+        String newOrder = "";
+        String amt = "";
+        try {
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser == null) {
+                return null;
+            }
+            String tag = appUser.getFIRST_CHARGE();
+            String datetime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 
-                boolean a = RedisUtil.getRu().exists("tradeOrder");
-                if (a) {
-                    String tradeOrder = RedisUtil.getRu().get("tradeOrder");
-                    String x = tradeOrder.substring(0, 8);//取前八位进行判断
-                    if (datetime.substring(0, 8).equals(x)) {
-                        String six = tradeOrder.substring(tradeOrder.length() - 6, tradeOrder.length());
-                        String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
-                        newOrder = datetime + newsix;//新的订单编号
-                        RedisUtil.getRu().set("tradeOrder", newOrder);
-                    } else {
-                        newOrder = datetime + "000001";//新的订单编号
-                        RedisUtil.getRu().set("tradeOrder", newOrder);
-                    }
+            boolean a = RedisUtil.getRu().exists("tradeOrder");
+            if (a) {
+                String tradeOrder = RedisUtil.getRu().get("tradeOrder");
+                String x = tradeOrder.substring(0, 8);//取前八位进行判断
+                if (datetime.substring(0, 8).equals(x)) {
+                    String six = tradeOrder.substring(tradeOrder.length() - 6, tradeOrder.length());
+                    String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
+                    newOrder = datetime + newsix;//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
                 } else {
                     newOrder = datetime + "000001";//新的订单编号
                     RedisUtil.getRu().set("tradeOrder", newOrder);
                 }
-                String regGold = "";
-                String payOutType = "";
-                Paycard paycard = paycardService.getPayCardById(pid);
-                amt = paycard.getAMOUNT();
-
-                if (pid.equals("8")) {
-                    regGold = paycard.getRECHARE();
-                    payOutType = wc;
-
-                }
-                if (pid.equals("9")) {
-                    regGold = paycard.getRECHARE();
-                    payOutType = mc;
-
-                }
-                if (!pid.equals("9") && !pid.equals("8") && tag.equals("0")) {
-                    regGold = paycard.getFIRSTAWARD_GOLD();
-                    payOutType = fc;
-                }
-
-                if (!pid.equals("9") && !pid.equals("8") && tag.equals("1")) {
-                    regGold = paycard.getGOLD();
-                    payOutType = nm;
-                }
-
-                Order order = new Order();
-                order.setUSER_ID(userId);
-                order.setREC_ID(newOrder);
-                order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amt)); //元转分
-                order.setORDER_ID(newOrder);
-                order.setREGGOLD(regGold); //充值的金币数量
-                order.setCHANNEL(channel);
-                order.setCTYPE(ctype);
-                order.setPAY_TYPE(payType);
-                order.setPRO_USER_ID(appUser.getPRO_USER_ID());
-                order.setPAYOUT_TYPE(payOutType);
-                order.setAPPVERSION(appVersion);
-                orderService.regmount(order);
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("funcode", "WP001");//
-                map.put("version", "1.0.0");//
-                map.put("appId", PropertiesUtils.getCurrProperty("nowpay.appId"));//
-                map.put("mhtOrderNo", newOrder);//
-                map.put("mhtOrderName", "娃娃币");//
-                map.put("mhtOrderType", "01");//
-                map.put("mhtCurrencyType", "156");//
-                map.put("mhtOrderAmt", Integer.valueOf(NumberUtils.RMBYuanToCent(amt)));//
-                map.put("mhtOrderStartTime", DateUtil.getSdfTimes());//
-                map.put("mhtOrderTimeOut", 3600);
-                map.put("frontNotifyUrl", "http://sds");
-                map.put("notifyUrl", PropertiesUtils.getCurrProperty("service.address") + "/pooh-web/app/pay/xdpayCallBack");//
-                map.put("mhtCharset", "UTF-8");//
-                map.put("deviceType", "01");//
-                map.put("payChannelType", payChannelType);//
-                map.put("consumerId", userId);//.......
-                map.put("consumerName", appUser.getNICKNAME());//........
-                map.put("mhtSignType", "MD5");//
-                map.put("mhtOrderDetail", "娃娃币");
-                String signature = MD5Facade.getFormDataParamMD5(map, PropertiesUtils.getCurrProperty("nowpay.md5Key"), "UTF-8");
-                map.put("mhtSignature", signature);//
-                FormDateReportConvertor.postBraceFormLinkReportWithURLEncode(map, "UTF-8");
-
-                StringBuilder toMD5StringBuilder = new StringBuilder();
-                Set<String> keySet = map.keySet();
-                for (String key : keySet) {
-                    String value = map.get(key).toString();
-                    if (value != null && value.length() > 0) {
-                        toMD5StringBuilder.append(key + "=" + value + "&");
-                    }
-                }
-                toMD5StringBuilder.delete(toMD5StringBuilder.length() - 1, toMD5StringBuilder.length());
-                String s = toMD5StringBuilder.toString();
-                logger.info("发送的参数------------>" + s);
-                Map<String, Object> map_1 = new HashMap<>();
-                map_1.put("Order", getOrderInfo(order.getORDER_ID()));
-                return RespStatus.successs().element("data", map_1).element("nowpayData", s);
-            }
-            catch (Exception e){
-                    e.printStackTrace();
-                    return RespStatus.fail();
-                }
-        }
-
-        public static void main(String[] a){
-
-        String payOutType = "nm";
-        String amt = "10";
-        String regGold = "100";
-
-            if (payOutType.equals("nm") &&
-                    ((amt.equals("10") && regGold.equals("100"))
-                            || (amt.equals("20") && regGold.equals("210"))
-                            || (amt.equals("50") && regGold.equals("550"))
-                            || (amt.equals("100") && regGold.equals("1125"))
-                            || (amt.equals("200") && regGold.equals("2280"))
-                            || (amt.equals("500") && regGold.equals("5750"))
-                            || (amt.equals("1000") && regGold.equals("12000")))) {
-                System.out.println("s");
-
             } else {
-               System.out.println("f");
+                newOrder = datetime + "000001";//新的订单编号
+                RedisUtil.getRu().set("tradeOrder", newOrder);
+            }
+            String regGold = "";
+            String payOutType = "";
+            Paycard paycard = paycardService.getPayCardById(pid);
+            amt = paycard.getAMOUNT();
+
+            String _pid[] = {"1","2","3","4","5","6","7","8","9"};
+            boolean iscon = Arrays.asList(_pid).contains(pid);
+            if (!iscon){
+                return RespStatus.fail("参数异常");
             }
 
+            if (pid.equals("8")) {
+                regGold = paycard.getRECHARE();
+                payOutType = wc;
 
+            }
+            if (pid.equals("9")) {
+                regGold = paycard.getRECHARE();
+                payOutType = mc;
 
+            }
+            if (!pid.equals("9") && !pid.equals("8") && tag.equals("0")) {
+                regGold = paycard.getFIRSTAWARD_GOLD();
+                payOutType = fc;
+            }
 
+            if (!pid.equals("9") && !pid.equals("8") && tag.equals("1")) {
+                regGold = paycard.getGOLD();
+                payOutType = nm;
+            }
+
+            Order order = new Order();
+            order.setUSER_ID(userId);
+            order.setREC_ID(newOrder);
+            order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amt)); //元转分
+            order.setORDER_ID(newOrder);
+            order.setREGGOLD(regGold); //充值的金币数量
+            order.setCHANNEL(channel);
+            order.setCTYPE(ctype);
+            order.setPAY_TYPE(payType);
+            order.setPRO_USER_ID(appUser.getPRO_USER_ID());
+            order.setPAYOUT_TYPE(payOutType);
+            order.setAPPVERSION(appVersion);
+            orderService.regmount(order);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("funcode", "WP001");//
+            map.put("version", "1.0.0");//
+            map.put("appId", PropertiesUtils.getCurrProperty("nowpay.appId"));//
+            map.put("mhtOrderNo", newOrder);//
+            map.put("mhtOrderName", "娃娃币");//
+            map.put("mhtOrderType", "01");//
+            map.put("mhtCurrencyType", "156");//
+            map.put("mhtOrderAmt", Integer.valueOf(NumberUtils.RMBYuanToCent(amt)));//
+            map.put("mhtOrderStartTime", DateUtil.getSdfTimes());//
+            map.put("mhtOrderTimeOut", 3600);
+            map.put("frontNotifyUrl", "http://sds");
+            map.put("notifyUrl", PropertiesUtils.getCurrProperty("service.address") + "/pooh-web/app/pay/xdpayCallBack");//
+            map.put("mhtCharset", "UTF-8");//
+            map.put("deviceType", "01");//
+            map.put("payChannelType", payChannelType);//
+            map.put("consumerId", userId);//.......
+            map.put("consumerName", appUser.getNICKNAME());//........
+            map.put("mhtSignType", "MD5");//
+            map.put("mhtOrderDetail", "娃娃币");
+            String signature = MD5Facade.getFormDataParamMD5(map, PropertiesUtils.getCurrProperty("nowpay.md5Key"), "UTF-8");
+            map.put("mhtSignature", signature);//
+            FormDateReportConvertor.postBraceFormLinkReportWithURLEncode(map, "UTF-8");
+
+            StringBuilder toMD5StringBuilder = new StringBuilder();
+            Set<String> keySet = map.keySet();
+            for (String key : keySet) {
+                String value = map.get(key).toString();
+                if (value != null && value.length() > 0) {
+                    toMD5StringBuilder.append(key + "=" + value + "&");
+                }
+            }
+            toMD5StringBuilder.delete(toMD5StringBuilder.length() - 1, toMD5StringBuilder.length());
+            String s = toMD5StringBuilder.toString();
+            logger.info("发送的参数------------>" + s);
+            Map<String, Object> map_1 = new HashMap<>();
+            map_1.put("Order", getOrderInfo(order.getORDER_ID()));
+            return RespStatus.successs().element("data", map_1).element("nowpayData", s);
         }
+        catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+    /******************************************************************现在支付h5微信新接口IOS************************************************************************************************************************/
+
+    @RequestMapping(value = "/getTradeOrderxdpayIOS", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getTradeOrderxdpayIOS(
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "pid") String pid,
+            @RequestParam(value = "ctype", required = false) String ctype,
+            @RequestParam(value = "channel", required = false) String channel,
+            @RequestParam(value = "payType", required = false) String payType,
+            @RequestParam(value = "appVersion", required = false) String appVersion,
+            @RequestParam(value = "payChannelType") String payChannelType
+    ) {
+        //周卡
+        String wc = "wc";
+        //月卡
+        String mc = "mc";
+        //首充用户
+        String fc = "fc";
+        //正常充值
+        String nm = "nm";
+
+        String newOrder = "";
+        String amt = "";
+        try {
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser == null) {
+                return null;
+            }
+            String tag = appUser.getFIRST_CHARGE();
+            String datetime = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+
+            boolean a = RedisUtil.getRu().exists("tradeOrder");
+            if (a) {
+                String tradeOrder = RedisUtil.getRu().get("tradeOrder");
+                String x = tradeOrder.substring(0, 8);//取前八位进行判断
+                if (datetime.substring(0, 8).equals(x)) {
+                    String six = tradeOrder.substring(tradeOrder.length() - 6, tradeOrder.length());
+                    String newsix = String.format("%06d", (Integer.valueOf(six) + 1));
+                    newOrder = datetime + newsix;//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
+                } else {
+                    newOrder = datetime + "000001";//新的订单编号
+                    RedisUtil.getRu().set("tradeOrder", newOrder);
+                }
+            } else {
+                newOrder = datetime + "000001";//新的订单编号
+                RedisUtil.getRu().set("tradeOrder", newOrder);
+            }
+            String regGold = "";
+            String payOutType = "";
+            Paycard paycard = paycardService.getPayCardById(pid);
+            amt = paycard.getAMOUNT();
+
+            String _pid[] = {"1","2","3","4","5","6","7","8","9"};
+            boolean iscon = Arrays.asList(_pid).contains(pid);
+            if (!iscon){
+                return RespStatus.fail("参数异常");
+            }
+
+            if (pid.equals("8")) {
+                regGold = paycard.getRECHARE();
+                payOutType = wc;
+
+            }
+            if (pid.equals("9")) {
+                regGold = paycard.getRECHARE();
+                payOutType = mc;
+
+            }
+            if (!pid.equals("9") && !pid.equals("8") && tag.equals("0")) {
+                regGold = paycard.getFIRSTAWARD_GOLD();
+                payOutType = fc;
+            }
+
+            if (!pid.equals("9") && !pid.equals("8") && tag.equals("1")) {
+                regGold = paycard.getGOLD();
+                payOutType = nm;
+            }
+
+            Order order = new Order();
+            order.setUSER_ID(userId);
+            order.setREC_ID(newOrder);
+            order.setREGAMOUNT(NumberUtils.RMBYuanToCent(amt)); //元转分
+            order.setORDER_ID(newOrder);
+            order.setREGGOLD(regGold); //充值的金币数量
+            order.setCHANNEL(channel);
+            order.setCTYPE(ctype);
+            order.setPAY_TYPE(payType);
+            order.setPRO_USER_ID(appUser.getPRO_USER_ID());
+            order.setPAYOUT_TYPE(payOutType);
+            order.setAPPVERSION(appVersion);
+            orderService.regmount(order);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("funcode", "WP001");//
+            map.put("version", "1.0.0");//
+            map.put("appId", PropertiesUtils.getCurrProperty("nowpay.h5.appId"));//
+            map.put("mhtOrderNo", newOrder);//
+            map.put("mhtOrderName", "娃娃币");//
+            map.put("mhtOrderType", "01");//
+            map.put("mhtCurrencyType", "156");//
+            map.put("mhtOrderAmt", Integer.valueOf(NumberUtils.RMBYuanToCent(amt)));//
+            map.put("mhtOrderStartTime", DateUtil.getSdfTimes());//
+            map.put("mhtOrderTimeOut", 3600);
+            map.put("frontNotifyUrl", "http://sds");
+            map.put("notifyUrl", PropertiesUtils.getCurrProperty("service.address") + "/pooh-web/app/pay/xdpayCallBackIOS");//
+            map.put("mhtCharset", "UTF-8");//
+            map.put("deviceType", "0601");//
+            map.put("outputType","2");
+            map.put("payChannelType", payChannelType);//
+            map.put("consumerId", userId);//.......
+            map.put("consumerName", appUser.getNICKNAME());//........
+            map.put("mhtSignType", "MD5");//
+            map.put("mhtOrderDetail", "娃娃币");
+            String signature = MD5Facade.getFormDataParamMD5(map, PropertiesUtils.getCurrProperty("nowpay.h5.md5Key"), "UTF-8");
+            map.put("mhtSignature", signature);//
+            FormDateReportConvertor.postBraceFormLinkReportWithURLEncode(map, "UTF-8");
+
+            StringBuilder toMD5StringBuilder = new StringBuilder();
+            Set<String> keySet = map.keySet();
+            for (String key : keySet) {
+                String value = map.get(key).toString();
+                if (value != null && value.length() > 0) {
+                    toMD5StringBuilder.append(key + "=" + value + "&");
+                }
+            }
+            toMD5StringBuilder.delete(toMD5StringBuilder.length() - 1, toMD5StringBuilder.length());
+            String s = toMD5StringBuilder.toString();
+            logger.info("发送的参数------------>" + s);
+            String msg = NowPayUtil.doPost(s);
+            msg =  URLDecoder.decode(msg,"UTF-8");
+            String payUrl = msg;
+            int begin = msg.indexOf("weixin:");
+            int end = msg.indexOf("&appId");
+            payUrl = payUrl.substring(begin,end);
+            return RespStatus.successs().element("data", payUrl);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+
+    /**
+     * 现在微信支付H5回调接口
+     * @param req
+     * @return
+     */
+    @RequestMapping(value = "/xdpayCallBackIOS", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String xdpayCallBackIOS(HttpServletRequest req) {
+        try {
+            BufferedReader reader = req.getReader();
+            StringBuilder reportBuilder = new StringBuilder();
+            String tempStr = "";
+            while ((tempStr = reader.readLine()) != null) {
+                reportBuilder.append(tempStr);
+            }
+
+            String reportContent = reportBuilder.toString();
+
+            Map<String, String> dataMap = FormDateReportConvertor.parseFormDataPatternReportWithDecode(reportContent, "UTF-8", "UTF-8");
+
+            //dataMap.remove("signType");
+            String signature = dataMap.remove("signature");
+
+           /* InputStream propertiesInput = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
+            Properties properties = new Properties();
+            properties.load(propertiesInput);
+            String md5Key = (String) properties.get("md5Key");*/
+            String md5Key = PropertiesUtils.getCurrProperty("nowpay.md5Key");
+            boolean isValidSignature = MD5Facade.validateFormDataParamMD5(dataMap, md5Key, signature);
+            logger.info("验签结果：----------------------------->" + isValidSignature);
+            if (isValidSignature) {
+
+                String out_trade_no = dataMap.get("mhtOrderNo");
+                String nowPayOrderNo = dataMap.get("nowPayOrderNo");
+                Order o = orderService.getOrderById(out_trade_no);
+                AppUser appUser = appuserService.getUserByID(o.getUSER_ID());
+                if (o.getSTATUS().equals("1")) {
+                    return "success=Y";
+                }
+                try {
+                    //周卡
+                    String wc = "wc";
+                    //月卡
+                    String mc = "mc";
+                    //首充用户
+                    String fc = "fc";
+                    //正常充值
+                    String nm = "nm";
+
+                    String rechare = o.getREGGOLD();
+                    int gold = Integer.valueOf(rechare);
+                    int nb = 0;
+
+                    if (o.getPAYOUT_TYPE().equals(wc)) {
+                        //更新收支表
+                        Payment payment = new Payment();
+                        payment.setGOLD("+" + rechare);
+                        payment.setUSERID(o.getUSER_ID());
+                        payment.setDOLLID(null);
+                        payment.setCOST_TYPE(Const.PlayMentCostType.cost_type19.getValue());
+                        payment.setREMARK(Const.PlayMentCostType.cost_type19.getName());
+                        paymentService.reg(payment);
+
+                        Integer wd = appUser.getWEEKS_CARD();
+                        String sdt = appUser.getWEEKS_CARD_TAG();
+                        if (sdt.equals("1")) {
+                            appUser.setWEEKS_CARD(wd + 7);
+                            nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                        } else {
+                            //更新收支表
+                            Payment payment_1 = new Payment();
+                            payment_1.setGOLD("+" + 20);
+                            payment_1.setUSERID(o.getUSER_ID());
+                            payment_1.setDOLLID(null);
+                            payment_1.setCOST_TYPE(Const.PlayMentCostType.cost_type22.getValue());
+                            payment_1.setREMARK(Const.PlayMentCostType.cost_type22.getName());
+                            paymentService.reg(payment_1);
+                            appUser.setWEEKS_CARD(wd + 6);
+                            nb = Integer.valueOf(appUser.getBALANCE()) + gold + 20;
+                        }
+                        appUser.setWEEKS_CARD_TAG("1");
+                        appUser.setBALANCE(String.valueOf(nb));
+                        appuserService.updateAppUserBalanceById(appUser);
+
+                    }
+                    if (o.getPAYOUT_TYPE().equals(mc)) {
+                        //更新收支表
+                        Payment payment = new Payment();
+                        payment.setGOLD("+" + rechare);
+                        payment.setUSERID(o.getUSER_ID());
+                        payment.setDOLLID(null);
+                        payment.setCOST_TYPE(Const.PlayMentCostType.cost_type21.getValue());
+                        payment.setREMARK(Const.PlayMentCostType.cost_type21.getName());
+                        paymentService.reg(payment);
+
+                        Integer wd = appUser.getMONTH_CARD();
+                        String sdt = appUser.getMONTH_CARD_TAG();
+                        if (sdt.equals("1")) {
+                            appUser.setMONTH_CARD(wd + 30);
+                            nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                        } else {
+                            //更新收支表
+                            Payment payment_2 = new Payment();
+                            payment_2.setGOLD("+" + 33);
+                            payment_2.setUSERID(o.getUSER_ID());
+                            payment_2.setDOLLID(null);
+                            payment_2.setCOST_TYPE(Const.PlayMentCostType.cost_type23.getValue());
+                            payment_2.setREMARK(Const.PlayMentCostType.cost_type23.getName());
+                            paymentService.reg(payment_2);
+                            appUser.setMONTH_CARD(wd + 29);
+                            nb = Integer.valueOf(appUser.getBALANCE()) + gold + 33;
+                        }
+                        appUser.setMONTH_CARD_TAG("1");
+                        appUser.setBALANCE(String.valueOf(nb));
+                        appuserService.updateAppUserBalanceById(appUser);
+
+
+                    }
+                    if (o.getPAYOUT_TYPE().equals(fc)) {
+                        appUser.setFIRST_CHARGE("1");
+                        nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                        appUser.setBALANCE(String.valueOf(nb));
+                        appuserService.updateAppUserBalanceById(appUser);
+
+                        //更新收支表
+                        Payment payment = new Payment();
+                        payment.setGOLD("+" + rechare);
+                        payment.setUSERID(o.getUSER_ID());
+                        payment.setDOLLID(null);
+                        payment.setCOST_TYPE(Const.PlayMentCostType.cost_type24.getValue());
+                        payment.setREMARK(Const.PlayMentCostType.cost_type24.getName());
+                        paymentService.reg(payment);
+
+                    }
+                    if (o.getPAYOUT_TYPE().equals(nm)) {
+                        nb = Integer.valueOf(appUser.getBALANCE()) + gold;
+                        appUser.setBALANCE(String.valueOf(nb));
+                        appuserService.updateAppUserBalanceById(appUser);
+
+                        //更新收支表
+                        Payment payment = new Payment();
+                        payment.setGOLD("+" + rechare);
+                        payment.setUSERID(o.getUSER_ID());
+                        payment.setDOLLID(null);
+                        payment.setCOST_TYPE(Const.PlayMentCostType.cost_type05.getValue());
+                        payment.setREMARK(Const.PlayMentCostType.cost_type05.getName());
+                        paymentService.reg(payment);
+
+                    }
+
+                    //首先查询积分列表是否有该用户信息
+
+                    String userId = appUser.getUSER_ID();
+                    UserPoints userPoints = userpointsService.getUserPointsFinish(userId);
+                    PointsMall pointsMall = pointsmallService.getInfoById(Const.pointsMallType.points_type06.getValue());
+
+                    String tag = userPoints.getFirstPay();
+                    if (tag.equals("0")) {
+                        int a = userPoints.getTodayPoints();
+                        Integer now_points = a + pointsMall.getPointsValue();
+                        userPoints.setTodayPoints(now_points);
+                        userPoints.setFirstPay("1");
+                        userpointsService.updateUserPoints(userPoints);
+
+                        appUser = appuserService.getUserByID(userId);
+                        appUser.setPOINTS(appUser.getPOINTS() + pointsMall.getPointsValue());
+
+                        //增加积分记录
+                        PointsDetail pointsDetail = new PointsDetail();
+                        pointsDetail.setUserId(userId);
+                        pointsDetail.setChannel(Const.pointsMallType.points_type06.getName());
+                        pointsDetail.setType("+");
+                        pointsDetail.setPointsDetail_Id(MyUUID.getUUID32());
+                        pointsDetail.setPointsValue(pointsMall.getPointsValue());
+                        pointsdetailService.regPointsDetail(pointsDetail);
+
+                        //判断是否增加金币
+                        String r_tag = userPoints.getPointsReward_Tag();
+                        if (Integer.valueOf(r_tag) < 5){
+                            Integer goldValue = 0;
+                            Integer sum = 0;
+                            Integer ob = Integer.valueOf(appUser.getBALANCE());
+                            Integer nb_2 = 0;
+                            List<PointsReward> list = pointsrewardService.getPointsReward();
+                            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+                            userPoints.setPointsReward_Tag(n_rtag);
+                            userpointsService.updateUserPoints(userPoints);
+                        }
+                    }
+
+                    //当前订单的用户昵称
+                    o.setUserNickName(appUser.getNICKNAME());
+                    o.setREGGOLD(String.valueOf(gold));
+                    o.setORDER_NO(nowPayOrderNo);//现在支付交易凭证号
+                    o.setSTATUS("1");
+                    orderService.doRegCallbackUpdateOrder(o);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "success=Y";
+            } else {
+                return "success=N";
+            }
+        } catch (Exception e) {
+            logger.info("程序异常" + e);
+            e.printStackTrace();
+            return "error";
+        }
+
+    }
 
 
 }

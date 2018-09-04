@@ -20,6 +20,7 @@
 		<result column="TODAYPOINTS" property="todayPoints"/>
 		<result column="COSTGOLDSUM_TAG" property="costGoldSum_Tag"/>
 		<result column="POINTSREWARD_TAG" property="pointsReward_Tag"/>
+		<result column="BETGAME" property="betGame"/>
 	</resultMap>
 	
 	
@@ -35,7 +36,8 @@
 		USERPOINTS_ID,
 		TODAYPOINTS,
 		COSTGOLDSUM_TAG,
-		POINTSREWARD_TAG
+		POINTSREWARD_TAG,
+		BETGAME
 	</sql>
 	
 	<!-- 字段值 -->
@@ -50,7 +52,8 @@
 		#{USERPOINTS_ID},
 		#{TODAYPOINTS},
 		#{COSTGOLDSUM_TAG},
-		#{POINTSREWARD_TAG}
+		#{POINTSREWARD_TAG},
+		#{BETGAME}
 	</sql>
 	
 	<!-- 新增-->
@@ -214,6 +217,9 @@
 		</if>
 		<if test="pointsReward_Tag != null and pointsReward_Tag != '' ">
 			,POINTSREWARD_TAG = #{pointsReward_Tag}
+		</if>
+		<if test="betGame != null and betGame != ''">
+			,BETGAME = #{betGame}
 		</if>
 		where
 		USERPOINTS_ID = #{id}

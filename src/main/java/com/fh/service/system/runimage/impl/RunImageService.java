@@ -89,5 +89,10 @@ public class RunImageService implements RunImageManager{
 	public List<RunImage> getRunImageList() throws Exception {
 		return (List<RunImage>)dao.findForList("RunImageMapper.getRunImageList",null);
 	}
+
+	@Override
+	public List<RunImage> getRunImageListNew(RunImage runImage)throws Exception {
+		return (List<RunImage>)dao.findForList("RunImageMapper.getRunImageListNew",runImage);
+	}
 }
 

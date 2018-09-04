@@ -16,5 +16,8 @@ public class RunImage {
     private String H5_URL;
     private String DEVICE_STATE;//设备状态
     private String STATE;//状态
+    private String DEVICE_CHANNEL_TYPE;//渠道类型
+    private String CHANNEL_NAME;//APP包名称
+    private String SHOWSTATE;
     
 }

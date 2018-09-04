@@ -20,7 +20,11 @@
 		RTMP_URL,
 		H5_URL,
 		DEVICE_STATE,
-		STATE
+		STATE,
+		DEVICE_CHANNEL_TYPE,
+		CHANNEL_NAME,
+		SHOWSTATE
+
 	</sql>
 	
 	<!-- 字段值 -->
@@ -36,7 +40,10 @@
 		#{RTMP_URL},
 		#{H5_URL},
 		#{DEVICE_STATE},
-		#{STATE}
+		#{STATE},
+		#{DEVICE_CHANNEL_TYPE},
+		#{CHANNEL_NAME},
+		#{SHOWSTATE}
 	</sql>
 	
 	<!-- 新增-->
@@ -65,15 +72,11 @@
 		set 
 			IMAGE_URL = #{IMAGE_URL},
 			RUN_NAME = #{RUN_NAME},
-			HREF_ST = #{HREF_ST},
-		    CONTENT = #{CONTENT},
-		    LIVESTREAM = #{LIVESTREAM},
-		    SERVER_NAME = #{SERVER_NAME},
-		    RTMP_URL = #{RTMP_URL},
-		    H5_URL = #{H5_URL},
-		    DEVICE_STATE = #{DEVICE_STATE},
-			STATE = #{STATE}
-		where 
+		    DEVICE_CHANNEL_TYPE = #{DEVICE_CHANNEL_TYPE},
+		    CHANNEL_NAME = #{CHANNEL_NAME},
+		    SHOWSTATE = #{SHOWSTATE},
+		    HREF_ST = #{HREF_ST}
+ 		where
 		RUNIMAGE_ID = #{RUNIMAGE_ID}
 	</update>
 	
@@ -134,8 +137,37 @@
 		RTMP_URL,
 		H5_URL,
 		DEVICE_STATE,
-		STATE
+		STATE,
+		SHOWSTATE
 		FROM <include refid="tableName"/>
+		WHERE
+		SHOWSTATE = '1'
 	</select>
+<!-- 安卓-->
+	<select id="getRunImageListNew"  resultType="com.fh.entity.system.RunImage">
+		SELECT
+		IMAGE_URL,
+		RUN_NAME,
+		RUNIMAGE_ID,
+		TIME,
+		HREF_ST,
+		CONTENT,
+		LIVESTREAM,
+		SERVER_NAME,
+		RTMP_URL,
+		H5_URL,
+		DEVICE_STATE,
+		STATE,
+		DEVICE_CHANNEL_TYPE,
+		CHANNEL_NAME,
+		SHOWSTATE
+		FROM <include refid="tableName"/>
+		where
+		(DEVICE_CHANNEL_TYPE = #{DEVICE_CHANNEL_TYPE} or DEVICE_CHANNEL_TYPE = '2')
+		and
+		CHANNEL_NAME = #{CHANNEL_NAME}
+		and
+		SHOWSTATE = '1'
 
+	</select>
 </mapper>

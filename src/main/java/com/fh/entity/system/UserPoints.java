@@ -22,6 +22,8 @@ public class UserPoints {
     private Integer todayPoints;
     //积分奖励金币标签
     private String pointsReward_Tag;
+    //竞猜游戏
+    private String betGame;
 
 
 }

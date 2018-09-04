@@ -84,9 +84,12 @@
                                     </th>
                                     
                                     <th class="center">图片标题</th>
-                                    <th class="center">流媒体名称</th>
-                                    <th class="center">设备状态</th>
-                                    <th class="center">状态</th>
+                                    <%--<th class="center">流媒体名称</th>--%>
+                                    <%--<th class="center">设备状态</th>--%>
+
+                                    <th class="center">APP包名</th>
+                                    <th class="center">发布状态</th>
+                                    <th class="center">显示渠道</th>
                                     <th class="center">时间</th>
                                     <th class="center">操作</th>
                                 </tr>
@@ -106,19 +109,34 @@
                                                                 class="lbl"></span></label>
                                                     </td>
                                                     <td class='center'>${var.RUN_NAME}</td>
-                                                    <td class='center'>${var.LIVESTREAM}</td>
+                                                  <%--  <td class='center'>${var.LIVESTREAM}</td>
                                                     <td style="width: 100px;" class='center'>
                                                         <c:if test="${var.DEVICE_STATE == '1' }"><span
                                                                 class="label label-important arrowed-in">不可用</span></c:if>
                                                         <c:if test="${var.DEVICE_STATE == '0' }"><span
                                                                 class="label label-success arrowed-in">可用</span></c:if>
+                                                    </td>--%>
+                                                    <td style="width: 100px;" class='center'>
+                                                            ${var.CHANNEL_NAME}
                                                     </td>
                                                     <td style="width: 100px;" class='center'>
-                                                        <c:if test="${var.STATE == '1' }"><span
-                                                                class="label label-important arrowed-in">视频路径</span></c:if>
-                                                        <c:if test="${var.STATE == '0' }"><span
-                                                                class="label label-success arrowed-in">图片路径</span></c:if>
+                                                        <c:if test="${var.SHOWSTATE == '1' }"><span
+                                                                class="label label-success arrowed-in">已发布</span></c:if>
+                                                        <c:if test="${var.SHOWSTATE == '0' }"><span
+                                                                class="label label-important arrowed-in">未发布</span></c:if>
                                                     </td>
+
+                                                    <td style="width: 100px;" class='center'>
+                                                        <c:if test="${var.DEVICE_CHANNEL_TYPE == '0' }"><span
+                                                                class="label label-important arrowed-in">安卓端</span></c:if>
+                                                        <c:if test="${var.DEVICE_CHANNEL_TYPE == '1' }"><span
+                                                                class="label label-success arrowed-in">IOS端</span></c:if>
+                                                        <c:if test="${var.DEVICE_CHANNEL_TYPE == '2' }"><span
+                                                                class="label label-success arrowed-in">所有渠道</span></c:if>
+                                                    </td>
+                                                    </td>
+
+
                                                     <td class='center'>${var.TIME}</td>
                                                     <td class='center'>
                                                     <c:if test="${QX.edit != 1 && QX.del != 1 }">

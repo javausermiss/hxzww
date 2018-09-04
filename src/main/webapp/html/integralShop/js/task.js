@@ -65,6 +65,11 @@ function getTask () {
         	} else{
         		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[6].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[6].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
         	};
+        	if (obj.userPoints.betGame=='0') {
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[7].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[7].pointsValue+'积分</div><div class="task-record-stateyes" onclick="betGame()">去完成</div></div>'
+        	} else{
+        		strhtml+='<div class="task-record"><div class="task-record-name">'+obj.pointsMall[7].pointsName+'</div><div class="task-record-jifennum">+'+obj.pointsMall[7].pointsValue+'积分</div><div class="task-record-stateyes">已完成</div></div>'		        		
+        	};
         	$('.task-list-cont').append($(strhtml));
         	$('.task-record-stateyes:contains("去完成")').css('backgroundColor','#fed201');
 			$('.task-record-stateyes:contains("已完成")').css('background','url(img/dui.png) 1.1rem center no-repeat').css('background-size','0.24rem 0.18rem').css('backgroundColor','#66ec1c');

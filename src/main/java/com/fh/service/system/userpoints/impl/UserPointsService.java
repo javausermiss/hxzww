@@ -419,10 +419,11 @@ public class UserPointsService implements UserPointsManager{
 			appUser.setPOINTS_MULTIPLES(nm);
 			appUser.setPOINTS(appUser.getPOINTS()+regPoints);
 			appuserService.updateAppUserBalanceById(appUser);
+
 			//给用户增加当日积分
 			UserPoints up =  this.getUserPointsFinish(userId);
 			up.setTodayPoints(up.getTodayPoints()+regPoints);
-			this.updateUserPoints(up);
+			//this.updateUserPoints(up);
 			//增加积分记录
 
 			PointsDetail pointsDetail_cgs = new PointsDetail();
@@ -433,7 +434,7 @@ public class UserPointsService implements UserPointsManager{
 			pointsDetail_cgs.setPointsValue(regPoints);
 			pointsdetailService.regPointsDetail(pointsDetail_cgs);
 
-			up =  this.getUserPointsFinish(userId);
+			//up =  this.getUserPointsFinish(userId);
 			String r_tag =  up.getPointsReward_Tag();
 
 				Integer goldValue = 0;

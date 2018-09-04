@@ -90,7 +90,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 rpcCommandResult.setInfo("用户不存在");
                 return rpcCommandResult;
             }
-            //出币数统计，并进行换算娃娃币比例 1:10
+            //出币数统计，并进行换算娃娃币比例 1:1
 
             String newId = MyUUID.getUUID32();
             CoinPusher coinPusher = new CoinPusher();
@@ -120,7 +120,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 int newBalance;
                 int wwb ;
                 if (mp_old != mp_new && mp_new != 0 ) {
-                    wwb = bingo * 10;
+                    wwb = bingo ;
                     int reward = (mp_new - mp_old) * doll.getCOINPUSHER_REWORD();
                     newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb + reward;
                     //修改金币数量
@@ -148,7 +148,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                     paymentService.reg(payment_reward);
 
                 }else {
-                    wwb = bingo * 10;
+                    wwb = bingo;
                     newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb;
                     //修改金币数量
                     appUser.setBALANCE(String.valueOf(newBalance));

@@ -116,6 +116,6 @@ public interface CoinPusherManager {
 	 */
 
 	public RpcCommandResult doPusherGame(String roomId, String userId, Integer bat)throws Exception;
-	
+
 }
 
