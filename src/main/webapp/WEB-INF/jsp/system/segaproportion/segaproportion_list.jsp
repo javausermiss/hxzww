@@ -67,6 +67,7 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
+									<th class="center">房间名</th>
 									<th class="center">房间号</th>
 									<th class="center">推币机比例</th>
 									<th class="center">操作</th>
@@ -84,6 +85,7 @@
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.SEGA_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${var.DOLL_NAME}</td>
 											<td class='center'>${var.ROOM_ID}</td>
 											<td class='center'>${var.SEGA_PROPORTION}</td>
 											<td class="center">
