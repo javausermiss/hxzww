@@ -343,7 +343,7 @@ public class AppPointsMall extends BaseController {
     @ResponseBody
     public JSONObject getPointsMallDetail() {
         try {
-            List<PageData> pageData = pointsgoodsService.list(new Page());
+            List<PageData> pageData = pointsgoodsService.listAll(new PageData());
             Map<String, Object> map = new HashMap<>();
             map.put("pointsGoodsList", pageData);
             return RespStatus.successs().element("data", map);
