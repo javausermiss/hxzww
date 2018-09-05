@@ -18,7 +18,7 @@ public class AlipayConfig {
         public static String notify_url = "http://111.231.139.61:18081/pooh-web/app/pay/AlipayCallBack";
 
         // 4.测试服务器异步通知页面路径
-        //public static String notify_url = "http://47.100.15.18:8080/pooh-web/app/pay/AlipayCallBack";
+       // public static String notify_url = "http://47.100.15.18:8080/pooh-web/app/pay/AlipayCallBack";
 
         // 6.请求网关地址
         public static String URL = "https://openapi.alipay.com/gateway.do";

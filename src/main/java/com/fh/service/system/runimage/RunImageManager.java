@@ -60,6 +60,9 @@ public interface RunImageManager{
 
 
 	public List<RunImage> getRunImageList ()throws Exception;
+
+
+	public List<RunImage> getRunImageListNew (RunImage runImage)throws Exception;
 	
 }
 

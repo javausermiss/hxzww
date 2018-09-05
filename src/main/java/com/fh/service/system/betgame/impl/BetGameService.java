@@ -220,6 +220,92 @@ public class BetGameService extends BaseController implements BetGameManager {
     }
 
     @Override
+    public void doCostGoldGetPoints(AppUser appUser ,String userId) throws Exception {
+
+        //每日竞猜任务
+        UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
+        PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type07.getValue());
+        String betgame_tag =  userPoints.getBetGame();
+        if (betgame_tag.equals("0")){
+            Integer points =  pointsMall.getPointsValue();
+            userPoints.setBetGame("1");
+            userPoints.setTodayPoints(userPoints.getTodayPoints()+points);
+            appUser.setPOINTS(appUser.getPOINTS()+points);
+            appuserService.updateAppUserBalanceById(appUser);
+            userpointsService.updateUserPoints(userPoints);
+
+            //增加积分记录
+            PointsDetail pointsDetail_cgs = new PointsDetail();
+            pointsDetail_cgs.setUserId(userId);
+            pointsDetail_cgs.setChannel(Const.pointsMallType.points_type07.getName());
+            pointsDetail_cgs.setType("+");
+            pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
+            pointsDetail_cgs.setPointsValue(pointsMall.getPointsValue());
+            pointsdetailService.regPointsDetail(pointsDetail_cgs);
+
+        }
+
+        //用户的消费总金币对应增加积分
+        appUser = appuserService.getUserByID(userId);
+        userpointsService.doCostRewardPoints(appUser,userId);
+        pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
+
+        //查询消费金币数
+        String now = DateUtil.getDay();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
+        String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+        PageData pageData = new PageData();
+        pageData.put("userId",userId);
+        pageData.put("beginDate",now);
+        pageData.put("endDate",tomorrow);
+        String gm = "0";
+        PageData pageData1 =  userpointsService.getCostGoldSum(pageData);
+        if (pageData1 != null){
+            double aa = (double)pageData1.get("godsum");
+            gm = new DecimalFormat("0").format(aa).substring(1);
+        }
+        int cgs =   Integer.valueOf(gm);
+        if (cgs >= 200 && userPoints.getCostGoldSum_Tag().equals("0")){
+            userPoints =  userpointsService.getUserPointsFinish(userId);
+            //增加积分记录
+            PointsDetail pointsDetail_cgs = new PointsDetail();
+            pointsDetail_cgs.setUserId(userId);
+            pointsDetail_cgs.setChannel(Const.pointsMallType.points_type05.getName());
+            pointsDetail_cgs.setType("+");
+            pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
+            pointsDetail_cgs.setPointsValue(pointsMall.getPointsValue());
+            pointsdetailService.regPointsDetail(pointsDetail_cgs);
+
+            userPoints.setCostGoldSum_Tag("1");
+            PointsMall pointsMall_Cost =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
+            userPoints.setTodayPoints( pointsMall_Cost.getPointsValue()+userPoints.getTodayPoints());
+           // userpointsService.updateUserPoints(userPoints);
+
+            appUser = appuserService.getUserByID(userId);
+            appUser.setPOINTS(appUser.getPOINTS() + pointsMall_Cost.getPointsValue());
+            appuserService.updateAppUserBalanceById(appUser);
+
+            //判断是否增加金币
+        //  userPoints = userpointsService.getUserPointsFinish(userId);
+            Integer now_points = pointsMall_Cost.getPointsValue()+userPoints.getTodayPoints();
+            String r_tag = userPoints.getPointsReward_Tag();
+
+            Integer goldValue = 0;
+            Integer sum = 0;
+            Integer ob = Integer.valueOf(appUser.getBALANCE());
+            Integer nb_2 = 0;
+            List<PointsReward> list = pointsrewardService.getPointsReward();
+            String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
+            userPoints.setPointsReward_Tag(n_rtag);
+            userpointsService.updateUserPoints(userPoints);
+
+        }
+
+    }
+
+    @Override
     public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey, Integer multiple, Integer afterVotingNum,String flag) throws Exception {
         String f = "false";
         if (!flag.equals(f)){
@@ -302,6 +388,7 @@ public class BetGameService extends BaseController implements BetGameManager {
         }
         //房间处于空闲状态，用户可进行预投注
         if (flag.equals(f)){
+            this.doCostGoldGetPoints(appUser,userId);
             Map<String, Object> map = new HashMap<>();
             map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
             return RespStatus.successs().element("data", map);
@@ -325,63 +412,7 @@ public class BetGameService extends BaseController implements BetGameManager {
         pond1.setDOLL_ID(dollId);
         Pond pond = pondService.getPondByPlayId(pond1);
 
-        //用户的消费总金币对应增加积分
-        userpointsService.doCostRewardPoints(appUser,userId);
-
-        UserPoints userPoints =  userpointsService.getUserPointsFinish(userId);
-        PointsMall pointsMall =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
-
-        //查询消费金币数
-        String now = DateUtil.getDay();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, 1);
-        String tomorrow = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
-
-        PageData pageData = new PageData();
-        pageData.put("userId",userId);
-        pageData.put("beginDate",now);
-        pageData.put("endDate",tomorrow);
-        String gm = "0";
-        PageData pageData1 =  userpointsService.getCostGoldSum(pageData);
-        if (pageData1 != null){
-            double aa = (double)pageData1.get("godsum");
-            gm = new DecimalFormat("0").format(aa).substring(1);
-        }
-        int cgs =   Integer.valueOf(gm);
-        if (cgs >= 200 && userPoints.getCostGoldSum_Tag().equals("0")){
-            //增加积分记录
-            PointsDetail pointsDetail_cgs = new PointsDetail();
-            pointsDetail_cgs.setUserId(userId);
-            pointsDetail_cgs.setChannel(Const.pointsMallType.points_type05.getName());
-            pointsDetail_cgs.setType("+");
-            pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
-            pointsDetail_cgs.setPointsValue(pointsMall.getPointsValue());
-            pointsdetailService.regPointsDetail(pointsDetail_cgs);
-
-            userPoints.setCostGoldSum_Tag("1");
-            PointsMall pointsMall_Cost =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
-            userPoints.setTodayPoints( pointsMall_Cost.getPointsValue()+userPoints.getTodayPoints());
-            userpointsService.updateUserPoints(userPoints);
-
-            appUser = appuserService.getUserByID(userId);
-            appUser.setPOINTS(appUser.getPOINTS() + pointsMall_Cost.getPointsValue());
-            appuserService.updateAppUserBalanceById(appUser);
-
-            //判断是否增加金币
-            userPoints = userpointsService.getUserPointsFinish(userId);
-            Integer now_points = userPoints.getTodayPoints();
-            String r_tag = userPoints.getPointsReward_Tag();
-
-                Integer goldValue = 0;
-                Integer sum = 0;
-                Integer ob = Integer.valueOf(appUser.getBALANCE());
-                Integer nb_2 = 0;
-                List<PointsReward> list = pointsrewardService.getPointsReward();
-                String n_rtag =  userpointsService.doGoldReward(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                userPoints.setPointsReward_Tag(n_rtag);
-                userpointsService.updateUserPoints(userPoints);
-
-        }
+        this.doCostGoldGetPoints(appUser,userId);
         Map<String, Object> map = new HashMap<>();
         map.put("pond", getPondInfo(pond.getPOND_ID()));
         map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));

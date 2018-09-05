@@ -33,6 +33,10 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">APP包名:</td>
+								<td><input type="text" name="CHANNEL_NAME" id="CHANNEL_NAME" value="${pd.CHANNEL_NAME}" maxlength="255" placeholder="这里输入APP包名" title="APP包名" style="width:98%;"/></td>
+							</tr>
+							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">图片标题:</td>
 								<td><input type="text" name="RUN_NAME" id="RUN_NAME" value="${pd.RUN_NAME}" maxlength="255" placeholder="这里输入图片标题" title="图片标题" style="width:98%;"/></td>
 							</tr>
@@ -48,11 +52,24 @@
 							<td style="width:75px;text-align: right;padding-top: 13px;">新闻路径:</td>
 							<td><input type="text" name="HREF_ST" id="HREF_ST" value="${pd.HREF_ST}" maxlength="255" placeholder="这里输入图像跳转地址" title="图像跳转地址" style="width:98%;"/></td>
 							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">显示渠道:</td>
+								<td>
+									<span style="font-size:12px;">
+										<select id="DEVICE_CHANNEL_TYPE" name="DEVICE_CHANNEL_TYPE">
+											<option value="0" <c:if test="${pd.DEVICE_CHANNEL_TYPE == '0' }">selected</c:if>>安卓端</option>
+											<option value="1" <c:if test="${pd.DEVICE_CHANNEL_TYPE == '1' }">selected</c:if>>IOS端</option>
+											<option value="2" <c:if test="${pd.DEVICE_CHANNEL_TYPE == '2' }">selected</c:if>>所有渠道</option>
+										</select>
+										</span>
+								</td>
+							</tr>
+
 							<!-- <tr>
 								<td style="width:100px;text-align: right;padding-top: 13px;">新闻内容:</td>
 								<td><script id="editor"  type="text/plain" style="width:100%;height:200px;"></script></td>
 							</tr> -->
-							<tr>
+							<%--<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">流媒体名称:</td>
 								<td><input type="text" name="LIVESTREAM" id="LIVESTREAM" value="${pd.LIVESTREAM}" 
 								maxlength="200" placeholder="这里输入流媒体名称" title="LIVESTREAM" style="width:98%;"/></td>
@@ -82,14 +99,14 @@
 									</select>
 									</span>
 								</td>
-							</tr>
+							</tr>--%>
 							<tr>
-							<td style="width:75px;text-align: right;padding-top: 13px;">设备状态:</td>
+							<td style="width:75px;text-align: right;padding-top: 13px;">发布状态:</td>
 								<td>
 								<span style="font-size:12px;">
-									<select id="STATE" name="STATE">
-										<option value="1" <c:if test="${pd.STATE == '1' }">selected</c:if>>视频路径</option>
-										<option value="0" <c:if test="${pd.STATE == '0' }">selected</c:if>>图片路径</option>
+									<select id="SHOWSTATE" name="SHOWSTATE">
+										<option value="1" <c:if test="${pd.SHOWSTATE == '1' }">selected</c:if>>发布</option>
+										<option value="0" <c:if test="${pd.SHOWSTATE == '0' }">selected</c:if>>未发布</option>
 									</select>
 									</span>
 								</td>

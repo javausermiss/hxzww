@@ -187,7 +187,7 @@ public class CoinPusherService implements CoinPusherManager {
             //判断金币是否充足,用户选择投一个币，相当于消费10个娃娃币
 
             int balance = Integer.valueOf(appUser.getBALANCE());
-            int costGold = bat * 10;
+            int costGold = bat;
             if (balance < costGold) {
                 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
                 rpcCommandResult.setInfo("余额不足");
@@ -206,6 +206,8 @@ public class CoinPusherService implements CoinPusherManager {
             payment.setGOLD("-" + String.valueOf(costGold));
             payment.setREMARK(doll.getDOLL_NAME() + "游戏");
             paymentService.reg(payment);
+
+            //推币机的单场游戏记录
 
         //增加用户的推币机游戏记录
 

@@ -30,6 +30,7 @@ public class NowPayUtil {
 
     public static String doPost(String parameters) throws Exception {
         String code = "";
+        String conResult = "";
         CloseableHttpClient httpClient = buildSSLCloseableHttpClient();
         HttpPost httpPost = new HttpPost(PropertiesUtils.getCurrProperty("nowpay.nowPayServer.url") + parameters);
         httpPost.addHeader("Content-type", "application/x-www-form-urlencoded");
@@ -37,14 +38,14 @@ public class NowPayUtil {
         code = String.valueOf(response.getStatusLine().getStatusCode());
         if (code.equals("200")) {
             //读返回数据
-            String conResult = EntityUtils.toString(response.getEntity());
+            conResult = EntityUtils.toString(response.getEntity());
             System.out.print(conResult);
 
         }
         response.close();
         httpClient.close();
         logger.info("Code---------------" + code);
-        return code;
+        return conResult;
     }
 
     private static CloseableHttpClient buildSSLCloseableHttpClient() throws Exception {

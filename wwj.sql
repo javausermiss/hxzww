@@ -183,3 +183,10 @@ ALTER TABLE `tb_bankcard_inf`
 ADD COLUMN `BANK_PHONE`  varchar(50) NULL AFTER `UPDATE_TIME`;
 
 ALTER TABLE `sys_app_doll` ADD COLUMN `MACHINE_TYPE`  varchar(255) NULL COMMENT '娃娃机类型：1、娃娃机 2、推币机 3、金币机';
+
+/*2018 08 28  增加渠道类型，方便区别不同渠道APP，分包展示轮播图*/
+ALTER TABLE `tb_app_runimage`
+ADD COLUMN `DEVICE_CHANNEL_TYPE`  varchar(255) NULL AFTER `H5_URL`;
+
+ALTER TABLE `tb_app_runimage`
+ADD COLUMN `CHANNEL_NAME`  varchar(255) NULL AFTER `DEVICE_CHANNEL_TYPE`;

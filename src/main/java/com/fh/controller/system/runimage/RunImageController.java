@@ -72,7 +72,10 @@ public class RunImageController extends BaseController {
 		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
 		pd.put("H5_URL",req.getParameter("H5_URL"));
 		pd.put("DEVICE_STATE",req.getParameter("DEVICE_STATE"));
-		pd.put("STATE",req.getParameter("STATE"));
+		pd.put("STATE","0");
+		pd.put("DEVICE_CHANNEL_TYPE",req.getParameter("DEVICE_CHANNEL_TYPE"));
+		pd.put("CHANNEL_NAME",req.getParameter("CHANNEL_NAME"));
+		pd.put("SHOWSTATE",req.getParameter("SHOWSTATE"));
 		runimageService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -145,7 +148,10 @@ public class RunImageController extends BaseController {
 		pd.put("RTMP_URL",req.getParameter("RTMP_URL"));
 		pd.put("H5_URL",req.getParameter("H5_URL"));
 		pd.put("DEVICE_STATE",req.getParameter("DEVICE_STATE"));
-		pd.put("STATE",req.getParameter("STATE"));
+		pd.put("STATE","0");
+		pd.put("DEVICE_CHANNEL_TYPE",req.getParameter("DEVICE_CHANNEL_TYPE"));
+		pd.put("CHANNEL_NAME",req.getParameter("CHANNEL_NAME"));
+		pd.put("SHOWSTATE",req.getParameter("SHOWSTATE"));
 		runimageService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");

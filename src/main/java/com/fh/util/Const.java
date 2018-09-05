@@ -135,7 +135,8 @@ public class Const {
 		points_type04("每日10次推币机游戏",5),
 		points_type05("每日消费金币满200奖励",6),
 		points_type06("每日充值",7),
-		points_type07("兑换礼品",8),
+		points_type07("每日竞猜",8),
+ 		points_type09("兑换礼品",10),
 		points_type08("累积消费金币奖励",9);
 		private  String name;
 		private  Integer value;
