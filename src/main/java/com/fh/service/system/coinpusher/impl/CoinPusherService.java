@@ -10,6 +10,7 @@ import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
 import com.fh.service.system.pointsmall.PointsMallManager;
 import com.fh.service.system.pointsreward.PointsRewardManager;
+import com.fh.service.system.pushergamedetail.PusherGameDetailManager;
 import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
@@ -24,9 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 说明： 推币机游戏记录
@@ -53,6 +52,8 @@ public class CoinPusherService implements CoinPusherManager {
     private PointsDetailManager pointsdetailService;
     @Resource(name = "pointsrewardService")
     private PointsRewardManager pointsrewardService;
+    @Resource(name="pushergamedetailService")
+    private PusherGameDetailManager pushergamedetailService;
 
 
     /**
@@ -207,33 +208,48 @@ public class CoinPusherService implements CoinPusherManager {
             payment.setREMARK(doll.getDOLL_NAME() + "游戏");
             paymentService.reg(payment);
 
-            //推币机的单场游戏记录
+         //推币机的单场游戏记录
+        PusherGameDetail pusherGameDetail = new PusherGameDetail();
+        pusherGameDetail.setTag("0");
+        pusherGameDetail.setUserId(userId);
+        pusherGameDetail.setRoomId(roomId);
 
-        //增加用户的推币机游戏记录
+       PusherGameDetail pd = pushergamedetailService.getInfo(pusherGameDetail);
 
-     //   CoinPusher cp = this.getLatestRecordForId(roomId);
+        String newId = "";
 
-        /*if (cp == null) {
-            Date currentTime1 = new Date();
-            SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
-            String dateString1 = formatter1.format(currentTime1);
-            String num = "0001";
-            newId = dateString1 + num;
-        } else {
-            String guessid = cp.getId();//获取到场次ID 201712100001
-            Date currentTime = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-            String dateString = formatter.format(currentTime);
-            String x = guessid.substring(0, 8);//取前八位进行判断
-            if (x.equals(dateString)) {
-                newId = String.valueOf(Long.parseLong(guessid) + 1);
-            } else {
-                Date current = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-                String date = format.format(current);
-                newId = date + "0001";
+        String exitPusherGameId = RedisUtil.getRu().get("pusherGameId:roomId:" + roomId);
+        if (pd == null) {
+            if (exitPusherGameId==null){
+                Date currentTime1 = new Date();
+                SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
+                String dateString1 = formatter1.format(currentTime1);
+                String num = "0001";
+                newId = dateString1 + num;
+            }else {
+                Date currentTime = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+                String dateString = formatter.format(currentTime);
+                String x = exitPusherGameId.substring(0, 8);//取前八位进行判断
+                if (x.equals(dateString)) {
+                    newId = String.valueOf(Long.parseLong(exitPusherGameId) + 1);
+                } else {
+                    Date current = new Date();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+                    String date = format.format(current);
+                    newId = date + "0001";
+                }
+
             }
-        }*/
+            RedisUtil.getRu().set("pusherGameId:roomId:" + roomId, newId);
+            pusherGameDetail.setUserId(userId);
+            pusherGameDetail.setRoomId(roomId);
+            pusherGameDetail.setExpenditure(0);
+            pusherGameDetail.setId(MyUUID.getUUID32());
+            pusherGameDetail.setGameId(newId);
+            pusherGameDetail.setTag("0");
+            pushergamedetailService.insert(pusherGameDetail);
+        }
 
 
             UserPoints userPoints = userpointsService.getUserPointsFinish(userId);
@@ -327,7 +343,7 @@ public class CoinPusherService implements CoinPusherManager {
 
 
         rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
-        rpcCommandResult.setInfo("SUCCESS");
+        rpcCommandResult.setInfo(newId);
         return rpcCommandResult;
     }
 }

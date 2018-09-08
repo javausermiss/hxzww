@@ -14,10 +14,11 @@ public class PusherGameDetail {
     private String gameId;
     private String roomId;
     private String userId;
-    private String expenditure;
-    private String income;
+    private Integer expenditure;
+    private Integer income;
     private String createTime;
     private String tag;
     private String updateTime;
+    private Integer versionLock;
 
 }

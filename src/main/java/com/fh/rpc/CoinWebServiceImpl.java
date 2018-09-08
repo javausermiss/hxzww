@@ -8,6 +8,7 @@ import com.fh.service.system.costgoldrewardpoints.CostGoldRewardPointsManager;
 import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pushergamedetail.PusherGameDetailManager;
 import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
@@ -27,7 +28,26 @@ import java.util.*;
 @Slf4j
 @Service
 public class CoinWebServiceImpl implements CoinRpcService {
-    @Resource(name = "appuserService")
+
+    private static final Map<String,Integer> sessionMap = new HashMap<String,Integer>();
+
+    public  Integer getSessionMap(String key) {
+        if(sessionMap.get(key) == null){
+            return 0;
+        }
+        return sessionMap.get(key);
+    }
+    public  void setSessionMap(String key, Integer value) {
+        sessionMap.put(key, value);
+    }
+
+    public  void clearSessionMap(String key){
+        if(sessionMap.get(key) == null){
+            return ;
+        }
+        sessionMap.remove(key);
+    }
+        @Resource(name = "appuserService")
     private AppuserManager appuserService;
     @Resource(name = "dollService")
     private DollManager dollService;
@@ -37,10 +57,9 @@ public class CoinWebServiceImpl implements CoinRpcService {
     private PaymentManager paymentService;
     @Resource(name = "userpointsService")
     private UserPointsManager userpointsService;
-    @Resource(name="costgoldrewardpointsService")
-    private CostGoldRewardPointsManager costgoldrewardpointsService;
-    @Resource(name="pointsdetailService")
-    private PointsDetailManager pointsdetailService;
+    @Resource(name="pushergamedetailService")
+    private PusherGameDetailManager pushergamedetailService;
+
 
     /**
      * @param roomId
@@ -52,6 +71,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
     public RpcCommandResult checkCoin(String roomId, String userId, Integer bat) {
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
        try {
+            this.setSessionMap("exp"+roomId+userId,this.getSessionMap("exp"+roomId+userId)+1);
             rpcCommandResult = coinpusherService.doPusherGame(roomId,userId,bat);
             return  rpcCommandResult;
        } catch (Exception e) {
@@ -72,7 +92,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
      * @return
      */
     @Override
-    public RpcCommandResult playResult(String roomId, String userId, Integer bat, Integer bingo) {
+    public RpcCommandResult playResult(String roomId, String userId, Integer bat, Integer bingo ,String gameId) {
         log.info("用户:" + userId + "-------------------->" + roomId + "开始出币，数量为" + bingo);
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
         try {
@@ -102,6 +122,19 @@ public class CoinWebServiceImpl implements CoinRpcService {
             coinPusher.setFinishFlag("Y");
             coinPusher.setReturnGold(String.valueOf(bingo));
             coinpusherService.reg(coinPusher);
+
+            this.setSessionMap("inc"+roomId+userId,this.getSessionMap("inc"+roomId+userId)+bingo);
+            //推币机的单场游戏记录,统计出币数
+         /*   PusherGameDetail pusherGameDetail = new PusherGameDetail();
+            pusherGameDetail.setTag("0");
+            pusherGameDetail.setUserId(userId);
+            pusherGameDetail.setRoomId(roomId);
+            pusherGameDetail.setGameId(gameId);
+            PusherGameDetail pd = pushergamedetailService.getInfo(pusherGameDetail);
+            pd.setIncome(pd.getIncome()+bingo);
+            pushergamedetailService.update(pd);*/
+
+
 
             //娃娃币换算
             if (bingo != 0) {
@@ -165,6 +198,36 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 }
             }
             userpointsService.doCostRewardPoints(appUser,userId);
+            rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
+            rpcCommandResult.setInfo("SUCCESS");
+            return rpcCommandResult;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
+            rpcCommandResult.setInfo("程序异常");
+            return rpcCommandResult;
+        }
+
+    }
+
+    @Override
+    public RpcCommandResult userDownMachine(String userId, String gameId, String roomId) {
+        RpcCommandResult rpcCommandResult = new RpcCommandResult();
+        try {
+            PusherGameDetail pusherGameDetail = new PusherGameDetail();
+            pusherGameDetail.setTag("0");
+            pusherGameDetail.setUserId(userId);
+            pusherGameDetail.setRoomId(roomId);
+            pusherGameDetail.setGameId(gameId);
+            PusherGameDetail pd = pushergamedetailService.getInfo(pusherGameDetail);
+            pd.setTag("1");
+            pd.setIncome(sessionMap.get("inc"+roomId+userId));
+            pd.setExpenditure(sessionMap.get("exp"+roomId+userId));
+            pushergamedetailService.update(pd);
+            this.clearSessionMap("inc"+roomId+userId);
+            this.clearSessionMap("exp"+roomId+userId);
+            log.info("map缓存中剩余得数据=====>>>>>>>>"+sessionMap);
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo("SUCCESS");
             return rpcCommandResult;

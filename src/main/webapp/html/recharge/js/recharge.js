@@ -3,7 +3,7 @@ $(function () {
 	var useridO = href.split('?')[1];
 	var userid=useridO.split('&')[0].split('=')[1];
 	var appVersion=useridO.split('&')[1].split('=')[1];
-	var payOutType,pid	
+	var payOutType,pid
 	//获取金币
 	function getcoin () {
 		$.ajax({
@@ -12,7 +12,7 @@ $(function () {
 			dataType: 'json',
 	        data: {
 	        	userId:userid
-	        },		            
+	        },
 	        success: function (data) {
 	        	var coin=data.data.appUser.BALANCE
 	        	$('#BALANCE').html(coin)	                

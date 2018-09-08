@@ -3,7 +3,7 @@ var userid = href.split('?')[1];
 var allpoint=0;
 function getPoints () {
 	$.ajax({
-        url: 'http://111.231.139.61:18081/pooh-web/api/user/getUserInfo',
+        url: 'http://47.100.15.18:8080/pooh-web/api/user/getUserInfo',
         type: 'post',
 		dataType: 'json',
         data: {
@@ -23,7 +23,7 @@ getPoints();
 function getMoreProList () {
 	var strProList='';
 	$.ajax({
-        url: 'http://111.231.139.61:18081/pooh-web/app/pointsMall/getPointsMallDetail',
+        url: 'http://47.100.15.18:8080/pooh-web/app/pointsMall/getPointsMallDetail',
         type: 'get',
 		dataType: 'json',	            
         success: function (data) {
@@ -31,9 +31,9 @@ function getMoreProList () {
         	console.log(arrProList);
         	for (var i=0;i<arrProList.length;i++) {
         		if (arrProList[i].POINTS>allpoint) {
-        			strProList+='<div class="more-list" data-id = "'+arrProList[i].GOODSNUM+'"><a href="pro-details.html?'+userid+'"><div class="more-list-left"><img src="http://111.231.139.61:8888/'+arrProList[i].IMGURL+'" class="more-list-img"/></div><div class="more-list-right"><div class="pro-titlemore">'+arrProList[i].GOODSNAME+'</div><p id="pointsmore">'+arrProList[i].POINTS+'积分</p></div><div class="more-btnban">兑换</div></a></div>';			        			
+        			strProList+='<div class="more-list" data-id = "'+arrProList[i].GOODSNUM+'"><a href="pro-details.html?'+userid+'"><div class="more-list-left"><img src="http://47.100.15.18:8888/'+arrProList[i].IMGURL+'" class="more-list-img"/></div><div class="more-list-right"><div class="pro-titlemore">'+arrProList[i].GOODSNAME+'</div><p id="pointsmore">'+arrProList[i].POINTS+'积分</p></div><div class="more-btnban">兑换</div></a></div>';			        			
         		} else{
-        			strProList+='<div class="more-list" data-id = "'+arrProList[i].GOODSNUM+'"><a href="pro-details.html?'+userid+'"><div class="more-list-left"><img src="http://111.231.139.61:8888/'+arrProList[i].IMGURL+'" class="more-list-img"/></div><div class="more-list-right"><div class="pro-titlemore">'+arrProList[i].GOODSNAME+'</div><p id="pointsmore">'+arrProList[i].POINTS+'积分</p></div><div class="more-btn">兑换</div></a></div>';			        			
+        			strProList+='<div class="more-list" data-id = "'+arrProList[i].GOODSNUM+'"><a href="pro-details.html?'+userid+'"><div class="more-list-left"><img src="http://47.100.15.18:8888/'+arrProList[i].IMGURL+'" class="more-list-img"/></div><div class="more-list-right"><div class="pro-titlemore">'+arrProList[i].GOODSNAME+'</div><p id="pointsmore">'+arrProList[i].POINTS+'积分</p></div><div class="more-btn">兑换</div></a></div>';			        			
         		}
         	};
         	$('.more-list-cont').append($(strProList));

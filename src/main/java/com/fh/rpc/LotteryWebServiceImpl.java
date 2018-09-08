@@ -290,13 +290,6 @@ public class LotteryWebServiceImpl implements LotteryWebRpcService {
                         userpointsService.updateUserPoints(userPoints);
                     }
                 }
-
-
-
-
-
-
-
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo(newGuessID); ///这里写期号
             return rpcCommandResult;

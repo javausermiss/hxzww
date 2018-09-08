@@ -5,7 +5,7 @@ $(function () {
 	//获取总积分
 	function getPoints () {
 		$.ajax({
-	        url: 'http://47.100.15.18:8080/pooh-web/api/user/getUserInfo',
+	        url: 'http://111.231.139.61:18081/pooh-web/api/user/getUserInfo',
 	        type: 'post',
 	        async:false,
 			dataType: 'json',
@@ -25,7 +25,7 @@ $(function () {
 	function getProDetail () {
 		var proId=localStorage.getItem('proId');
 		$.ajax({
-	        url: 'http://47.100.15.18:8080/pooh-web/app/pointsMall/getPointsMallDetail',
+	        url: 'http://111.231.139.61:18081/pooh-web/app/pointsMall/getPointsMallDetail',
 	        type: 'get',
 			dataType: 'json',	            
 	        success: function (data) {			        	
@@ -34,11 +34,11 @@ $(function () {
 	        	for (var i=0;i<arrProList.length;i++) {
 	        		if (arrProList[i].GOODSNUM==proId) {
 	//      			alert(arrProList[i].GOODSNUM);
-	        			$('#pro-banner').attr('src','http://47.100.15.18:8888/'+arrProList[i].IMGURL_GOODSDETAIL_TOP);
+	        			$('#pro-banner').attr('src','http://111.231.139.61:8888/'+arrProList[i].IMGURL_GOODSDETAIL_TOP);
 	        			$('.pro-title').html(arrProList[i].GOODSNAME);
 	        			$('#points').html(arrProList[i].POINTS);
 	        			$('.jiage').html('￥'+arrProList[i].ORIGINALVALUEOFGOODS);
-	        			$('#pro-detail-img').attr('src','http://47.100.15.18:8888/'+arrProList[i].IMGURL_GOODSDETAIL_MID);
+	        			$('#pro-detail-img').attr('src','http://111.231.139.61:8888/'+arrProList[i].IMGURL_GOODSDETAIL_MID);
 						if (parseInt($('#points').html())>allPoints) {	
 							$('.buy-btn').html('积分不足').css('background-color','#ccc');
 						} 
@@ -70,7 +70,7 @@ $(function () {
 			var proName=$('.pro-title').html();
 			var addressDet=info.address+info.addressDetail;
 			$.ajax({
-		        url: 'http://47.100.15.18:8080/pooh-web/app/pointsMall/exchangePointsGoods',
+		        url: 'http://111.231.139.61:18081/pooh-web/app/pointsMall/exchangePointsGoods',
 		        type: 'post',
 				dataType: 'json',
 		        data: {
