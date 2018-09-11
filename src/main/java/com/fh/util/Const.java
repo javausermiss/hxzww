@@ -128,14 +128,14 @@ public class Const {
 
 	public enum pointsMallType{
 
-		points_type00("登录游戏",1),
-		points_type01("分享游戏",2),
-		points_type02("邀请好友",3),
-		points_type03("首次抓娃娃",4),
-		points_type04("每日10次推币机游戏",5),
-		points_type05("每日消费金币满200奖励",6),
-		points_type06("每日充值",7),
-		points_type07("每日竞猜",8),
+		points_type00("每日首次登录游戏",1),
+		points_type01("每日首次分享1次游戏",2),
+		points_type02("每邀请1位好友注册",3),
+		points_type03("每日首次抓取娃娃",4),
+		points_type04("每日参与10次推币机",5),
+		points_type05("每日累计消耗200金币",6),
+		points_type06("每日首次充值任意金额",7),
+		points_type07("每日首次参与竞猜",8),
  		points_type09("兑换礼品",10),
 		points_type08("累积消费金币奖励",9);
 		private  String name;

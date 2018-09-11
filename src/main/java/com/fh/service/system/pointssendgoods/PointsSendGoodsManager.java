@@ -41,7 +41,7 @@ public interface PointsSendGoodsManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public List<PageData> listAll(PageData pd)throws Exception;
+	public List<PageData> listAll(Page pd)throws Exception;
 	
 	/**通过id获取数据
 	 * @param pd

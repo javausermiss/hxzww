@@ -60,7 +60,7 @@ public class PointsSendGoodsService implements PointsSendGoodsManager{
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public List<PageData> listAll(PageData pd)throws Exception{
+	public List<PageData> listAll(Page pd)throws Exception{
 		return (List<PageData>)dao.findForList("PointsSendGoodsMapper.listAll", pd);
 	}
 	

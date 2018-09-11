@@ -2,6 +2,7 @@ package com.fh.service.system.segaproportion;
 
 import java.util.List;
 import com.fh.entity.Page;
+import com.fh.entity.system.SegaProportion;
 import com.fh.util.PageData;
 
 /** 
@@ -53,6 +54,10 @@ public interface SegaProportionManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+
+
+
+	public SegaProportion getInfoByRoomId(String roomId)throws Exception;
 	
 }
 

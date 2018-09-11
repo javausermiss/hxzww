@@ -307,6 +307,7 @@ public class AppPointsMall extends BaseController {
             userPoints.setLoginGame("0");
             userPoints.setPoohGame("0");
             userPoints.setPointsReward_Tag("0");
+            userPoints.setBetGame("0");
             userpointsService.updateUserPoints(userPoints);
         }
 

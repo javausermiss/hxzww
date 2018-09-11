@@ -52,18 +52,6 @@ public class Jc51H5Game extends BaseController {
     private PaymentManager paymentService;
 
 
-    @Resource(name = "dollService")
-    private DollManager dollService;
-    @Resource(name = "coinpusherService")
-    private CoinPusherManager coinpusherService;
-
-    @Resource(name = "userpointsService")
-    private UserPointsManager userpointsService;
-    @Resource(name="costgoldrewardpointsService")
-    private CostGoldRewardPointsManager costgoldrewardpointsService;
-    @Resource(name="pointsdetailService")
-    private PointsDetailManager pointsdetailService;
-
 
     @RequestMapping(value = "/login",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody

@@ -43,7 +43,7 @@
 									</div>
 								</td>
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastStart" id="lastStart"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" name="lastEnd"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastEnd" id="lastEnd"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
 								<td style="vertical-align:top;padding-left:2px;">
 								 	<select class="chosen-select form-control" name="name" id="id" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
 									<option value=""></option>
@@ -70,6 +70,7 @@
 									<th class="center">场次ID</th>
 									<th class="center">房间ID</th>
 									<th class="center">用户ID</th>
+                                    <th class="center">用户昵称</th>
 									<th class="center">总消费</th>
 									<th class="center">总收入</th>
 									<th class="center">完成标签</th>
@@ -93,6 +94,7 @@
 											<td class='center'>${var.GAMEID}</td>
 											<td class='center'>${var.ROOMID}</td>
 											<td class='center'>${var.USERID}</td>
+                                            <td class='center'>${var.NICKNAME}</td>
 											<td class='center'>${var.EXPENDITURE}</td>
 											<td class='center'>${var.INCOME}</td>
 											<td class='center'>${var.TAG}</td>

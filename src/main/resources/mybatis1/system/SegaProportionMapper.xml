@@ -104,6 +104,15 @@
                  #{item}
 		</foreach>
 	</delete>
+
+	<select id="getInfoByRoomId" parameterType="String" resultType="com.fh.entity.system.SegaProportion">
+		select
+		<include refid="Field"/>
+		from
+		<include refid="tableName"/>
+		where
+		ROOM_ID = #{ROOM_ID}
+	</select>
 	
 	<!-- fh313596790qq(青苔) -->
 </mapper>

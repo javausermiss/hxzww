@@ -9,6 +9,7 @@ import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
 import com.fh.service.system.pushergamedetail.PusherGameDetailManager;
+import com.fh.service.system.segaproportion.SegaProportionManager;
 import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
@@ -31,17 +32,17 @@ public class CoinWebServiceImpl implements CoinRpcService {
 
     private static final Map<String,Integer> sessionMap = new HashMap<String,Integer>();
 
-    public  Integer getSessionMap(String key) {
+    private  Integer getSessionMap(String key) {
         if(sessionMap.get(key) == null){
             return 0;
         }
         return sessionMap.get(key);
     }
-    public  void setSessionMap(String key, Integer value) {
+    private  void setSessionMap(String key, Integer value) {
         sessionMap.put(key, value);
     }
 
-    public  void clearSessionMap(String key){
+    private  void clearSessionMap(String key){
         if(sessionMap.get(key) == null){
             return ;
         }
@@ -59,6 +60,8 @@ public class CoinWebServiceImpl implements CoinRpcService {
     private UserPointsManager userpointsService;
     @Resource(name="pushergamedetailService")
     private PusherGameDetailManager pushergamedetailService;
+    @Resource(name="segaproportionService")
+    private SegaProportionManager segaproportionService;
 
 
     /**
@@ -137,6 +140,8 @@ public class CoinWebServiceImpl implements CoinRpcService {
 
 
             //娃娃币换算
+
+            SegaProportion segaProportion =  segaproportionService.getInfoByRoomId(roomId);
             if (bingo != 0) {
                 String now = DateUtil.getDay();
                 Calendar cal = Calendar.getInstance();
@@ -153,7 +158,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 int newBalance;
                 int wwb ;
                 if (mp_old != mp_new && mp_new != 0 ) {
-                    wwb = bingo ;
+                    wwb = bingo * Integer.valueOf(segaProportion.getSEGA_PROPORTION()); ;
                     int reward = (mp_new - mp_old) * doll.getCOINPUSHER_REWORD();
                     newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb + reward;
                     //修改金币数量
@@ -181,7 +186,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                     paymentService.reg(payment_reward);
 
                 }else {
-                    wwb = bingo;
+                    wwb = bingo * Integer.valueOf(segaProportion.getSEGA_PROPORTION());
                     newBalance = Integer.valueOf(appUser.getBALANCE()) + wwb;
                     //修改金币数量
                     appUser.setBALANCE(String.valueOf(newBalance));

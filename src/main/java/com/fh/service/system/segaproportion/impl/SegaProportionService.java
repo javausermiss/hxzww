@@ -2,6 +2,8 @@ package com.fh.service.system.segaproportion.impl;
 
 import java.util.List;
 import javax.annotation.Resource;
+
+import com.fh.entity.system.SegaProportion;
 import org.springframework.stereotype.Service;
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
@@ -77,6 +79,10 @@ public class SegaProportionService implements SegaProportionManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("SegaProportionMapper.deleteAll", ArrayDATA_IDS);
 	}
-	
+
+	@Override
+	public SegaProportion getInfoByRoomId(String roomId) throws Exception {
+		return (SegaProportion)dao.findForObject("SegaProportionMapper.getInfoByRoomId",roomId);
+	}
 }
 

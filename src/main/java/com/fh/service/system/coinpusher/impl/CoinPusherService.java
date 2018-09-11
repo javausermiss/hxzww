@@ -11,6 +11,7 @@ import com.fh.service.system.pointsdetail.PointsDetailManager;
 import com.fh.service.system.pointsmall.PointsMallManager;
 import com.fh.service.system.pointsreward.PointsRewardManager;
 import com.fh.service.system.pushergamedetail.PusherGameDetailManager;
+import com.fh.service.system.segaproportion.SegaProportionManager;
 import com.fh.service.system.userpoints.UserPointsManager;
 import com.fh.util.Const;
 import com.fh.util.DateUtil;
@@ -54,6 +55,8 @@ public class CoinPusherService implements CoinPusherManager {
     private PointsRewardManager pointsrewardService;
     @Resource(name="pushergamedetailService")
     private PusherGameDetailManager pushergamedetailService;
+    @Resource(name="segaproportionService")
+    private SegaProportionManager segaproportionService;
 
 
     /**
@@ -186,9 +189,9 @@ public class CoinPusherService implements CoinPusherManager {
                 return rpcCommandResult;
             }
             //判断金币是否充足,用户选择投一个币，相当于消费10个娃娃币
-
+            SegaProportion segaProportion =  segaproportionService.getInfoByRoomId(roomId);
             int balance = Integer.valueOf(appUser.getBALANCE());
-            int costGold = bat;
+            int costGold = bat *  Integer.valueOf(segaProportion.getSEGA_PROPORTION());
             if (balance < costGold) {
                 rpcCommandResult.setRpcReturnCode(RpcReturnCode.FAILURE);
                 rpcCommandResult.setInfo("余额不足");
