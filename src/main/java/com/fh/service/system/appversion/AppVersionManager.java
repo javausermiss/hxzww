@@ -72,5 +72,8 @@ public interface AppVersionManager{
 	 * @throws Exception
 	 */
 	public AppVersion findByVersion(String version)throws Exception;
+	
+	
+	public AppVersion versionDisplay()throws Exception;
 }
 

@@ -12,6 +12,8 @@ public class AppVersion {
     private String CREATE_TIME;
     private String FLAG;
     private String UPDATE_TIME;
+    private String ANDROID_DISPLAY;
+    private String IOS_DISPLAY;
     
     
 }
