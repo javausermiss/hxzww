@@ -58,7 +58,8 @@
 		DOLL_TAG,
 		DOLL_TYPE,
 		MACHINE_TYPE,
-		COINPUSHER_REWORD
+		COINPUSHER_REWORD,
+		SERIAL_NUMBER
 	</sql>
 
     <!-- 字段值 -->
@@ -78,7 +79,8 @@
 		#{DOLL_TAG},
 		#{DOLL_TYPE},
 		#{MACHINE_TYPE},
-		#{COINPUSHER_REWORD}
+		#{COINPUSHER_REWORD},
+		#{SERIAL_NUMBER}
 	</sql>
 
     <!-- 新增-->
@@ -133,7 +135,9 @@
 		<if test="TOY_ID != null and TOY_ID != ''">
         	TOY_ID = #{TOY_ID},
          </if>
-		
+		<if test="SERIAL_NUMBER != null and SERIAL_NUMBER != ''">
+        	SERIAL_NUMBER = #{SERIAL_NUMBER},
+         </if>
         <if test="COINPUSHER_REWORD != null and COINPUSHER_REWORD != ''">
             COINPUSHER_REWORD = #{COINPUSHER_REWORD},
         </if>
@@ -328,6 +332,7 @@
 			d.DOLL_URL,
 			d.DOLL_CONVERSIONGOLD,
             d.DEVICE_TYPE,
+            d.SERIAL_NUMBER,
 			c.CAMERA_ID,
 			c.CAMERA_TYPE,
 			c.RTMP_URL,
@@ -356,7 +361,7 @@
 		 	AND	d.DOLL_TYPE='Y'
 		 </if>
 		 AND d.DOLL_STATE in ('FREE','USING','BUSY')
-	ORDER BY DOLL_SN ,CAMERA_TYPE
+	ORDER BY d.SERIAL_NUMBER ASC
 	
     </select>
     

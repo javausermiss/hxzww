@@ -61,6 +61,11 @@
 										   maxlength="10" placeholder="这里输入娃娃机花费金额" title="COINPUSHER_REWORD" style="width:98%;"/></td>
 							</tr>
 							<tr>
+								<td style="width:200px;text-align: right;padding-top: 13px;">娃娃机序列号:</td>
+								<td><input type="text" name="SERIAL_NUMBER" id="SERIAL_NUMBER" value="${pd.SERIAL_NUMBER}"
+										   maxlength="10" placeholder="这里输入娃娃机序列号" title="SERIAL_NUMBER" style="width:98%;"/></td>
+							</tr>
+							<tr>
 								<td style="text-align: right;padding-top: 13px;">玩具名称:</td>
 								<td>
 									<select class="chosen-select" name=TOY_ID id="TOY_ID" data-placeholder="请选择玩具名称" style="width:320px;">
@@ -160,6 +165,16 @@
 				$("#DOLL_SN").focus();
 			return false;
 			}
+			 if($("#SERIAL_NUMBER").val()==""){
+	                $("#SERIAL_NUMBER").tips({
+	                    side:3,
+	                    msg:'请输入娃娃机序列号',
+	                    bg:'#AE81FF',
+	                    time:2
+	                });
+	                $("#SERIAL_NUMBER").focus();
+	                return false;
+	            }
             if($("#TOY_ID").val()==""){
                 $("#TOY_ID").tips({
                     side:3,
