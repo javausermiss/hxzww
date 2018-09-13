@@ -98,5 +98,11 @@ public class AppVersionService implements AppVersionManager{
 	public AppVersion findByVersion(String version)throws Exception{
 		return (AppVersion)dao.findForObject("AppVersionMapper.findByVersion", version);
 	}
+	
+	@Override
+	public AppVersion versionDisplay()throws Exception {
+		return (AppVersion) dao.findForObject("AppVersionMapper.versionDisplay",null);
+	}
+	
 }
 

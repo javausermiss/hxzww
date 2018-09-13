@@ -22,6 +22,7 @@ public class Doll {
     private String DEVICE_TYPE;//设备类型，用来区分娃娃机（1），推币机（2）
     private String MACHINE_TYPE;  //娃娃机类型：1、娃娃机 2、推币机 3、金币机
     private Integer COINPUSHER_REWORD;//推币机奖励金额
+    private Integer SERIAL_NUMBER;//娃娃机序列号
     
     public Doll() {
 
@@ -151,6 +152,14 @@ public class Doll {
 
 	public void setMACHINE_TYPE(String mACHINE_TYPE) {
 		MACHINE_TYPE = mACHINE_TYPE;
+	}
+
+	public Integer getSERIAL_NUMBER() {
+		return SERIAL_NUMBER;
+	}
+
+	public void setSERIAL_NUMBER(Integer sERIAL_NUMBER) {
+		SERIAL_NUMBER = sERIAL_NUMBER;
 	}
 	
 }

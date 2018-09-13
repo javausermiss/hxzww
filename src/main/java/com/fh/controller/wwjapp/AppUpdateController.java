@@ -60,4 +60,23 @@ public class AppUpdateController extends BaseController {
 		}
     }
 
+    
+    @RequestMapping(value = "/versionDisplay", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject versionDisplay() {
+
+        try {
+           
+            AppVersion appVersion =  appversionService.versionDisplay();
+            Map<String,Object> map  = new HashMap<>();
+            map.put("appVersion",appVersion);
+            return RespStatus.successs().element("data",appVersion);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+    }
+    
+    
 }

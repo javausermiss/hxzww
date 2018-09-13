@@ -104,7 +104,7 @@
                                         <label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox"/><span
                                                 class="lbl"></span></label>
                                     </th>
-                                    <th class="center" style="width:50px;">序号</th>
+                                    <th class="center">序列号</th>
                                     <th class="center">娃娃机SN号</th>
                                     <th class="center">娃娃机名字</th>
                                     <th class="center">娃娃机房间号</th>
@@ -132,7 +132,7 @@
                                                                                       class="ace"/><span
                                                                 class="lbl"></span></label>
                                                     </td>
-                                                    <td class='center' style="width: 30px;">${vs.index+1}</td>
+                                                    <td class='center'>${var.SERIAL_NUMBER}</td>
                                                     <td class='center'>${var.DOLL_SN}</td>
                                                     <td class='center'>${var.DOLL_NAME}</td>
                                                     <td class='center'>${var.DOLL_ID}</td>

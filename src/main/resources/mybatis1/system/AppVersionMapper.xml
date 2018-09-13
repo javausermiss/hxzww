@@ -15,7 +15,9 @@
 		CREATE_TIME,
 		STATE,
 		APPVERSION_ID,
-		FLAG
+		FLAG,
+		ANDROID_DISPLAY,
+		IOS_DISPLAY
 	</sql>
 	
 	<!-- 字段值 -->
@@ -26,7 +28,9 @@
 		#{CREATE_TIME},
 		#{STATE},
 		#{APPVERSION_ID},
-		#{FLAG}
+		#{FLAG},
+		#{ANDROID_DISPLAY},
+		#{IOS_DISPLAY}
 	</sql>
 	
 	<!-- 新增-->
@@ -152,5 +156,20 @@
 		where 
 			VERSION = #{VERSION}
 	</select>
+	
+	<select id="versionDisplay" resultType="com.fh.entity.system.AppVersion">
+		SELECT
+		tb_app_version.VERSION,
+		tb_app_version.ANDROID_DISPLAY,
+		tb_app_version.IOS_DISPLAY
+		FROM
+		tb_app_version
+		WHERE
+		tb_app_version.STATE = '1'
+		ORDER BY
+		tb_app_version.CREATE_TIME DESC
+		LIMIT 0, 1
+	</select>
+	
 
 </mapper>
