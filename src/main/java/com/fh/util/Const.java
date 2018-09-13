@@ -137,7 +137,7 @@ public class Const {
 		points_type06("每日首次充值任意金额",7),
 		points_type07("每日首次参与竞猜",8),
  		points_type09("兑换礼品",10),
-		points_type08("累积消费金币奖励",9);
+		points_type08("累积消费100金币奖励",9);
 		private  String name;
 		private  Integer value;
 

@@ -1,9 +1,7 @@
 package com.fh.service.system.userpoints.impl;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import javax.annotation.Resource;
 
 import com.fh.entity.system.*;
@@ -417,8 +415,9 @@ public class UserPointsService implements UserPointsManager{
 			regPoints = (nm-pm)*points;
 			//给用户增加总积分
 			appUser.setPOINTS_MULTIPLES(nm);
-			appUser.setPOINTS(appUser.getPOINTS()+regPoints);
-			appuserService.updateAppUserBalanceById(appUser);
+			/*appUser.setPOINTS(appUser.getPOINTS()+regPoints);
+			appuserService.updateAppUserBalanceById(appUser);*/
+
 
 			//给用户增加当日积分
 			UserPoints up =  this.getUserPointsFinish(userId);
@@ -428,7 +427,7 @@ public class UserPointsService implements UserPointsManager{
 
 			PointsDetail pointsDetail_cgs = new PointsDetail();
 			pointsDetail_cgs.setUserId(userId);
-			pointsDetail_cgs.setChannel(Const.pointsMallType.points_type08.getName());
+			pointsDetail_cgs.setChannel("累积消费"+(regPoints*points)+"金币奖励");
 			pointsDetail_cgs.setType("+");
 			pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
 			pointsDetail_cgs.setPointsValue(regPoints);
@@ -436,7 +435,6 @@ public class UserPointsService implements UserPointsManager{
 
 			//up =  this.getUserPointsFinish(userId);
 			String r_tag =  up.getPointsReward_Tag();
-
 				Integer goldValue = 0;
 				Integer sum = 0;
 				Integer ob = Integer.valueOf(appUser.getBALANCE());
@@ -446,9 +444,339 @@ public class UserPointsService implements UserPointsManager{
 				up.setPointsReward_Tag(n_rtag);
 				this.updateUserPoints(up);
 
+		}
+
+	}
+
+	@Override
+	public Map<String,Object> doGoldRewardForPusher(String r_tag, Integer goldValue, Integer sum, Integer ob, List<PointsReward> list, Integer now_points, Integer nb, AppUser appUser) throws Exception {
+		String new_r_tag = "";
+		String tag = "0";
+		while (r_tag.equals("0")) {
+			PointsReward pointsReward = list.get(list.size() - 1);
+			Integer pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 0; i < list.size(); i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "5";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+
+			pointsReward = list.get(list.size() - 2);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 0; i < list.size() - 1; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "4";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+
+			pointsReward = list.get(list.size() - 3);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 0; i < list.size() - 2; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "3";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+
+			pointsReward = list.get(list.size() - 4);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 0; i < list.size() - 3; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "2";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+
+			pointsReward = list.get(list.size() - 5);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 0; i < list.size() - 4; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "1";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			break;
+		}
+
+		while (r_tag.equals("1")) {
+			PointsReward pointsReward = list.get(list.size() - 1);
+			Integer pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 1; i < list.size(); i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "5";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			pointsReward = list.get(list.size() - 2);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 1; i < list.size() - 1; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "4";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+
+			pointsReward = list.get(list.size() - 3);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 1; i < list.size() - 2; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "3";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+
+			pointsReward = list.get(list.size() - 4);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 1; i < list.size() - 3; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "2";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			break;
+
+		}
+		while (r_tag.equals("2")) {
+			PointsReward pointsReward = list.get(list.size() - 1);
+			Integer pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 2; i < list.size(); i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "5";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			pointsReward = list.get(list.size() - 2);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 2; i < list.size() - 1; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "4";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			pointsReward = list.get(list.size() - 3);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 2; i < list.size() - 2; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "3";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			break;
+		}
+		while (r_tag.equals("3")) {
+
+			PointsReward pointsReward = list.get(list.size() - 1);
+			Integer pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 3; i < list.size(); i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "5";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			pointsReward = list.get(list.size() - 2);
+			pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 3; i < list.size() - 1; i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				tag = "1";
+				nb = sum + ob;
+				new_r_tag = "4";
+			}
+			if (tag.equals("1")){
+				break;
+			}
+			break;
+		}
+		if (r_tag.equals("4")) {
+			PointsReward pointsReward = list.get(list.size() - 1);
+			Integer pr = pointsReward.getPointsValue();
+			if (now_points >= pr) {
+				for (int i = 4; i < list.size(); i++) {
+					PointsReward pointsR = list.get(i);
+					goldValue = pointsR.getGoldValue();
+					sum += goldValue;
+				}
+				nb = sum + ob;
+				new_r_tag = "5";
+			}
+		}
+		//更新收支表
+		if (sum!=0){
+			Payment payment = new Payment();
+			payment.setGOLD("+" + sum);
+			payment.setUSERID(appUser.getUSER_ID());
+			payment.setDOLLID(null);
+			payment.setCOST_TYPE(Const.PlayMentCostType.cost_type25.getValue());
+			payment.setREMARK(Const.PlayMentCostType.cost_type25.getName());
+			paymentService.reg(payment);
 
 		}
 
+		Map<String,Object> map  = new HashMap<>();
+		map.put("new_r_tag",new_r_tag);
+		if (sum!=0){
+			map.put("newBalance",nb);
+		}
+		return map;
+	}
+
+
+	@Override
+	public Map<String,Object> doCostRewardPointsForPusher(Integer userNewPoints,Integer newBalance, String userId ,AppUser appUser) throws Exception {
+
+		//消费金币奖励积分
+		PageData pageData = new PageData();
+		pageData.put("userId",userId);
+		PageData pageData1 =  this.getCostGoldSumAll(pageData);
+		String gm = "0";
+		if (pageData1 != null) {
+			double aa = (double) pageData1.get("godsum");
+			gm = new DecimalFormat("0").format(aa).substring(1);
+		}
+		int nm = 0 ;
+		int regPoints  = 0;
+		CostGoldRewardPoints costGoldRewardPoints = costgoldrewardpointsService.getInfo();
+		Integer gold =  costGoldRewardPoints.getGOLD_VALUE();
+		int points =  costGoldRewardPoints.getPOINTS_VALUE();
+		nm =  Integer.valueOf(gm) /gold;
+		Integer pm =  appUser.getPOINTS_MULTIPLES();
+		if (nm>pm){
+			regPoints = (nm-pm)*points;
+			//给用户增加总积分
+			appUser.setPOINTS_MULTIPLES(nm);
+			/*appUser.setPOINTS(appUser.getPOINTS()+regPoints);
+			appuserService.updateAppUserBalanceById(appUser);*/
+			userNewPoints = userNewPoints +regPoints;
+
+			//给用户增加当日积分
+			UserPoints up =  this.getUserPointsFinish(userId);
+			up.setTodayPoints(up.getTodayPoints()+regPoints);
+			//this.updateUserPoints(up);
+			//增加积分记录
+
+			PointsDetail pointsDetail_cgs = new PointsDetail();
+			pointsDetail_cgs.setUserId(userId);
+			pointsDetail_cgs.setChannel("累积消费"+(regPoints*points)+"金币奖励");
+			pointsDetail_cgs.setType("+");
+			pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
+			pointsDetail_cgs.setPointsValue(regPoints);
+			pointsdetailService.regPointsDetail(pointsDetail_cgs);
+
+			//up =  this.getUserPointsFinish(userId);
+			String r_tag =  up.getPointsReward_Tag();
+			Integer goldValue = 0;
+			Integer sum = 0;
+			Integer ob = newBalance;
+			Integer nb_2 = 0;
+			List<PointsReward> list = pointsrewardService.getPointsReward();
+			Map map =  this.doGoldRewardForPusher(r_tag,goldValue,sum,ob,list,up.getTodayPoints(),nb_2,appUser);
+			up.setPointsReward_Tag(map.get("new_r_tag").toString());
+			if (map.get("newBalance")!=null){
+				newBalance = Integer.valueOf(map.get("newBalance").toString());
+			}
+			this.updateUserPoints(up);
+
+		}
+		Map<String,Object> map  = new HashMap<>();
+		map.put("newBalance",newBalance);
+		map.put("userNewPoints",userNewPoints);
+		return map;
 	}
 
 	public static void main(String[] a){

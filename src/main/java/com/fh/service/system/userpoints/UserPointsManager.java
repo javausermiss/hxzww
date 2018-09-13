@@ -1,6 +1,8 @@
 package com.fh.service.system.userpoints;
 
 import java.util.List;
+import java.util.Map;
+
 import com.fh.entity.Page;
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.PointsDetail;
@@ -93,6 +95,9 @@ public interface UserPointsManager{
 	public void doCostRewardPoints(AppUser appUser ,String userId)throws Exception;
 
 
+	public Map<String,Object> doGoldRewardForPusher(String r_tag, Integer goldValue, Integer sum , Integer ob, List<PointsReward> list, Integer now_points, Integer nb, AppUser appUser)throws Exception;
+
+	public Map<String,Object> doCostRewardPointsForPusher(Integer points ,Integer newBalance, String userId ,AppUser appUser)throws Exception;
 	
 }
 
