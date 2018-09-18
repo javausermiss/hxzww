@@ -463,9 +463,7 @@ public class BetGameService extends BaseController implements BetGameManager {
 
         //更新玩家抓取记录
         playDetail.setSTATE(String.valueOf(gifinumber));//是否抓中
-        playDetail.setPOST_STATE("0"); //初始化娃娃状态
         playDetail.setDOLLID(dollId);
-        playDetailService.updatePlayDetailState(playDetail);
         String play_user_Id = playDetail.getUSERID();//获取玩家ID
         //更新用户的娃娃数量
         if (gifinumber == 1) {
@@ -473,8 +471,29 @@ public class BetGameService extends BaseController implements BetGameManager {
             Integer new_dolltotal = appUser.getDOLLTOTAL() + 1;
             appUser.setDOLLTOTAL(new_dolltotal);
             appUser.setTODAY_POOH(appUser.getTODAY_POOH()+1);
+            if (doll.getMACHINE_TYPE().equals("3")){
+                playDetail.setPOST_STATE("2"); //初始化娃娃状态兑换
+                //娃娃自动兑换金币
+                int con = Integer.valueOf(doll.getDOLL_CONVERSIONGOLD());
+                int ob = Integer.valueOf(appUser.getBALANCE());
+                int nb = ob + con;
+                appUser.setBALANCE(String.valueOf(nb));
+                //用户金币记录
+                Payment payment = new Payment();
+                payment.setGOLD("+" + String.valueOf(con));
+                payment.setUSERID(play_user_Id);
+                payment.setDOLLID(dollId);
+                payment.setCOST_TYPE(Const.PlayMentCostType.cost_type28.getValue());
+                payment.setREMARK(Const.PlayMentCostType.cost_type28.getName());
+                paymentService.reg(payment);
+            }else {
+                playDetail.setPOST_STATE("0"); //初始化娃娃状态
+            }
             appuserService.updateAppUserDollTotalById(appUser);
+        }else {
+            playDetail.setPOST_STATE("0"); //初始化娃娃状态
         }
+        playDetailService.updatePlayDetailState(playDetail);
 
         //给中奖用户结算奖金
         String reward_num = playDetail.getREWARD_NUM();
@@ -502,14 +521,6 @@ public class BetGameService extends BaseController implements BetGameManager {
                 winPerson.setGUESS_TYPE(playDetail.getREWARD_NUM());
                 winPerson.setDOLL_ID(playDetail.getDOLLID());
                 this.updateGuessDetail(winPerson);
-
-                /*//更新用户余额
-                String guess_win_user = winPerson.getAPP_USER_ID();
-                AppUser appUser = appuserService.getUserByID(guess_win_user);
-                String old_balance = appUser.getBALANCE();
-                String new_balance = String.valueOf(Integer.valueOf(old_balance) + reword);
-                appUser.setBALANCE(new_balance);
-                appuserService.updateAppUserBalanceById(appUser);*/
 
                 //更新用户余额及竞猜次数
                 String guess_win_user = winPerson.getAPP_USER_ID();
@@ -570,6 +581,29 @@ public class BetGameService extends BaseController implements BetGameManager {
             }
         }
         logger.info("前端展示的获胜者数量为-->" + guessDetail_list.size());
+
+        //用户的消费总金币对应增加积分
+        AppUser appUser = appuserService.getUserByID(play_user_Id);
+        Integer newBalance = Integer.valueOf(appUser.getBALANCE());
+        Integer userNewPoints = appUser.getPOINTS();
+        UserPoints userPoints =  userpointsService.getUserPointsFinish(play_user_Id);
+        String r_tag = userPoints.getPointsReward_Tag();
+        Integer todayPoints = userPoints.getTodayPoints();
+        Map map =  userpointsService.doCostRewardPointsForPusher(r_tag,todayPoints,userNewPoints,newBalance,play_user_Id,appUser);
+
+        newBalance = Integer.valueOf(map.get("newBalance").toString());
+        userNewPoints = Integer.valueOf(map.get("userNewPoints").toString());
+        r_tag = map.get("new_r_tag").toString();
+        todayPoints = Integer.valueOf(map.get("todayPoints").toString());
+
+        appUser.setBALANCE(String.valueOf(newBalance));
+        appUser.setPOINTS(userNewPoints);
+        appuserService.updateAppUserBalanceById(appUser);
+
+        userPoints.setTodayPoints(todayPoints);
+        userPoints.setPointsReward_Tag(r_tag);
+        userpointsService.updateUserPoints(userPoints);
+
 
         RpcCommandResult rpcCommandResult = new RpcCommandResult();
         RpcReturnCode result = lotteryServerRpcService.noticeDrawLottery(dollId, playDetail.getGUESS_ID(), guessDetail_list);

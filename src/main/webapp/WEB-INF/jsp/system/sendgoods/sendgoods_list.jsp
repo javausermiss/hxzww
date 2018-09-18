@@ -109,7 +109,7 @@
 											<td class='center'>${var.GOODS_NUM}</td>
 											<td class='center'>${var.CREATE_TIME}</td>
 											<td class='center'>
-												<c:if test="${var.MODE_DESPATCH == '0'}">满2包邮</c:if>
+												<c:if test="${var.MODE_DESPATCH == '0'}">满3包邮</c:if>
 												<c:if test="${var.MODE_DESPATCH == '1'}">金币抵扣</c:if>
 												<c:if test="${var.MODE_DESPATCH == '2'}">货到付款</c:if>
 													</td>

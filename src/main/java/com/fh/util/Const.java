@@ -186,7 +186,7 @@ public class Const {
 		cost_type13("推广收入","13"),
 		cost_type14("注册赠送","14"),
 		cost_type15("竞猜追投","15"),
-		cost_type17("自动兑换","17"),
+		cost_type17("推币机游戏自动兑换","17"),
 		cost_type18("推币机奖励","18"),
 		cost_type19("充值周卡","19"),
 		cost_type20("输入加盟码","20"),
@@ -196,7 +196,8 @@ public class Const {
 		cost_type24("用户首充","24"),
 		cost_type25("集积分送金币","25"),
 		cost_type26("金币兑换金豆","26"),
-		cost_type27("金豆兑换金币","27");
+		cost_type27("金豆兑换金币","27"),
+		cost_type28("娃娃自动兑换金币","28");
 
 
 		

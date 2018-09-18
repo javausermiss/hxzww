@@ -1,6 +1,7 @@
 package com.fh.rpc;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.fh.controller.base.BaseController;
 import com.fh.entity.system.*;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.coinpusher.CoinPusherManager;
@@ -31,7 +32,7 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class CoinWebServiceImpl implements CoinRpcService {
+public class CoinWebServiceImpl extends BaseController implements CoinRpcService  {
 
     private static final Map<String,Integer> sessionMap = new HashMap<String,Integer>();
 
@@ -200,8 +201,8 @@ public class CoinWebServiceImpl implements CoinRpcService {
             }
             //出币数统计，并进行换算娃娃币比例 1:1
             this.setSessionMap("inc"+roomId+userId,this.getSessionMap("inc"+roomId+userId)+bingo);
-            log.info("开始出币");
-            log.info("当前一共出币数------------------------->>>>"+sessionMap.get("inc"+roomId+userId));
+            logger.info("开始出币");
+            logger.info("当前一共出币数------------------------->>>>"+sessionMap.get("inc"+roomId+userId));
 
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);
             rpcCommandResult.setInfo("SUCCESS");
@@ -232,14 +233,15 @@ public class CoinWebServiceImpl implements CoinRpcService {
             pusherGameDetail.setGameId(gameId);
             PusherGameDetail pd = pushergamedetailService.getInfo(pusherGameDetail);
             pd.setTag("1");
-            pd.setIncome(sessionMap.get("inc"+roomId+userId)*rate);
+            int incom = this.getSessionMap("inc"+roomId+userId);
+            pd.setIncome(incom * rate);
             pd.setExpenditure(sessionMap.get("exp"+roomId+userId)*rate);
             pushergamedetailService.update(pd);
 
             //给用户结算金币
 
             AppUser appUser = appuserService.getUserByID(userId);
-            int incom =  sessionMap.get("inc"+roomId+userId) * rate ;
+            incom =  incom * rate ;
             Integer newBalance = sessionMap.get("userBalance"+roomId+userId)+ incom;
             Integer userNewPoints = appUser.getPOINTS();
 
@@ -265,16 +267,12 @@ public class CoinWebServiceImpl implements CoinRpcService {
             UserPoints userPoints = userpointsService.getUserPointsFinish(userId);
             PointsMall pointsMall = pointsmallService.getInfoById(Const.pointsMallType.points_type04.getValue());
 
-            int a = userPoints.getTodayPoints();
+            int todayPoints = userPoints.getTodayPoints();
             int newpg = userPoints.getPusherGame() + 1;
-            userPoints.setPusherGame(newpg);
-            userpointsService.updateUserPoints(userPoints);
-
+            String r_tag = userPoints.getPointsReward_Tag();
             if (newpg == 10) {
-                userPoints.setTodayPoints(a + pointsMall.getPointsValue());
-               // appUser = appuserService.getUserByID(userId);
+                todayPoints = (todayPoints + pointsMall.getPointsValue());
                 userNewPoints = userNewPoints + pointsMall.getPointsValue();
-               // appuserService.updateAppUserBalanceById(appUser);
                 //增加积分记录
                 PointsDetail pointsDetail = new PointsDetail();
                 pointsDetail.setUserId(userId);
@@ -285,7 +283,7 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 pointsdetailService.regPointsDetail(pointsDetail);
 
                 //判断是否增加金币
-                String r_tag = userPoints.getPointsReward_Tag();
+
                 if (Integer.valueOf(r_tag) < 5){
                     Integer goldValue = 0;
                     Integer sum = 0;
@@ -294,10 +292,10 @@ public class CoinWebServiceImpl implements CoinRpcService {
                     List<PointsReward> list = pointsrewardService.getPointsReward();
                     Map map =  userpointsService.doGoldRewardForPusher(r_tag,goldValue,sum,ob,list,userPoints.getTodayPoints() + pointsMall.getPointsValue(),nb_2,appUser);
                     userPoints.setPointsReward_Tag(map.get("new_r_tag").toString());
+                    r_tag = map.get("new_r_tag").toString();
                     if (map.get("newBalance")!=null){
                         newBalance = Integer.valueOf(map.get("newBalance").toString());
                     }
-                    userpointsService.updateUserPoints(userPoints);
                 }
             }
             //查询消费金币数
@@ -317,7 +315,8 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 gm = new DecimalFormat("0").format(aa).substring(1);
             }
             int cgs = Integer.valueOf(gm);
-            if (cgs >= 200 && userPoints.getCostGoldSum_Tag().equals("0")) {
+            String costGoldSum_Tag = userPoints.getCostGoldSum_Tag() ;
+            if (cgs >= 200 && costGoldSum_Tag.equals("0")) {
                 //增加积分记录
                 PointsDetail pointsDetail_cgs = new PointsDetail();
                 pointsDetail_cgs.setUserId(userId);
@@ -326,46 +325,48 @@ public class CoinWebServiceImpl implements CoinRpcService {
                 pointsDetail_cgs.setPointsDetail_Id(MyUUID.getUUID32());
                 pointsDetail_cgs.setPointsValue(pointsMall.getPointsValue());
                 pointsdetailService.regPointsDetail(pointsDetail_cgs);
-
-                userPoints = userpointsService.getUserPointsFinish(userId);
-                userPoints.setCostGoldSum_Tag("1");
+                costGoldSum_Tag = "1";
                 PointsMall pointsMall_Cost =  pointsmallService.getInfoById(Const.pointsMallType.points_type05.getValue());
-                userPoints.setTodayPoints( pointsMall_Cost.getPointsValue()+userPoints.getTodayPoints());
-                userpointsService.updateUserPoints(userPoints);
-
-                /*appUser = appuserService.getUserByID(userId);
-                appUser.setPOINTS(appUser.getPOINTS() + pointsMall_Cost.getPointsValue());
-                appuserService.updateAppUserBalanceById(appUser);*/
+                todayPoints = todayPoints + pointsMall_Cost.getPointsValue();
                 userNewPoints = userNewPoints + pointsMall_Cost.getPointsValue();
 
                 //判断是否增加金币
                 userPoints = userpointsService.getUserPointsFinish(userId);
-                Integer now_points = userPoints.getTodayPoints();
-                String r_tag = userPoints.getPointsReward_Tag();
+
                 if (Integer.valueOf(r_tag) < 5){
                     Integer goldValue = 0;
                     Integer sum = 0;
                     Integer ob = newBalance;
                     Integer nb_2 = 0;
                     List<PointsReward> list = pointsrewardService.getPointsReward();
-                    Map map =  userpointsService.doGoldRewardForPusher(r_tag,goldValue,sum,ob,list,now_points,nb_2,appUser);
-                    userPoints.setPointsReward_Tag(map.get("new_r_tag").toString());
+                    Map map =  userpointsService.doGoldRewardForPusher(r_tag,goldValue,sum,ob,list,todayPoints,nb_2,appUser);
+                    r_tag = map.get("new_r_tag").toString();
                     if (map.get("newBalance")!=null){
                         newBalance = Integer.valueOf(map.get("newBalance").toString());
                     }
-                    userpointsService.updateUserPoints(userPoints);
+
                 }
             }
             //总消费赠送的积分判断
-            Map map = userpointsService.doCostRewardPointsForPusher(userNewPoints,newBalance,userId, appUser);
+            Map map = userpointsService.doCostRewardPointsForPusher(r_tag,todayPoints,userNewPoints,newBalance,userId, appUser);
             newBalance = Integer.valueOf(map.get("newBalance").toString());
             userNewPoints = Integer.valueOf(map.get("userNewPoints").toString());
+            r_tag = map.get("new_r_tag").toString();
+            todayPoints = Integer.valueOf(map.get("todayPoints").toString());
+
             appUser.setBALANCE(String.valueOf(newBalance));
             appUser.setPOINTS(userNewPoints);
             appuserService.updateAppUserBalanceById(appUser);
 
+            userPoints.setPusherGame(newpg);
+            userPoints.setTodayPoints(todayPoints);
+            userPoints.setPointsReward_Tag(r_tag);
+            userPoints.setCostGoldSum_Tag(costGoldSum_Tag);
+            userpointsService.updateUserPoints(userPoints);
+
             this.clearSessionMap("inc"+roomId+userId);
             this.clearSessionMap("exp"+roomId+userId);
+            this.clearSessionMap("userBalance"+roomId+userId);
 
             log.info("map缓存中剩余得数据=====================================>>>>>>>>"+sessionMap);
             rpcCommandResult.setRpcReturnCode(RpcReturnCode.SUCCESS);

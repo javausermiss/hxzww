@@ -48,7 +48,7 @@ public class SrsCameraBizJob{
 					for(PageData pd:clist){
 						for(Stream stream:list){
 							if(pd.get("LIVESTREAM").equals(stream.getName())){
-								logger.info("srs job-->"+JSONObject.toJSONString(stream));
+							/*	logger.info("srs job-->"+JSONObject.toJSONString(stream));*/
 								if(stream.getPublish().isActive()){
 									pd.put("DEVICE_STATE", "0");
 								}else{

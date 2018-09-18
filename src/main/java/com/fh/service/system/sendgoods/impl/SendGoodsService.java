@@ -164,6 +164,11 @@ public class SendGoodsService implements SendGoodsManager {
         //增加发货记录
         SendGoods sendGoods = new SendGoods();
         //免邮
+
+        String[] pd = playId.split("\\,");
+        if (pd.length < 3 && Integer.valueOf(number)>=3){
+            return RespStatus.fail("数据不合法");
+        }
         if (mode.equals("0")) {
             sendGoods.setMODE_DESPATCH("0");
         }
@@ -207,7 +212,6 @@ public class SendGoodsService implements SendGoodsManager {
         List<String> list = new LinkedList<>();
         List<PlayDetail> playDetails = new LinkedList<>();
         //获取需要发货的娃娃编号
-        String[] pd = playId.split("\\,");
         for (int i = 0; i < pd.length; i++) {
             PlayDetail playDetail = playDetailService.getPlayDetailByID(Integer.parseInt(pd[i]));
             playDetails.add(playDetail);
@@ -398,10 +402,16 @@ public class SendGoodsService implements SendGoodsManager {
     
     /**
      * 冻结用户，更新改用户的所有订单为异常订单
-     * @param playDetail
+     * @param
      * @throws Exception
      */
     public void dofreezeUserOrder(String userId)throws Exception{
     	 dao.update("SendGoodsMapper.dofreezeUserOrder", userId);
+    }
+
+
+    public static void main(String[] a){
+        String[] num = "asdasd,asdads,asdasd".split("\\,");
+        System.out.println(num.length);
     }
 }

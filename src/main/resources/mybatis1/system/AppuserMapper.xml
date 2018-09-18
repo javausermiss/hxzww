@@ -491,6 +491,9 @@
         set
         TODAY_POOH = #{TODAY_POOH},
         DOLLTOTAL = #{DOLLTOTAL}
+        <if test="BALANCE != null and BALANCE != ''">
+         , BALANCE = #{BALANCE}
+        </if>
         WHERE
         USER_ID = #{USER_ID}
     </update>

@@ -11,7 +11,9 @@ import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
 import com.fh.service.system.pointsreward.PointsRewardManager;
 import com.fh.util.Const;
+import com.fh.util.Logger;
 import com.fh.util.wwjUtil.MyUUID;
+import lombok.extern.slf4j.Slf4j;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.stereotype.Service;
 import com.fh.dao.DaoSupport;
@@ -25,6 +27,7 @@ import com.fh.service.system.userpoints.UserPointsManager;
  * 创建时间：2018-07-31
  * @version
  */
+@Slf4j
 @Service("userpointsService")
 public class UserPointsService implements UserPointsManager{
 
@@ -131,7 +134,7 @@ public class UserPointsService implements UserPointsManager{
 
 	@Override
 	public String doGoldReward(String r_tag, Integer goldValue, Integer sum, Integer ob, List<PointsReward> list, Integer now_points, Integer nb , AppUser appUser) throws Exception {
-		String new_r_tag = "";
+		String new_r_tag = r_tag;
 		String tag = "0";
 		while (r_tag.equals("0")) {
 			PointsReward pointsReward = list.get(list.size() - 1);
@@ -389,6 +392,7 @@ public class UserPointsService implements UserPointsManager{
 			appUser.setBALANCE(String.valueOf(nb));
 			appuserService.updateAppUserBalanceById(appUser);
 		}
+		log.info(appUser.getNICKNAME()+"用户最新的积分奖励标签为--------->>>>>>"+new_r_tag);
 		return new_r_tag;
 
 	}
@@ -410,18 +414,23 @@ public class UserPointsService implements UserPointsManager{
 		Integer gold =  costGoldRewardPoints.getGOLD_VALUE();
 		Integer points =  costGoldRewardPoints.getPOINTS_VALUE();
 		nm =  Integer.valueOf(gm) /gold;
+		log.info(appUser.getNICKNAME()+"用户累积消费金币--------->>>>>>"+gm);
+		log.info(appUser.getNICKNAME()+"用户当前的积分倍数--------->>>>>>"+nm);
 		Integer pm =  appUser.getPOINTS_MULTIPLES();
+		log.info(appUser.getNICKNAME()+"用户以前的积分倍数--------->>>>>>"+pm);
 		if (nm>pm){
 			regPoints = (nm-pm)*points;
 			//给用户增加总积分
 			appUser.setPOINTS_MULTIPLES(nm);
-			/*appUser.setPOINTS(appUser.getPOINTS()+regPoints);
-			appuserService.updateAppUserBalanceById(appUser);*/
+			appUser.setPOINTS(appUser.getPOINTS()+regPoints);
+			appuserService.updateAppUserBalanceById(appUser);
+			log.info(appUser.getNICKNAME()+"用户当前总积分--------->>>>>>"+(appUser.getPOINTS()+regPoints));
 
 
 			//给用户增加当日积分
 			UserPoints up =  this.getUserPointsFinish(userId);
 			up.setTodayPoints(up.getTodayPoints()+regPoints);
+			log.info(appUser.getNICKNAME()+"用户当日总积分--------->>>>>>"+(up.getTodayPoints()+regPoints));
 			//this.updateUserPoints(up);
 			//增加积分记录
 
@@ -435,22 +444,25 @@ public class UserPointsService implements UserPointsManager{
 
 			//up =  this.getUserPointsFinish(userId);
 			String r_tag =  up.getPointsReward_Tag();
+			log.info(appUser.getNICKNAME()+"用户当前的奖励标签--------->>>>>>"+r_tag);
+			if (Integer.valueOf(r_tag)<5) {
 				Integer goldValue = 0;
 				Integer sum = 0;
 				Integer ob = Integer.valueOf(appUser.getBALANCE());
 				Integer nb_2 = 0;
 				List<PointsReward> list = pointsrewardService.getPointsReward();
-				String n_rtag =  this.doGoldReward(r_tag,goldValue,sum,ob,list,up.getTodayPoints(),nb_2,appUser);
+				String n_rtag = this.doGoldReward(r_tag, goldValue, sum, ob, list, up.getTodayPoints() + regPoints, nb_2, appuserService.getUserByID(userId));
 				up.setPointsReward_Tag(n_rtag);
-				this.updateUserPoints(up);
+			}
+			this.updateUserPoints(up);
 
-		}
+	}
 
 	}
 
 	@Override
 	public Map<String,Object> doGoldRewardForPusher(String r_tag, Integer goldValue, Integer sum, Integer ob, List<PointsReward> list, Integer now_points, Integer nb, AppUser appUser) throws Exception {
-		String new_r_tag = "";
+		String new_r_tag = r_tag;
 		String tag = "0";
 		while (r_tag.equals("0")) {
 			PointsReward pointsReward = list.get(list.size() - 1);
@@ -710,6 +722,7 @@ public class UserPointsService implements UserPointsManager{
 
 		Map<String,Object> map  = new HashMap<>();
 		map.put("new_r_tag",new_r_tag);
+		log.info(appUser.getNICKNAME()+"用户最新的积分奖励标签为--------->>>>>>"+new_r_tag);
 		if (sum!=0){
 			map.put("newBalance",nb);
 		}
@@ -718,7 +731,7 @@ public class UserPointsService implements UserPointsManager{
 
 
 	@Override
-	public Map<String,Object> doCostRewardPointsForPusher(Integer userNewPoints,Integer newBalance, String userId ,AppUser appUser) throws Exception {
+	public Map<String,Object> doCostRewardPointsForPusher(String r_tag, Integer todayPoints,Integer userNewPoints,Integer newBalance, String userId ,AppUser appUser) throws Exception {
 
 		//消费金币奖励积分
 		PageData pageData = new PageData();
@@ -736,18 +749,18 @@ public class UserPointsService implements UserPointsManager{
 		int points =  costGoldRewardPoints.getPOINTS_VALUE();
 		nm =  Integer.valueOf(gm) /gold;
 		Integer pm =  appUser.getPOINTS_MULTIPLES();
+	    String	new_r_tag  = "";
 		if (nm>pm){
 			regPoints = (nm-pm)*points;
 			//给用户增加总积分
+			log.info(appUser.getNICKNAME()+"用户累积消费金币--------->>>>>>"+gm);
+			log.info(appUser.getNICKNAME()+"用户当前的积分倍数--------->>>>>>"+nm);
 			appUser.setPOINTS_MULTIPLES(nm);
-			/*appUser.setPOINTS(appUser.getPOINTS()+regPoints);
-			appuserService.updateAppUserBalanceById(appUser);*/
 			userNewPoints = userNewPoints +regPoints;
-
+			log.info(appUser.getNICKNAME()+"用户当前的总积分--------->>>>>>"+userNewPoints);
 			//给用户增加当日积分
-			UserPoints up =  this.getUserPointsFinish(userId);
-			up.setTodayPoints(up.getTodayPoints()+regPoints);
-			//this.updateUserPoints(up);
+			todayPoints = todayPoints + regPoints;
+			log.info(appUser.getNICKNAME()+"用户今日的总积分--------->>>>>>"+todayPoints);
 			//增加积分记录
 
 			PointsDetail pointsDetail_cgs = new PointsDetail();
@@ -759,23 +772,24 @@ public class UserPointsService implements UserPointsManager{
 			pointsdetailService.regPointsDetail(pointsDetail_cgs);
 
 			//up =  this.getUserPointsFinish(userId);
-			String r_tag =  up.getPointsReward_Tag();
 			Integer goldValue = 0;
 			Integer sum = 0;
 			Integer ob = newBalance;
 			Integer nb_2 = 0;
 			List<PointsReward> list = pointsrewardService.getPointsReward();
-			Map map =  this.doGoldRewardForPusher(r_tag,goldValue,sum,ob,list,up.getTodayPoints(),nb_2,appUser);
-			up.setPointsReward_Tag(map.get("new_r_tag").toString());
+			log.info(appUser.getNICKNAME()+"当前的积分奖励标签为--------->>>>>>"+r_tag);
+			Map map =  this.doGoldRewardForPusher(r_tag,goldValue,sum,ob,list,todayPoints ,nb_2,appUser);
+			new_r_tag = map.get("new_r_tag").toString();
 			if (map.get("newBalance")!=null){
 				newBalance = Integer.valueOf(map.get("newBalance").toString());
 			}
-			this.updateUserPoints(up);
 
 		}
 		Map<String,Object> map  = new HashMap<>();
 		map.put("newBalance",newBalance);
 		map.put("userNewPoints",userNewPoints);
+		map.put("new_r_tag",new_r_tag);
+		map.put("todayPoints",todayPoints);
 		return map;
 	}
 
