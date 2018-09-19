@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ import com.fh.service.system.pointsgoods.PointsGoodsManager;
 import com.fh.service.system.pointssendgoods.PointsSendGoodsManager;
 import com.fh.util.Const;
 import com.fh.util.PageData;
+import com.fh.util.PropertiesUtils;
 import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RespStatus;
 
@@ -35,6 +37,7 @@ import net.sf.json.JSONObject;
  * 金币商城
  *
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping(value = "/app/goldMall")
 public class AppGoldController {
@@ -182,6 +185,6 @@ public class AppGoldController {
             e.printStackTrace();
             return RespStatus.fail();
         }
-
     }
+    
 }
