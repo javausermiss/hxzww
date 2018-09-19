@@ -19,8 +19,11 @@ import com.fh.entity.system.PointsDetail;
 import com.fh.entity.system.PointsSendGoods;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.golddetail.GoldDetailManager;
+import com.fh.service.system.goldgoods.GoldGoodsManager;
 import com.fh.service.system.goldsendgoods.GoldSendGoodsManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
+import com.fh.service.system.pointsgoods.PointsGoodsManager;
+import com.fh.service.system.pointssendgoods.PointsSendGoodsManager;
 import com.fh.util.Const;
 import com.fh.util.PageData;
 import com.fh.util.wwjUtil.MyUUID;
@@ -29,7 +32,7 @@ import com.fh.util.wwjUtil.RespStatus;
 import net.sf.json.JSONObject;
 
 /**
- * 积分商城
+ * 金币商城
  *
  */
 @Controller
@@ -45,6 +48,10 @@ public class AppGoldController {
 	
 	@Resource(name = "appuserService")
     private AppuserManager appuserService;
+
+	@Resource(name = "goldgoodsService")
+    private GoldGoodsManager goldgoodsService;
+	
 	
 	/**
      * 金币列表接口
@@ -79,7 +86,7 @@ public class AppGoldController {
     @ResponseBody
     public JSONObject getGoldMallDetail() {
         try {
-            List<PageData> pageData = golddetailService.listAll(new PageData());
+            List<PageData> pageData = goldgoodsService.listAll(new PageData());
             Map<String, Object> map = new HashMap<>();
             map.put("goldGoodsList", pageData);
             return RespStatus.successs().element("data", map);
@@ -120,7 +127,7 @@ public class AppGoldController {
      * 金币兑换礼品接口
      *
      * @param userId           用户ID
-     * @param points           消费积分
+     * @param gold           消费金币
      * @param goodsName        商品名称
      * @param consignee        收货人名字
      * @param consigneeAddress 地址
