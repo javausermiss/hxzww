@@ -197,8 +197,8 @@ public class Const {
 		cost_type25("集积分送金币","25"),
 		cost_type26("金币兑换金豆","26"),
 		cost_type27("金豆兑换金币","27"),
-		cost_type28("娃娃自动兑换金币","28");
-
+		cost_type28("娃娃自动兑换金币","28"),
+		cost_type29("金币总换娃娃","29");
 
 		
 		private  String name;

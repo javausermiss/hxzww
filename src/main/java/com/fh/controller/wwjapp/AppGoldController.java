@@ -3,6 +3,7 @@ package com.fh.controller.wwjapp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -177,14 +178,13 @@ public class AppGoldController {
             goldSendGoods.setGoodsNum(goodsNum);
             goldsendservice.regGoldSendGoods(goldSendGoods);
 
-            //增加积分消费记录
-            GoldDetail goldDetail = new GoldDetail();
-            goldDetail.setUserId(userId);
-            /*goldDetail.setChannel(Const.pointsMallType.points_type07.getName());*/
-            goldDetail.setType("-");
-            goldDetail.setGolddetail_id(MyUUID.getUUID32());
-            goldDetail.setGoldsvalue(gold);
-            golddetailService.regGoldDetail(goldDetail);
+            //增加金币消费记录
+            Payment payment = new Payment();
+            payment.setUSERID(userId);
+            payment.setREMARK(Const.PlayMentCostType.cost_type29.getName());
+            payment.setCOST_TYPE(Const.PlayMentCostType.cost_type29.getValue());
+            payment.setGOLD("-"+gold);
+            paymentService.reg(payment);
             return RespStatus.successs().element("data", "兑换成功");
 
         } catch (Exception e) {
