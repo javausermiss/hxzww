@@ -70,6 +70,7 @@
 									<th class="center">用户ID</th>
 									<th class="center">商品编号</th>
 									<th class="center">礼品名称</th>
+									<th class="center">用户昵称</th>
 									<th class="center">收货人</th>
 									<th class="center">收货人地址</th>
 									<th class="center">收货人电话</th>
@@ -96,6 +97,7 @@
 											<td class='center'>${var.USERID}</td>
 											<td class='center'>${var.GOODSNUM}</td>
 											<td class='center'>${var.GOODSNAME}</td>
+											<td class='center'>${var.NICKNAME}</td>
 											<td class='center'>${var.CONSIGNEE}</td>
 											<td class='center'>${var.CONSIGNEEADDRESS}</td>
 											<td class='center'>${var.CONSIGNEEPHONE}</td>

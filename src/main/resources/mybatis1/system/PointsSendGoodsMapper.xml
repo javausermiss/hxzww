@@ -95,61 +95,95 @@
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
-		<include refid="Field"></include>
-		from 
-		<include refid="tableName"></include>
-		where 1=1
-		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
-			and
-				(
-
-			USERID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					 or
-			CONSIGNEE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-
-				)
-		</if>
-		<if test="pd.lastStart!=null and pd.lastStart!=''"><!-- 到期时间检索 -->
-			and CREATETIME &gt;= #{pd.lastStart}
-		</if>
-		<if test="pd.lastEnd!=null and pd.lastEnd!=''"><!-- 到期时间检索 -->
-			and CREATETIME &lt;= #{pd.lastEnd}
-		</if>
-		<if test="pd.SENDTAG != null and pd.SENDTAG != ''">
-			and
-			SENDTAG = #{pd.SENDTAG}
-		</if>
-		ORDER BY SENDTAG ASC,CREATETIME DESC
-	</select>
-	
-	<!-- 列表(全部) -->
-	<select id="listAll" parameterType="page" resultType="pd">
-		select
-		<include refid="Field"/>
-		from 
-		<include refid="tableName"/>
+		p.USERID,
+		p.GOODSNUM,
+		p.GOODSNAME,
+		p.QUANTITYOFGOODS,
+		p.CONSIGNEE,
+		p.CONSIGNEEADDRESS,
+		p.CONSIGNEEPHONE,
+		p.CREATETIME,
+		p.LOGISTICS,
+		p.LOGISTICSCOMPANY,
+		p.SENDTAG,
+		p.REMARK,
+		p.POINTSSENDGOODS_ID,
+		u.NICKNAME
+		from
+		<include refid="tableName"/> as p
+		left  join
+		sys_app_user as u
+		on
+		p.USERID = u.USER_ID
 		where 1=1
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
 			and
 			(
 
-			USERID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			p.USERID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 			or
-			CONSIGNEE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			p.CONSIGNEE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 
 			)
 		</if>
 		<if test="pd.lastStart!=null and pd.lastStart!=''"><!-- 到期时间检索 -->
-			and CREATETIME &gt;= #{pd.lastStart}
+			and p.CREATETIME &gt;= #{pd.lastStart}
 		</if>
 		<if test="pd.lastEnd!=null and pd.lastEnd!=''"><!-- 到期时间检索 -->
-			and CREATETIME &lt;= #{pd.lastEnd}
+			and p.CREATETIME &lt;= #{pd.lastEnd}
 		</if>
 		<if test="pd.SENDTAG != null and pd.SENDTAG != ''">
 			and
-			SENDTAG = #{pd.SENDTAG}
+			p.SENDTAG = #{pd.SENDTAG}
 		</if>
-		ORDER BY SENDTAG ASC,CREATETIME DESC
+		ORDER BY p.SENDTAG ASC,p.CREATETIME DESC
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="page" resultType="pd">
+		select
+		p.USERID,
+		p.GOODSNUM,
+		p.GOODSNAME,
+		p.QUANTITYOFGOODS,
+		p.CONSIGNEE,
+		p.CONSIGNEEADDRESS,
+		p.CONSIGNEEPHONE,
+		p.CREATETIME,
+		p.LOGISTICS,
+		p.LOGISTICSCOMPANY,
+		p.SENDTAG,
+		p.REMARK,
+		p.POINTSSENDGOODS_ID,
+		u.NICKNAME
+		from 
+		<include refid="tableName"/> as p
+		left  join
+		sys_app_user as u
+		on
+		p.USERID = u.USER_ID
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+			(
+
+			p.USERID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			or
+			p.CONSIGNEE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+
+			)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!=''"><!-- 到期时间检索 -->
+			and p.CREATETIME &gt;= #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''"><!-- 到期时间检索 -->
+			and p.CREATETIME &lt;= #{pd.lastEnd}
+		</if>
+		<if test="pd.SENDTAG != null and pd.SENDTAG != ''">
+			and
+			p.SENDTAG = #{pd.SENDTAG}
+		</if>
+		ORDER BY p.SENDTAG ASC,p.CREATETIME DESC
 	</select>
 	
 	<!-- 批量删除 -->

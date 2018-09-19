@@ -193,7 +193,7 @@ public class PointsSendGoodsController extends BaseController {
 		titles.add("用户ID");	//1
 		titles.add("商品编号");	//2
 		titles.add("礼品名称");	//3
-		//titles.add("礼品数量");	//4
+		titles.add("用户昵称");	//4
 		titles.add("收货人");	//5
 		titles.add("收货人地址");	//6
 		titles.add("收货人电话");	//7
@@ -210,21 +210,21 @@ public class PointsSendGoodsController extends BaseController {
 			vpd.put("var1", varOList.get(i).getString("USERID"));	    //1
 			vpd.put("var2", varOList.get(i).get("GOODSNUM").toString());	    //2
 			vpd.put("var3", varOList.get(i).getString("GOODSNAME"));	    //3
-			//vpd.put("var4", varOList.get(i).get("QUANTITYOFGOODS").toString());	//4
-			vpd.put("var4", varOList.get(i).getString("CONSIGNEE"));	    //5
-			vpd.put("var5", varOList.get(i).getString("CONSIGNEEADDRESS"));	    //6
-			vpd.put("var6", varOList.get(i).getString("CONSIGNEEPHONE"));	    //7
-			vpd.put("var7", varOList.get(i).get("CREATETIME").toString());	    //8
-			vpd.put("var8", varOList.get(i).getString("LOGISTICS"));	    //9
-			vpd.put("var9", varOList.get(i).getString("LOGISTICSCOMPANY"));
+			vpd.put("var4", varOList.get(i).getString("NICKNAME"));	//4
+			vpd.put("var5", varOList.get(i).getString("CONSIGNEE"));	    //5
+			vpd.put("var6", varOList.get(i).getString("CONSIGNEEADDRESS"));	    //6
+			vpd.put("var7", varOList.get(i).getString("CONSIGNEEPHONE"));	    //7
+			vpd.put("var8", varOList.get(i).get("CREATETIME").toString());	    //8
+			vpd.put("var9", varOList.get(i).getString("LOGISTICS"));	    //9
+			vpd.put("var10", varOList.get(i).getString("LOGISTICSCOMPANY"));
 			String sendTag =  varOList.get(i).getString("SENDTAG");//10
 			if (sendTag.equals("0")){
 				sendTag = "未发货";
 			}else {
 				sendTag = "已发货";
 			}
-			vpd.put("var10",sendTag);	    //11
-			vpd.put("var11", varOList.get(i).getString("REMARK"));	    //12
+			vpd.put("var11",sendTag);	    //11
+			vpd.put("var12", varOList.get(i).getString("REMARK"));	    //12
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);

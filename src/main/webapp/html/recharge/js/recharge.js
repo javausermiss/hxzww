@@ -7,7 +7,7 @@ $(function () {
 	//获取金币
 	function getcoin () {
 		$.ajax({
-	        url: 'http://47.100.15.18:8080/pooh-web/api/user/getUserInfo',
+	        url: 'http://111.231.139.61:18081/pooh-web/api/user/getUserInfo',
 	        type: 'post',
 			dataType: 'json',
 	        data: {
@@ -36,7 +36,7 @@ $(function () {
 	//用户信息以及充值信息给后台	(微信)
 	$('.weixin').click(function () {				
 		$.ajax({
-            url: 'http://47.100.15.18:8080/pooh-web/app/pay/getTradeOrderxdpayIOS',
+            url: 'http://111.231.139.61:18081/pooh-web/app/pay/getTradeOrderxdpayIOS',
             type: 'post',
 			dataType: 'json',
             data: {
@@ -61,7 +61,7 @@ $(function () {
 	//用户信息以及充值信息给后台	(支付宝)
 	$('.zhifubao').click(function () {				
 		$.ajax({
-            url: 'http://47.100.15.18:8080/pooh-web/app/pay/getTradeOrderAlipayForIos',
+            url: 'http://111.231.139.61:18081/pooh-web/app/pay/getTradeOrderAlipayForIos',
             type: 'post',
 			dataType: 'text',
             data: {
