@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.GoldDetail;
 import com.fh.entity.system.GoldSendGoods;
+import com.fh.entity.system.Payment;
 import com.fh.entity.system.PointsDetail;
 import com.fh.entity.system.PointsSendGoods;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.golddetail.GoldDetailManager;
 import com.fh.service.system.goldgoods.GoldGoodsManager;
 import com.fh.service.system.goldsendgoods.GoldSendGoodsManager;
+import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.pointsdetail.PointsDetailManager;
 import com.fh.service.system.pointsgoods.PointsGoodsManager;
 import com.fh.service.system.pointssendgoods.PointsSendGoodsManager;
@@ -54,6 +56,10 @@ public class AppGoldController {
 
 	@Resource(name = "goldgoodsService")
     private GoldGoodsManager goldgoodsService;
+	
+	
+	@Resource(name="paymentService")
+	private PaymentManager paymentService;
 	
 	
 	/**
@@ -186,5 +192,29 @@ public class AppGoldController {
             return RespStatus.fail();
         }
     }
+    
+    
+    /**
+     * 用户金币收支明细
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/getappUserAcountList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getappUserAcountList(@RequestParam("userId") String userId) {
+        try {
+            List<Payment> Payment = paymentService.getPaymenlist(userId);
+            Map<String, Object> map = new HashMap<>();
+            map.put("goldGoodsList", Payment);
+            return RespStatus.successs().element("data", map);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+
+    }
+    
     
 }
