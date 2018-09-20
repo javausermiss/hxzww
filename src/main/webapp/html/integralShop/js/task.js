@@ -230,7 +230,7 @@ function getChangeRecord () {
         	console.log(arr);
         	for (var i=0;i<arr.length;i++) {
         		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><div class="duihuan-list-left"><img src="http://47.100.15.18:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div></div>'
-//      		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
+//      		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://47.100.15.18:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
         	};
         	$('.duihuan-list-cont').append($(strChangeRecord));
         },
