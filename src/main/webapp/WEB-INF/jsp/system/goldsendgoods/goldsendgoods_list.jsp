@@ -65,19 +65,19 @@
 								<tr>
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
-									</th>、
+									</th>
+									<th class="center">用户昵称</th>
 									<th class="center">用户ID</th>
 									<th class="center">商品编号</th>
 									<th class="center">礼品名称</th>
-									<th class="center">礼品数量</th>
 									<th class="center">收货人</th>
 									<th class="center">收货人地址</th>
 									<th class="center">收货人电话</th>
 									<th class="center">创建时间</th>
 									<th class="center">物流单号</th>
 									<th class="center">物流公司</th>
-									<th class="center">是否发货</th>
 									<th class="center">备注</th>
+									<th class="center">是否发货</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -92,18 +92,22 @@
 											<td class='center'>
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.GOLDSENDGOODS_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
+											<td class='center'>${var.NICKNAME}</td>
 											<td class='center'>${var.USERID}</td>
 											<td class='center'>${var.GOODSNUM}</td>
 											<td class='center'>${var.GOODSNAME}</td>
-											<td class='center'>${var.QUANTITYOFGOODS}</td>
 											<td class='center'>${var.CONSIGNEE}</td>
 											<td class='center'>${var.CONSIGNEEADDRESS}</td>
 											<td class='center'>${var.CONSIGNEEPHONE}</td>
 											<td class='center'>${var.CREATETIME}</td>
 											<td class='center'>${var.LOGISTICS}</td>
 											<td class='center'>${var.LOGISTICSCOMPANY}</td>
-											<td class='center'>${var.SENDTAG}</td>
 											<td class='center'>${var.REMARK}</td>
+											<td class='center'>
+												<c:if test="${var.SENDTAG == '0'}">未发货</c:if>
+												<c:if test="${var.SENDTAG == '1'}">已发货</c:if>
+											</td>
+											
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
