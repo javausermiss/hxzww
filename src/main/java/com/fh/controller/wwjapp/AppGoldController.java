@@ -217,4 +217,15 @@ public class AppGoldController {
     }
     
     
+    /**
+     * 安卓端获取金币商城首页URL
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getGoldMallUrl", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject getGoldMallUrl(@RequestParam("userId") String userId) {
+        return RespStatus.successs().element("data", PropertiesUtils.getCurrProperty("service.address")+"/pooh-web/html/goldshop/index.html?userId=" + userId);
+    }
+    
 }
