@@ -19,7 +19,7 @@
         <result column="DEVICE_TYPE" property="deviceType"/>
 		<!-- <result column="TOY_ID" property="toy_id"/> -->
 		<result column="DOLL_TYPE" property="DOLL_TYPE"/>
-		<result column="MACHINE_TYPE" property="MACHINE_TYPE"/>
+		<result column="MACHINE_TYPE" property="machine_type"/>
 		<collection property="cameras" column="DOLL_ID" ofType="com.fh.vo.system.CameraVo">
 	        <id property="cameraId" column="CAMERA_ID"/>
 	        <result property="rtmpUrl" column="RTMP_URL"/>
@@ -27,7 +27,7 @@
 	        <result property="serverName" column="SERVER_NAME"/>
 	        <result property="livestream" column="LIVESTREAM"/>
 	        <result property="cameraType" column="CAMERA_TYPE"/>
-	        <result property="machine_type" column="MACHINE_TYPE"/>
+	       <!-- <result property="machine_type" column="MACHINE_TYPE"/>-->
 	        <result property="deviceState" column="DEVICE_STATE"/>
 	    </collection>
 	</resultMap>
@@ -332,6 +332,7 @@
 			d.DOLL_URL,
 			d.DOLL_CONVERSIONGOLD,
             d.DEVICE_TYPE,
+            d.MACHINE_TYPE,
             d.SERIAL_NUMBER,
 			c.CAMERA_ID,
 			c.CAMERA_TYPE,

@@ -23,6 +23,15 @@ public class DollVo {
     private String dollType; //娃娃显示渠道类型
 	private String reward;//奖金
 	private String deviceType;//网关类型
+	private String machine_type;
+
+	public String getMachine_type() {
+		return machine_type;
+	}
+
+	public void setMachine_type(String machine_type) {
+		this.machine_type = machine_type;
+	}
 
 	public String getReward() {
 		return reward;
