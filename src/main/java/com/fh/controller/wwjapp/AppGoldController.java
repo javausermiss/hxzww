@@ -225,7 +225,7 @@ public class AppGoldController {
     @RequestMapping(value = "/getGoldMallUrl", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject getGoldMallUrl(@RequestParam("userId") String userId) {
-        return RespStatus.successs().element("data", PropertiesUtils.getCurrProperty("service.address")+"/pooh-web/html/goldshop/index.html?userId=" + userId);
+        return RespStatus.successs().element("data", PropertiesUtils.getCurrProperty("service.address")+"/pooh-web/html/coinShop/index.html?userId=" + userId);
     }
     
 }
