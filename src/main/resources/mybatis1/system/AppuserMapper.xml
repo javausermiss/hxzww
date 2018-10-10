@@ -51,7 +51,8 @@
 		POINTS_MULTIPLES,
 		TODAY_GUESS,
 		TODAY_POOH,
-		JCID
+		JCID,
+		SUPPORTTAG
 	</sql>
 
     <!-- 字段值 -->
@@ -97,7 +98,8 @@
 		#{POINTS_MULTIPLES},
 		#{TODAY_GUESS},
 		#{TODAY_POOH},
-		#{JCID}
+		#{JCID},
+		#{SUPPORTTAG}
 	</sql>
 
     <!-- 角色表 -->
@@ -480,6 +482,9 @@
         <if test="JCID !=null and JCID != ''">
             ,JCID = #{JCID}
         </if>
+        <if test="SUPPORTTAG != null and SUPPORTTAG != ''">
+            ,SUPPORTTAG = #{SUPPORTTAG}
+        </if>
         WHERE
         USER_ID = #{USER_ID}
     </update>
@@ -605,6 +610,15 @@
 		MONTH_CARD_TAG = #{MONTH_CARD_TAG},
 		TODAY_POOH = #{TODAY_POOH},
 		TODAY_GUESS = #{TODAY_GUESS}
+		WHERE
+		USER_ID = #{USER_ID}
+    </update>
+
+    <update id="updateAppUserSupt" parameterType="com.fh.entity.system.AppUser">
+        UPDATE
+        sys_app_user
+		SET
+		SUPPORTTAG = #{SUPPORTTAG}
 		WHERE
 		USER_ID = #{USER_ID}
     </update>

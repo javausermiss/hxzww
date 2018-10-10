@@ -334,10 +334,13 @@ public class AppuserService implements AppuserManager{
 	public int updateAppUserSign(AppUser appUser) throws Exception {
 		return (int)dao.update("AppuserMapper.updateAppUserSign",appUser);
 	}
-	
-	
 
-    /**
+	@Override
+	public int updateAppUserSupt(AppUser appUser) throws Exception {
+		return (int)dao.update("AppuserMapper.updateAppUserSupt",appUser);
+	}
+
+	/**
      * 修改账户金币
      * @param userId appUser.userId 用户对象主键
      * @param operNum 操作的数量

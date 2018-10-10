@@ -65,8 +65,6 @@ public class AppLoginController extends BaseController {
     @Resource(name="pointsdetailService")
     private PointsDetailManager pointsdetailService;
 
-    @Resource(name = "pointsrewardService")
-    private PointsRewardManager pointsrewardService;
 
     /**
      * 个人信息
@@ -173,11 +171,6 @@ public class AppLoginController extends BaseController {
             RedisUtil.getRu().del("SMSCode:" + phone);
             AppUser appUser = appuserService.getUserByPhone(phone);
             if (appUser != null) {
-               /* boolean b = RedisUtil.getRu().exists("sessionId:appUser:" + phone);
-                if (b){
-                    return RespStatus.fail("该用户已经登录");
-                }*/
-
                 String sessionID = MyUUID.createSessionId();
                 String userId = appUser.getUSER_ID();
 

@@ -7,6 +7,7 @@ import com.fh.entity.system.UserPoints;
 import com.fh.util.Const;
 import com.fh.util.PageData;
 import net.sf.json.JSONObject;
+import org.hibernate.persister.walking.spi.WalkingException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -287,6 +288,15 @@ public interface AppuserManager {
      * @throws Exception
      */
     public int  updateAppUserSign(AppUser appUser)throws Exception;
+
+    /**
+     * 修改点赞标签
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+
+    public  int updateAppUserSupt(AppUser appUser)throws Exception;
 
     /**
      * 修改账户金币

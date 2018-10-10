@@ -8,6 +8,7 @@ import com.fh.service.system.afterVoting.AfterVotingManager;
 import com.fh.service.system.appuser.AppuserManager;
 import com.fh.service.system.betgame.BetGameManager;
 import com.fh.service.system.doll.DollManager;
+import com.fh.service.system.loginrewardgold.LoginRewardGoldManager;
 import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.playback.PlayBackManage;
 import com.fh.service.system.playdetail.PlayDetailManage;
@@ -27,6 +28,7 @@ import com.iot.game.pooh.server.rpc.interfaces.bean.RpcReturnCode;
 import com.iot.game.pooh.web.rpc.interfaces.entity.GuessDetail;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -65,6 +67,8 @@ public class BetGameService extends BaseController implements BetGameManager {
     private UserPointsManager userpointsService;
     @Resource(name="pointsdetailService")
     private PointsDetailManager pointsdetailService;
+    @Resource(name="loginrewardgoldService")
+    private LoginRewardGoldManager loginrewardgoldService;
 
 
 
@@ -478,6 +482,22 @@ public class BetGameService extends BaseController implements BetGameManager {
                 int ob = Integer.valueOf(appUser.getBALANCE());
                 int nb = ob + con;
                 appUser.setBALANCE(String.valueOf(nb));
+                //次日奖励金币
+                LoginRewardGold loginRewardGold = new LoginRewardGold();
+                loginRewardGold.setUserId(play_user_Id);
+                loginRewardGold.setCreateTime(DateUtil.getDay());
+                loginRewardGold.setTag("N");
+                LoginRewardGold ld = loginrewardgoldService.getInfo(loginRewardGold);
+                if (ld==null){
+                    loginRewardGold.setGold(con);
+                    loginRewardGold.setId(MyUUID.getUUID32());
+                    loginrewardgoldService.regInfo(loginRewardGold);
+
+                }else {
+                    ld.setGold(ld.getGold()+ con);
+                    loginrewardgoldService.updateInfo(ld);
+                }
+
                 //用户金币记录
                 Payment payment = new Payment();
                 payment.setGOLD("+" + String.valueOf(con));

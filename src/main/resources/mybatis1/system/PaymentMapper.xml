@@ -66,8 +66,9 @@
 	
 		<!-- 列表 -->
 	<select id="findRegDetaillistPage" parameterType="page" resultType="pd">
-		select 
-				
+		select
+			   o.ORDER_NO,
+			   o.CTYPE,
 			   o.REC_ID,
 			   o.ORDER_ID,
 			   o.CREATETIME,

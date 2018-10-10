@@ -64,6 +64,8 @@ public class AppUser {
 
     private String JDNUM;
 
+    private String SUPPORTTAG;
+
     public AppUser() {
     }
 
@@ -97,6 +99,14 @@ public class AppUser {
                 ", CNEE_ADDRESS='" + CNEE_ADDRESS + '\'' +
                 ", CNEE_PHONE='" + CNEE_PHONE + '\'' +
                 '}';
+    }
+
+    public String getSUPPORTTAG() {
+        return SUPPORTTAG;
+    }
+
+    public void setSUPPORTTAG(String SUPPORTTAG) {
+        this.SUPPORTTAG = SUPPORTTAG;
     }
 
     public Integer getTODAY_GUESS() {

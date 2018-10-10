@@ -118,12 +118,11 @@
                                                     </td>
                                                     <td class='center' style="width: 30px;">${vs.index+1}</td>
                                                     <td class='center'>${var.NICKNAME}</td>
-                                                     <td class='center'>${var.REG_ID}</td>
-                                                    <td class='center'></td>
+                                                     <td class='center'>${var.REC_ID}</td>
+                                                    <td class='center'>${var.ORDER_NO}</td>
                                                     <td class='center'>${var.CREATETIME}</td>
-                                                    <th class="center">${var.REGMODE}</th>
+                                                    <th class="center">${var.CTYPE}</th>
                                                     <th class="center">${var.REGAMOUNT/100}</th>
-                                                    
                                                     <td style="width: 200px;" class='center'>
                                                         <c:if test="${var.STATUS == '0' }">
                                                        		 <span class="label label-important arrowed-in">未支付</span>
