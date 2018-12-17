@@ -17,7 +17,9 @@
 		APPVERSION_ID,
 		FLAG,
 		ANDROID_DISPLAY,
-		IOS_DISPLAY
+		IOS_DISPLAY,
+		ANDROID_INVITATION,
+		IOS_INVITATION
 	</sql>
 	
 	<!-- 字段值 -->
@@ -30,7 +32,9 @@
 		#{APPVERSION_ID},
 		#{FLAG},
 		#{ANDROID_DISPLAY},
-		#{IOS_DISPLAY}
+		#{IOS_DISPLAY},
+		#{ANDROID_INVITATION},
+		#{IOS_INVITATION}
 	</sql>
 	
 	<!-- 新增-->
@@ -161,7 +165,9 @@
 		SELECT
 		tb_app_version.VERSION,
 		tb_app_version.ANDROID_DISPLAY,
-		tb_app_version.IOS_DISPLAY
+		tb_app_version.IOS_DISPLAY,
+		tb_app_version.ANDROID_INVITATION,
+		tb_app_version.IOS_INVITATION
 		FROM
 		tb_app_version
 		WHERE
