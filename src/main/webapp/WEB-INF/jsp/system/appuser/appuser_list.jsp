@@ -125,6 +125,7 @@
                                     <th class="center">客户来源</th>
                                     <th class="center"><i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>创建日期
                                     </th>
+                                    <th class="center">等级</th>
                                     <th class="center">手机号码</th>
                                     <th class="center">状态</th>
                                     <th class="center">金币余额</th>
@@ -150,6 +151,7 @@
                                                     <td class="center">${user.NAME }</td>
                                                     <td class="center">${user.CHANNEL_CODE }</td>
                                                     <td class="center">${user.CREATETIME }</td>
+                                                    <td class="center">${user.LEVEL}</td>
                                                     <td class="center">${user.PHONE }</td>
                                                     <td class="center">${user.STATUS}</td>
                                                     <td class="center">${user.BALANCE}</td>

@@ -24,7 +24,8 @@
         FMS_ORDER_NO,
         FMS_NAME,
         UPDATE_TIME,
-        TOY_NUM
+        TOY_NUM,
+        LEVELGIFT
     </sql>
 
     <!-- 字段值 -->
@@ -44,7 +45,8 @@
         #{FMS_ORDER_NO},
         #{FMS_NAME},
         #{UPDATE_TIME},
-        #{TOY_NUM}
+        #{TOY_NUM},
+        #{LEVELGIFT}
     </sql>
 
     <!-- 新增-->
@@ -113,6 +115,9 @@
         <if test="pd.SENDBOOLEAN != null and pd.SENDBOOLEAN != ''"><!-- 状态检索 -->
             and SENDBOOLEAN = #{pd.SENDBOOLEAN}
         </if>
+        <if test="pd.LEVELGIFT != null and pd.LEVELGIFT != ''">
+            and LEVELGIFT = #{pd.LEVELGIFT}
+        </if>
         ORDER BY SENDBOOLEAN ASC,CREATE_TIME DESC
     </select>
 
@@ -131,6 +136,9 @@
         </if>
         <if test="pd.SENDBOOLEAN != null and pd.SENDBOOLEAN != ''"><!-- 状态检索 -->
             and SENDBOOLEAN = #{pd.SENDBOOLEAN}
+        </if>
+        <if test="pd.LEVELGIFT != null and pd.LEVELGIFT != ''">
+            and LEVELGIFT = #{pd.LEVELGIFT}
         </if>
         ORDER
         BY
@@ -163,7 +171,8 @@
         REMARK,
         POST_REMARK,
         MODE_DESPATCH,
-        TOY_NUM
+        TOY_NUM,
+        LEVELGIFT
         )
         VALUES
         (
@@ -177,7 +186,8 @@
         #{REMARK},
         #{POST_REMARK},
         #{MODE_DESPATCH},
-        #{TOY_NUM}
+        #{TOY_NUM},
+        #{LEVELGIFT}
         )
     </insert>
     <!--根据playId查询发货信息-->

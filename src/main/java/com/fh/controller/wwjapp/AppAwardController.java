@@ -1,14 +1,23 @@
 package com.fh.controller.wwjapp;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.fh.entity.system.AppUser;
+import com.fh.entity.system.Order;
+import com.fh.entity.system.Spreader;
+import com.fh.service.system.appuser.AppuserManager;
+import com.fh.service.system.ordertest.OrderManager;
+import com.fh.service.system.spreader.SpreaderManager;
+import com.fh.util.DateUtil;
+import com.fh.util.wwjUtil.MyUUID;
+import lombok.Data;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fh.controller.base.BaseController;
 import com.fh.service.system.appuser.AppUserCodeManager;
@@ -22,7 +31,7 @@ import com.fh.util.wwjUtil.RedisUtil;
 import com.fh.util.wwjUtil.RespStatus;
 
 import net.sf.json.JSONObject;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping(value = "/app/award")
 public class AppAwardController extends BaseController {
@@ -34,6 +43,17 @@ public class AppAwardController extends BaseController {
 
     @Resource(name = "appUserCodeService")
     private AppUserCodeManager appUserCodeService;
+
+
+	@Resource(name = "appuserService")
+	private AppuserManager appuserService;
+
+	@Resource(name = "orderService")
+	private OrderManager orderService;
+
+	@Resource(name="spreaderService")
+	private SpreaderManager spreaderService;
+
     
     
     /**
@@ -60,11 +80,11 @@ public class AppAwardController extends BaseController {
     			userCode=appUserCodeService.getUserCodeByCode(randomCode);
     			if(userCode!=null){
     				randomCode=RandomUtils.getRandomLetterStr(8);
-    			}
+			}
     			userCode=new PageData();
     			userCode.put("USER_ID", userId);
     			userCode.put("CODE_VALUE", randomCode);
-    			userCode.put("CODE_NUM", 100);
+    			userCode.put("CODE_NUM", 10000);
     			userCode.put("CODE_TYPE", "1");
     			int oper=appUserCodeService.save(userCode); //保存用户兑换码
     			if(oper<1){
@@ -161,7 +181,7 @@ public class AppAwardController extends BaseController {
 				//已经兑换的次数
 				awardCount=Integer.parseInt(awardTotal.get("AWARDCOUNT").toString());
 			}
-			int invite_awardTotal=100;
+			int invite_awardTotal=10000;
 			try{
 				String award_Total_NumStr =RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_NUM.getValue());
 				invite_awardTotal=Integer.parseInt(award_Total_NumStr);
@@ -203,5 +223,222 @@ public class AppAwardController extends BaseController {
 		}
     
     }
+/************************************************************ 推广版本系列接口* **********************************************************************************/
+	/**
+	 * 查询推广的下线人员
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/getpsUser",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+    public JSONObject getpsUser(@RequestParam("userId") String userId
+								){
+    	try {
+			List<PageData> list = appuserService.getpsUser(userId);
+			for (int i = 0; i < list.size() ; i++) {
+				PageData p =  list.get(i);
+				Object a = p.get("ALLREGAMOUNT");
+				if (a == null){
+					p.put("ALLREGAMOUNT",0);
+				}
+			}
+			Map<String ,Object> map = new HashMap<>();
+			map.put("userList",list);
+			return RespStatus.successs().element("data",map);
+		}catch (Exception e){
+    		e.printStackTrace();
+    		return RespStatus.fail();
+
+		}
+    }
+
+	/**
+	 * 查询该用户的充值记录
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/getpsUserCharge",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public JSONObject getpsUserCharge(@RequestParam("userId") String userId,
+									  @RequestParam("time") String time
+									  ){
+    	try {
+			String begin_time = DateUtil.getMinMonthDate(time);
+			String end_time = DateUtil.getMaxMonthDate(time);
+    		PageData pageData = new PageData();
+    		pageData.put("userId",userId);
+			pageData.put("begin_time",begin_time);
+			pageData.put("end_time",end_time);
+    		List<PageData> list = orderService.getpsUserCharge(pageData);
+    		int summoney = 0;
+    		if (list != null){
+				for (int i = 0; i < list.size(); i++) {
+					PageData pd=  list.get(i);
+					 summoney +=  Integer.valueOf(pd.get("REGAMOUNT").toString());
+				}
+			}
+			Map<String ,Object> map = new HashMap<>();
+			map.put("chargeList",list);
+			map.put("summoney",summoney);
+			return RespStatus.successs().element("data",map);
+		}catch (Exception e){
+    		e.printStackTrace();
+    		return RespStatus.fail();
+		}
+	}
+
+	/**
+	 * 推广用户存储提款账号
+	 * @param userId
+	 * @param account
+	 * @return
+	 */
+	@RequestMapping(value = "/insertProAccount",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public JSONObject insertProAccount(@RequestParam("userId") String userId,
+									   @RequestParam(value = "account")String account,
+									   @RequestParam("type") String type){
+		try {
+			AppUser appUser = appuserService.getUserByID(userId);
+			if (type.equals("wx")){
+				appUser.setPRO_WXACCOUNT(account);
+			}else {
+				appUser.setPRO_ZFBACCOUNT(account);
+			}
+			appuserService.updateAppUserBalanceById(appUser);
+			return RespStatus.successs();
+
+		}catch (Exception e){
+			e.printStackTrace();
+			return RespStatus.fail();
+		}
+	}
+
+
+
+	/**
+	 * 推广者提款
+	 * @param userId
+	 * @param money
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "/extractingAmount",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public JSONObject extractingAmount(@RequestParam("userId") String userId,
+										@RequestParam("money") Integer money,
+									   	@RequestParam("type") String type,
+									    @RequestParam(value = "account",required = false)String account
+
+
+	){
+		try {
+			AppUser appUser = appuserService.getUserByID(userId);
+			int pb =  appUser.getPRO_BALANCE();
+			if (money > pb){
+				return RespStatus.fail("数据不合法");
+			}
+			int np = pb - money;
+			appUser.setPRO_BALANCE(np);
+			appuserService.updateAppUserBalanceById(appUser);
+
+
+			Spreader spreader = new Spreader();
+			spreader.setUSERID(userId);
+			spreader.setWITHDRAWALS(money);
+			if (type.equals("wx")){
+				spreader.setACCOUNT(appUser.getPRO_WXACCOUNT());
+			}else {
+				spreader.setACCOUNT(appUser.getPRO_ZFBACCOUNT());
+			}
+			spreader.setTYPE(type);
+			spreader.setSPREADER_ID(MyUUID.getUUID32());
+			spreaderService.regInfo(spreader);
+
+			List<Spreader> list = spreaderService.listS(userId);
+			Map<String,Object> map = new HashMap<>();
+			map.put("listS",list);
+			map.put("proBlance",np);
+			return RespStatus.successs().element("data",map);
+		}catch (Exception e){
+			e.printStackTrace();
+			return RespStatus.fail();
+		}
+	}
+
+	/**
+	 * 查询下线客户抓中次数
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/userCatchNum",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public JSONObject userCatchNum(@RequestParam("userId") String userId
+								   ){
+		try {
+			PageData pageData = new PageData();
+			pageData.put("PRO_USER_ID",userId);
+			List<PageData> list =  appuserService.getcpUser(pageData);
+			Map<String,Object> map = new HashMap<>();
+			map.put("userList",list);
+			return RespStatus.successs().element("data",map);
+		}catch (Exception e){
+			e.printStackTrace();
+			return RespStatus.fail();
+		}
+
+	}
+
+	/**
+	 * 推广者取款明细
+	 * @param userId
+	 * @param time
+	 * @return
+	 */
+	@RequestMapping(value = "/getMoneyInfo",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public JSONObject getMoneyInfo(@RequestParam("userId") String userId,
+								   @RequestParam("time") String time){
+
+		try {
+			String begin_time = DateUtil.getMinMonthDate(time);
+			String end_time = DateUtil.getMaxMonthDate(time);
+			PageData pageData = new PageData();
+			pageData.put("userId",userId);
+			pageData.put("begin_time",begin_time);
+			pageData.put("end_time",end_time);
+			List<PageData> list = spreaderService.list_time(pageData);
+
+			PageData p1 = spreaderService.list_time_money(pageData);
+			PageData p = new PageData();
+			Map<String,Object> map = new HashMap<>();
+			if ( p1 == null){
+				p.put("USERID",userId);
+				p.put("ALLMONEY",0);
+				map.put("money",p);
+			}else {
+				map.put("money",p1);
+			}
+			map.put("info",list);
+
+			return RespStatus.successs().element("data",map);
+
+		}catch (Exception e){
+			e.printStackTrace();
+			return RespStatus.fail();
+		}
+	}
+
+	public static void main(String[] a){
+		String aa = DateUtil.getMaxMonthDate("2015-06-25");
+		System.out.println(aa);
+
+	}
+
+
+
+
+
+
 
 }

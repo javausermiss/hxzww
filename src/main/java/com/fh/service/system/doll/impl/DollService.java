@@ -228,5 +228,16 @@ public class DollService implements DollManager {
 	public void updateDollStateByDollId(PageData pd)throws Exception{
 		dao.update("DollMapper.updateDollStateByDollId", pd);
 	}
+
+
+	@Override
+	public Doll getToyNum(String dollId) throws Exception {
+		return (Doll)dao.findForObject("DollMapper.getToyNum",dollId);
+	}
+
+	@Override
+	public int updateToyNum(PageData pageData) throws Exception {
+		return (int)dao.update("DollMapper.updateToyNum",pageData);
+	}
 }
 

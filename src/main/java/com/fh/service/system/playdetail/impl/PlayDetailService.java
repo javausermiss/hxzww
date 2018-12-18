@@ -193,4 +193,20 @@ public class PlayDetailService implements PlayDetailManage {
     public List<PageData> getGameList(String dollId)throws Exception {
         return (List<PageData>) dao.findForList("PlayDetailMapper.getGameList", dollId);
     }
+
+    /**
+     * 抓娃娃照片墙
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<PageData> getPlayRecordForUserPicture(String userId) throws Exception {
+        return (List<PageData>) dao.findForList("PlayDetailMapper.getPlayRecordForUserPicture", userId);
+    }
+
+    @Override
+    public List<PageData> getPlayRecordForTgUser(PageData pageData) throws Exception {
+        return (List<PageData>) dao.findForList("PlayDetailMapper.getPlayRecordForTgUser", pageData);
+    }
 }

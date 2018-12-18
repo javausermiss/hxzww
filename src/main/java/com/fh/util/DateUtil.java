@@ -227,10 +227,51 @@ public class DateUtil {
 	private static String getTimeNum(String time){
 		return time.substring(0,10).replace("-","");
 	}
-    
-    public static void main(String[] args) {
+
+
+	public static String getMinMonthDate(String repeatDate){
+		SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		try {
+			if(StringUtils.isNotBlank(repeatDate) && !"null".equals(repeatDate)){
+				calendar.setTime(dft.parse(repeatDate));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+		StringBuilder sb = new StringBuilder(dft.format(calendar.getTime()));
+		sb.append(" 00:00:00");
+		return sb.toString();
+    }
+
+
+	public static String getMaxMonthDate(String repeatDate) {
+		SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		try {
+			if (StringUtils.isNotBlank(repeatDate) && !"null".equals(repeatDate)) {
+				calendar.setTime(dft.parse(repeatDate));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		StringBuilder sb = new StringBuilder(dft.format(calendar.getTime()));
+		sb.append(" 23:59:59");
+		return sb.toString();
+	}
+
+
+
+
+
+
+		public static void main(String[] args) {
     	System.out.println(getDays());
     	System.out.println(getAfterDayWeek("3"));
+
     }
 
 }

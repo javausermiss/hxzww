@@ -162,6 +162,23 @@ public interface DollManager{
 	 * @throws Exception
 	 */
 	public void updateDollStateByDollId(PageData pd)throws Exception;
+
+	/**
+	 * 查询该房间的抓娃娃总数
+	 * @param dollId
+	 * @return
+	 * @throws Exception
+	 */
+	public Doll getToyNum(String dollId)throws Exception;
+
+
+	/**
+	 * 更改房间内的娃娃总数
+	 * @param pageData
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateToyNum(PageData pageData)throws Exception;
 		
 }
 

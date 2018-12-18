@@ -83,13 +83,13 @@ $('.address-baocunbtn').click(function () {
         addressDetail:addressDetail
     };
 	localStorage.setItem('info', JSON.stringify(info));	
-	history.go(-1);
+	location.href='pro-details.html?'+userid;
 });
 //积分记录JS
 //获取总积分(首页总积分也用到此函数)
 function getPoints () {
 	$.ajax({
-        url: 'http://47.100.15.18:8080/pooh-web/api/user/getUserInfo',
+        url: 'http://111.231.139.61:18081/pooh-web/api/user/getUserInfo',
         type: 'post',
 		dataType: 'json',
         data: {
@@ -111,7 +111,7 @@ getPoints();
 function getPointRecord () {
 	var strRecord='';
 	$.ajax({
-        url: 'http://47.100.15.18:8080/pooh-web/app/goldMall/getappUserAcountList ',
+        url: 'http://111.231.139.61:18081/pooh-web/app/goldMall/getappUserAcountList ',
         type: 'post',
 		dataType: 'json',
         data: {
@@ -140,7 +140,7 @@ getPointRecord();
 function getChangeRecord () {
 	var strChangeRecord='';
 	$.ajax({
-        url: 'http://47.100.15.18:8080/pooh-web/app/goldMall/getGoldGoodsDetail',
+        url: 'http://111.231.139.61:18081/pooh-web/app/goldMall/getGoldGoodsDetail',
         type: 'post',
 		dataType: 'json',
         data: {
@@ -150,8 +150,8 @@ function getChangeRecord () {
         	var arr=data.data.GoldSendGoodsList;
         	console.log(data);
         	for (var i=0;i<arr.length;i++) {
-        		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><div class="duihuan-list-left"><img src="http://47.100.15.18:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div></div>'
-//      		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://47.100.15.18:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
+        		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div></div>'
+//      		strChangeRecord+='<div class="duihuan-list" data-id = "'+arr[i].goodsNum+'"><a href="pro-details.html?'+userid+'"><div class="duihuan-list-left"><img src="http://111.231.139.61:8888/'+arr[i].imgUrl+'" class="duihuan-list-img"/></div><div class="duihuan-list-right"><div>'+arr[i].goodsName+'</div><p>兑换成功</p></div><img src="img/15.png" alt="" class="duihuan-list-btn"/></a> </div>'
         	};
         	$('.duihuan-list-cont').append($(strChangeRecord));
         },

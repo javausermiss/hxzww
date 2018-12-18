@@ -12,20 +12,15 @@ import com.fh.util.PageData;
 import com.fh.util.wwjUtil.RespStatus;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 竞猜接口
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/app/betgame")
 public class AppBetGameController {
@@ -147,7 +142,9 @@ public class AppBetGameController {
     {
 
         try {
-          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,multiple,afterVoting,flag);
+            String[] guessKeys  = guessKey.split(",");
+            int keysNum = guessKeys.length;
+          return  betGameService.doBet(userId,dollId,wager,guessId,guessKey,multiple,afterVoting,flag,keysNum);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();
@@ -271,7 +268,17 @@ public class AppBetGameController {
 
     }
 
-
+    public static void main(String[] a){
+        String guessKey = "4,5";
+        String[] guessKeys  = guessKey.split(",");
+        List<String> list = Arrays.asList(guessKeys);
+        int keysNum = guessKeys.length;
+        if (list.contains("5")){
+            System.out.println("ZHONGJIANG");
+        }
+        System.out.println(Arrays.toString(guessKeys));
+        System.out.println(keysNum);
+    }
 
 
 

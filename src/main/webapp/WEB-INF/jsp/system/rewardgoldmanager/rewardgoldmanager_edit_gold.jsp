@@ -32,7 +32,7 @@
                             <div id="zhongxin" style="padding-top: 13px;">
                                 <table id="table_report" class="table table-striped table-bordered table-hover">
                                     <tr>
-                                        <td style="width:75px;text-align: right;padding-top: 13px;">次日赠送金币数:</td>
+                                        <td style="width:75px;text-align: right;padding-top: 13px;">次日赠送金币倍率:</td>
                                         <td><input type="number" name="GOLD" id="GOLD" value="${pd.GOLD}" maxlength="32" placeholder="这里输入次日赠送金币数" title="次日赠送金币数" style="width:98%;"/></td>
                                     </tr>
                                     <tr>

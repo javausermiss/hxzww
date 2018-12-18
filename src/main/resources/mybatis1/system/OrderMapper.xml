@@ -125,4 +125,47 @@
 		  	AND u1.CHANNEL_CODE=#{channelCode}
 			AND o1.`STATUS`='1' 
     </select>
+
+
+    <select id="getpsUserCharge" parameterType="page" resultType="pd">
+
+        select
+        o.REC_ID,
+		o.ORDER_ID,
+		o.USER_ID,
+		o.CREATETIME,
+		o.REGAMOUNT,
+		o.`STATUS`,
+		o.REGMODE,
+		o.ORDER_NO,
+		o.REGGOLD,
+		o.CTYPE,
+		o.PAY_TYPE,
+		o.PRO_USER_ID,
+		o.CHANNEL,
+		o.ADD_INFO,
+		o.PAYOUT_TYPE,
+		u.IMAGE_URL,
+		u.NICKNAME
+         from
+         sys_app_order o
+         left join
+         sys_app_user u
+         on
+         o.USER_ID=u.USER_ID
+         where
+          o.USER_ID = #{userId}
+          and
+          o.`STATUS`='1'
+          and o.PRO_USER_ID != ''
+          AND o.CREATETIME &gt;= #{begin_time}
+          AND o.CREATETIME &lt;= #{end_time}
+          order
+          by
+          CREATETIME
+          desc
+
+    </select>
+
+
 </mapper>

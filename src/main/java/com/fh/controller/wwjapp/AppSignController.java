@@ -17,10 +17,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -30,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/app/sign")
 public class AppSignController {

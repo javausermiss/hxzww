@@ -27,7 +27,7 @@ import com.fh.util.PageData;
  */
 @Controller
 @RequestMapping(value="/promoteFranchiseeSubuser")
-public class PromoteFranchiseeSubuserController extends BaseController {
+public class  PromoteFranchiseeSubuserController extends BaseController {
 	
 	String menuUrl = "promoteFranchiseeSubuser/list.do"; //菜单地址(权限用)
 	@Resource(name="promoteAppUserService")

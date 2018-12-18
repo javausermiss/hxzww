@@ -19,6 +19,7 @@ public class SendGoods {
     private String SENDBOOLEAN;//快递状态
     private String TOY_NUM;//抓中的娃娃编号，即游戏列表ID
     private String SEND_NUM_ID;//拼接以后的订单流水的单号
+    private String LEVELGIFT;//等级礼包
 
 
 
@@ -33,6 +34,14 @@ public class SendGoods {
         this.CNEE_PHONE = CNEE_PHONE;
         this.CREATE_TIME = CREATE_TIME;
         this.REMARK = REMARK;
+    }
+
+    public String getLEVELGIFT() {
+        return LEVELGIFT;
+    }
+
+    public void setLEVELGIFT(String LEVELGIFT) {
+        this.LEVELGIFT = LEVELGIFT;
     }
 
     public String getSEND_NUM_ID() {

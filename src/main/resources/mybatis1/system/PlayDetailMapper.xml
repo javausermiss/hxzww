@@ -268,7 +268,7 @@
     <!--查询最近抓取成功的10条记录-->
     <select id="getPlayRecordPM" resultType="com.fh.entity.system.PlayDetail">
         select
-        u.nickname,u.IMAGE_URL,d.doll_name
+        u.nickname,u.IMAGE_URL,d.doll_name,d.MACHINE_TYPE
         from
         tb_doll_play_detail as dd
         inner join  sys_app_doll as d on d.doll_id = dd.dollid
@@ -281,6 +281,44 @@
         limit
         0,10
     </select>
+
+    <select id="getPlayRecordForUserPicture" parameterType="String" resultType="pd">
+        select
+        u.nickname,u.IMAGE_URL,d.doll_name,d.MACHINE_TYPE,d.DOLL_URL,dd.CREATE_DATE
+        from
+        tb_doll_play_detail as dd
+        inner join  sys_app_doll as d on d.doll_id = dd.dollid
+        inner join sys_app_user as u on u.user_id = dd.userid
+        WHERE
+        dd.STATE = '1'
+        and
+        dd.userid = #{userId}
+        ORDER BY
+        dd.CREATE_DATE
+        DESC
+        limit
+        0,10
+    </select>
+
+    <select id="getPlayRecordForTgUser" parameterType="page" resultType="pd">
+        select
+        u.nickname,u.IMAGE_URL,d.doll_name,d.MACHINE_TYPE,d.DOLL_URL,dd.CREATE_DATE
+        from
+        tb_doll_play_detail as dd
+        inner join  sys_app_doll as d on d.doll_id = dd.dollid
+        inner join sys_app_user as u on u.user_id = dd.userid
+        WHERE
+        dd.STATE = '1'
+        and
+        dd.userid = #{userId}
+       AND dd.CREATE_DATE &gt;= #{begin_time}
+        AND dd.CREATE_DATE &lt;= #{end_time}
+        ORDER BY
+        dd.CREATE_DATE
+        DESC
+    </select>
+
+
 
 
     <update id="updatePostState" parameterType="com.fh.entity.system.PlayDetail">

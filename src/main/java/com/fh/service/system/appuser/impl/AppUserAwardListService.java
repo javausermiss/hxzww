@@ -172,9 +172,10 @@ public class AppUserAwardListService implements AppUserAwardListManager{
         AppUser appUser = appuserService.getUserByID(userId);
         int userBlance1 = Integer.valueOf(appUser.getBALANCE()) + awardNum;
         appUser.setBALANCE(String.valueOf(userBlance1));
+        appUser.setPRO_USER_ID(awarkPd.getString("USER_ID"));
         appuserService.updateAppUserBalanceById(appUser);
-        
-     
+
+
         Payment payment = new Payment();
         payment.setGOLD("+" + awardNum);
         payment.setUSERID(userId);
@@ -202,6 +203,10 @@ public class AppUserAwardListService implements AppUserAwardListManager{
         appUser = appuserService.getUserByID(awarkPd.getString("USER_ID"));
         int userBlance2 = Integer.valueOf(appUser.getBALANCE()) + invite_awardNum;
         appUser.setBALANCE(String.valueOf(userBlance2));
+        String pro_tag =  appUser.getPRO_TAG();
+        if (pro_tag.equals("0")){
+        	appUser.setPRO_TAG("1");
+		}
         appuserService.updateAppUserBalanceById(appUser);
 
 		//首先查询积分列表是否有该用户信息

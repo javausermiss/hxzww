@@ -5,10 +5,7 @@ import com.fh.service.system.doll.DollManager;
 import com.fh.util.wwjUtil.*;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -19,6 +16,7 @@ import javax.annotation.Resource;
  * @author wjy
  * 2017/11/07
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping(value = "/app/dollReg")
 public class AppDollRegController {

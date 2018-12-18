@@ -8,10 +8,9 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.fh.entity.system.Doll;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
@@ -32,6 +31,7 @@ import net.sf.json.JSONObject;
  *
  * @author JAVA_DEV
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping(value = "/app/doll")
 public class AppDollController extends BaseController {
@@ -184,6 +184,32 @@ public class AppDollController extends BaseController {
         }
 
     }
+
+
+    /**
+     * 获取分页列表
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getDollToyNum", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+                public JSONObject getDollToyNum(@RequestParam("roomId") String roomId) {
+        try {
+            Doll doll = dollService.getToyNum(roomId);
+            int num =  doll.getTOY_NUM();
+            Map<String,Object> map = new HashMap<>();
+            map.put("toyNum", num);
+            return RespStatus.successs().element("data", map);
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            return RespStatus.exception();
+        }
+
+    }
+
+
+
+
 
 
 }

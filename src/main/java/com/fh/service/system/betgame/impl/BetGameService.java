@@ -310,8 +310,13 @@ public class BetGameService extends BaseController implements BetGameManager {
     }
 
     @Override
-    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey, Integer multiple, Integer afterVotingNum,String flag) throws Exception {
+    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey, Integer multiple, Integer afterVotingNum,String flag,int keysNum) throws Exception {
         String f = "false";
+        AppUser appUser = appuserService.getUserByID(userId);
+        if (appUser == null) {
+            return null;
+        }
+      //在游戏中
         if (!flag.equals(f)){
             PlayDetail p1 = new PlayDetail();
             p1.setDOLLID(dollId);
@@ -323,40 +328,98 @@ public class BetGameService extends BaseController implements BetGameManager {
                 return RespStatus.fail("禁止投注！");
             }
         }
-        AppUser appUser = appuserService.getUserByID(userId);
-        if (appUser == null) {
-            return null;
-        }
+
         //总消费金额的判断
         String balance = appUser.getBALANCE();
-        if (f.equals(flag)){
+        int dollgold = dollService.getDollByID(dollId).getDOLL_GOLD();
+        if (f.equals(flag)) {
             //不在游戏中
-            if (Integer.parseInt(balance) > wager * (afterVotingNum)) {
-                int n = Integer.parseInt(balance) - (wager * (afterVotingNum));
+            if (Integer.parseInt(balance) > wager * (afterVotingNum) * keysNum) {
+                //计算用户等级
+                PageData pageData_ = new PageData();
+                pageData_.put("userId", userId);
+                PageData pageData1_ = userpointsService.getCostGoldSumAll(pageData_);
+                String gm_ = "0";
+                if (pageData1_ != null) {
+                    double aa = (double) pageData1_.get("godsum");
+                    gm_ = new DecimalFormat("0").format(aa).substring(1);
+                }
+                int costSumGold = Integer.valueOf(gm_) + wager * (afterVotingNum) * keysNum;
+                int level = 0;
+                double levelGold = 0;
+                if (costSumGold >= 100) {
+                    for (int i = 1; i < 100; i++) {
+                        levelGold = 200 * (Math.pow(1.5, i) - 1);
+                        if (levelGold > costSumGold) {
+                            level = i - 1;
+                            break;
+                        }
+                        if (levelGold == costSumGold) {
+                            level = i;
+                            break;
+                        }
+                    }
+                }
+                int n = Integer.parseInt(balance) - (wager * (afterVotingNum)* keysNum);
                 appUser.setBALANCE(String.valueOf(n));
+                appUser.setLEVEL(level);
                 appuserService.updateAppUserBalanceById(appUser);
             } else {
                 return RespStatus.fail("余额不足无法竞猜");
             }
         }else {
             //游戏中的竞猜，此时可能包括追投
-            if (Integer.parseInt(balance) > wager * (1+afterVotingNum)) {
-                int n = Integer.parseInt(balance) - (wager * (1+afterVotingNum));
+            if (Integer.parseInt(balance) > wager * (1+afterVotingNum) * keysNum) {
+                int n = Integer.parseInt(balance) - (wager * (1+afterVotingNum)* keysNum);
+                //计算用户等级
+                PageData pageData_ = new PageData();
+                pageData_.put("userId",userId);
+                PageData pageData1_ =  userpointsService.getCostGoldSumAll(pageData_);
+                String gm_ = "0";
+                if (pageData1_ != null) {
+                    double aa = (double) pageData1_.get("godsum");
+                    gm_ = new DecimalFormat("0").format(aa).substring(1);
+                }
+                int costSumGold =  Integer.valueOf(gm_) + wager * (1+afterVotingNum)* keysNum;
+                int level = 0 ;
+                double levelGold = 0;
+                if (costSumGold >= 100 ){
+                    for (int i = 1; i < 100 ; i++) {
+                        levelGold = 200 * ( Math.pow(1.5,i) - 1);
+                        if (levelGold >= costSumGold) {
+                            if (costSumGold < levelGold) {
+                                level = i - 1;
+                            } else {
+                                level = i;
+                            }
+                            break;
+                        }
+                    }
+                }
                 appUser.setBALANCE(String.valueOf(n));
                 appuserService.updateAppUserBalanceById(appUser);
+
+                //增加本局竞猜消费记录
+                Payment payment = new Payment();
+                payment.setCOST_TYPE("1");
+                payment.setDOLLID(dollId);
+                payment.setUSERID(userId);
+                payment.setGOLD("-" + String.valueOf(dollgold * multiple * keysNum));
+                payment.setREMARK("竞猜" + dollService.getDollByID(dollId).getDOLL_NAME());
+                paymentService.reg(payment);
             } else {
                 return RespStatus.fail("余额不足无法竞猜");
             }
         }
-        int dollgold = dollService.getDollByID(dollId).getDOLL_GOLD();
+
         //增加该用户追投信息
         if (afterVotingNum != 0) {
-            //增加追投消费记录
+            //增加本局追投消费记录
             Payment payment = new Payment();
             payment.setCOST_TYPE(Const.PlayMentCostType.cost_type15.getValue());
             payment.setDOLLID(dollId);
             payment.setUSERID(userId);
-            payment.setGOLD("-" + String.valueOf(dollgold * multiple * afterVotingNum));
+            payment.setGOLD("-" + String.valueOf(dollgold * multiple * afterVotingNum * keysNum));
             if (f.equals(flag)){
                 payment.setREMARK(Const.PlayMentCostType.cost_type01.getName()+String.valueOf(afterVotingNum)+"期");
             }else {
@@ -396,29 +459,13 @@ public class BetGameService extends BaseController implements BetGameManager {
             Map<String, Object> map = new HashMap<>();
             map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
             return RespStatus.successs().element("data", map);
+        }else {
+            GuessDetailL guessDetailL = new GuessDetailL(userId, dollId, guessKey, wager, guessId);
+            this.regGuessDetail(guessDetailL);
         }
-
-
-        //增加消费记录
-        Payment payment = new Payment();
-        payment.setCOST_TYPE("1");
-        payment.setDOLLID(dollId);
-        payment.setUSERID(userId);
-        payment.setGOLD("-" + String.valueOf(wager));
-        payment.setREMARK("竞猜" + dollService.getDollByID(dollId).getDOLL_NAME());
-        paymentService.reg(payment);
-        //增加竞猜记录
-        GuessDetailL guessDetailL = new GuessDetailL(userId, dollId, guessKey, wager, guessId);
-        this.regGuessDetail(guessDetailL);
-        //更新奖池信息
-        Pond pond1 = new Pond();
-        pond1.setGUESS_ID(guessId);
-        pond1.setDOLL_ID(dollId);
-        Pond pond = pondService.getPondByPlayId(pond1);
-
         this.doCostGoldGetPoints(appUser,userId);
         Map<String, Object> map = new HashMap<>();
-        map.put("pond", getPondInfo(pond.getPOND_ID()));
+
         map.put("appUser", getAppUserInfo(appUser.getUSER_ID()));
         return RespStatus.successs().element("data", map);
     }
@@ -471,6 +518,14 @@ public class BetGameService extends BaseController implements BetGameManager {
         String play_user_Id = playDetail.getUSERID();//获取玩家ID
         //更新用户的娃娃数量
         if (gifinumber == 1) {
+            //改变房间的娃娃总数
+            Doll doll_1 = dollService.getToyNum(dollId);
+            int num =  doll_1.getTOY_NUM();
+            PageData pageData = new PageData();
+            pageData.put("TOY_NUM",num+1);
+            pageData.put("DOLL_ID",dollId);
+            dollService.updateToyNum(pageData);
+
             AppUser appUser = appuserService.getUserByID(play_user_Id);
             Integer new_dolltotal = appUser.getDOLLTOTAL() + 1;
             appUser.setDOLLTOTAL(new_dolltotal);
@@ -525,7 +580,7 @@ public class BetGameService extends BaseController implements BetGameManager {
 
         List<GuessDetail> guessDetail_list = new LinkedList<>();
 
-        StringBuilder sb = new StringBuilder();
+       // StringBuilder sb = new StringBuilder();
 
         if (list.size() != 0) {
             logger.info("竞猜成功者数量--------------->" + list.size());
@@ -572,18 +627,18 @@ public class BetGameService extends BaseController implements BetGameManager {
                 payment.setREMARK("竞猜成功");
                 paymentService.reg(payment);
 
-                sb.append(appUser.getNICKNAME()).append(",");
+                //sb.append(appUser.getNICKNAME()).append(",");
 
             }
 
-            sb.deleteCharAt(sb.length() - 1);
-            //获取每期中奖者的昵称
+           // sb.deleteCharAt(sb.length() - 1);
+          /*  //获取每期中奖者的昵称
             Pond pond_n = new Pond();
             pond_n.setGUESS_ID(playDetail.getGUESS_ID());
             pond_n.setDOLL_ID(dollId);
             Pond pond = pondService.getPondByPlayId(pond_n);//查询对应奖池信息
             pond.setGUESSER_NAME(sb.toString());
-            pondService.updatePondGuesser(pond);
+            pondService.updatePondGuesser(pond);*/
 
         }
         //竞猜失败的用户
@@ -602,6 +657,33 @@ public class BetGameService extends BaseController implements BetGameManager {
         }
         logger.info("前端展示的获胜者数量为-->" + guessDetail_list.size());
 
+        //计算用户等级
+
+        PageData pageData = new PageData();
+        pageData.put("userId",play_user_Id);
+        PageData pageData1 =  userpointsService.getCostGoldSumAll(pageData);
+        String gm = "0";
+        if (pageData1 != null) {
+            double aa = (double) pageData1.get("godsum");
+            gm = new DecimalFormat("0").format(aa).substring(1);
+        }
+        int costSumGold =  Integer.valueOf(gm);
+        int level = 0 ;
+        double levelGold = 0;
+        if (costSumGold >= 100 ){
+            for (int i = 1; i < 100 ; i++) {
+                levelGold = 200 * ( Math.pow(1.5,i) - 1);
+                if (levelGold >= costSumGold) {
+                    if (costSumGold < levelGold) {
+                        level = i - 1;
+                    } else {
+                        level = i;
+                    }
+                    break;
+                }
+            }
+        }
+
         //用户的消费总金币对应增加积分
         AppUser appUser = appuserService.getUserByID(play_user_Id);
         Integer newBalance = Integer.valueOf(appUser.getBALANCE());
@@ -618,6 +700,7 @@ public class BetGameService extends BaseController implements BetGameManager {
 
         appUser.setBALANCE(String.valueOf(newBalance));
         appUser.setPOINTS(userNewPoints);
+        appUser.setLEVEL(level);
         appuserService.updateAppUserBalanceById(appUser);
 
         userPoints.setTodayPoints(todayPoints);

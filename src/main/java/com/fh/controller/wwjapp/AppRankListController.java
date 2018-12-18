@@ -8,10 +8,7 @@ import javax.annotation.Resource;
 
 import com.fh.util.PageData;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fh.entity.system.AppUser;
 import com.fh.service.system.appuser.AppuserManager;
@@ -22,6 +19,7 @@ import net.sf.json.JSONObject;
 /**
  * 抓娃娃排行榜
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping(value = "/app/rank")
 public class AppRankListController {

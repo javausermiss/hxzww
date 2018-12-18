@@ -13,10 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.system.AppUser;
@@ -36,6 +33,7 @@ import com.iot.game.pooh.admin.srs.core.util.SrsConstants;
 import com.iot.game.pooh.admin.srs.core.util.SrsSignUtil;
 
 import net.sf.json.JSONObject;
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/app")
 public class AppTencentloginForH5 extends BaseController {

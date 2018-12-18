@@ -9,14 +9,13 @@ import com.fh.service.system.doll.DollManager;
 import com.fh.service.system.playback.PlayBackManage;
 import com.fh.service.system.playdetail.PlayDetailManage;
 import com.fh.service.system.pond.PondManager;
+import com.fh.util.DateUtil;
 import com.fh.util.PageData;
+import com.fh.util.PropertiesUtils;
 import com.fh.util.wwjUtil.RespStatus;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -26,6 +25,7 @@ import java.util.Map;
 /**
  * 视频回放记录存储&游戏记录&竞猜结算
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping(value = "/api/play")
 public class ApiPlayBackController {
@@ -166,6 +166,62 @@ public class ApiPlayBackController {
         }catch (Exception e){
             e.printStackTrace();
             return  RespStatus.fail();
+        }
+    }
+
+    /**
+     * 用户抓娃娃图片墙
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/getUserDollPicture", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+
+    public JSONObject getUserDollPicture(@RequestParam("userId") String userId,
+                                         @RequestParam(value = "time",required = false,defaultValue = "tg") String time
+                                         ){
+        try {
+            if (!time.equals("tg")){
+                String begin_time = DateUtil.getMinMonthDate(time);
+                String end_time = DateUtil.getMaxMonthDate(time);
+                PageData pageData = new PageData();
+                pageData.put("begin_time",begin_time);
+                pageData.put("end_time",end_time);
+                pageData.put("userId",userId);
+                List<PageData> list =  playDetailService.getPlayRecordForTgUser(pageData);
+                if (list!=null && list.size() != 0) {
+                    for (int i = 0; i < list.size(); i++) {
+                        PageData pageData1 =  list.get(i);
+                        if (pageData1.get("MACHINE_TYPE").equals("3")){
+                            pageData1.put("DOLL_URL",PropertiesUtils.getCurrProperty("gold.picture.url"));
+                        }
+                    }
+                }
+                int catchNum = 0;
+                if (list != null){
+                    catchNum = list.size();
+                }
+                Map<String,Object> map = new HashMap<>();
+                map.put("pictureList",list);
+                map.put("catchNum",catchNum);
+                return RespStatus.successs().element("data",map);
+            }
+            List<PageData> list =  playDetailService.getPlayRecordForUserPicture(userId);
+            if (list!=null && list.size() != 0) {
+                for (int i = 0; i < list.size(); i++) {
+                    PageData pageData =  list.get(i);
+                    if (pageData.get("MACHINE_TYPE").equals("3")){
+                        pageData.put("DOLL_URL",PropertiesUtils.getCurrProperty("gold.picture.url"));
+                    }
+                }
+            }
+
+            Map<String,Object> map = new HashMap<>();
+            map.put("pictureList",list);
+        return RespStatus.successs().element("data",map);
+        }catch (Exception e){
+            e.printStackTrace();
+            return RespStatus.fail();
         }
     }
 

@@ -1,22 +1,19 @@
 package com.fh.controller.wwjapp;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.fh.controller.base.BaseController;
 import com.fh.entity.system.RunImage;
 import com.fh.service.system.runimage.RunImageManager;
 import com.fh.util.wwjUtil.RespStatus;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/app/runimg")
 public class AppRunImgController extends BaseController {

@@ -11,6 +11,7 @@
 		<result column="LOGINREWARDGOLD_ID" property="id"/>
 		<result column="USERID" property="userId"/>
 		<result column="GOLD" property="gold"/>
+		<result column="REWARDGOLD" property="rewardGold"/>
 		<result column="CREATETIME" property="createTime"/>
 		<result column="TAG" property="tag"/>
 	</resultMap>
@@ -21,7 +22,8 @@
 		GOLD,	
 		CREATETIME,	
 		TAG,	
-		UPDATETIME,	
+		UPDATETIME,
+		REWARDGOLD,
 		LOGINREWARDGOLD_ID
 	</sql>
 	
@@ -31,7 +33,8 @@
 		#{GOLD},	
 		#{CREATETIME},	
 		#{TAG},	
-		#{UPDATETIME},	
+		#{UPDATETIME},
+		#{REWARDGOLD},
 		#{LOGINREWARDGOLD_ID}
 	</sql>
 	
@@ -123,12 +126,14 @@
 		(
 		USERID,
 		GOLD,
+		REWARDGOLD,
 		CREATETIME,
 		TAG,
 		LOGINREWARDGOLD_ID
 		) values (
 		#{userId},
 		#{gold},
+		#{rewardGold},
 		#{createTime},
 		#{tag},
 		#{id}

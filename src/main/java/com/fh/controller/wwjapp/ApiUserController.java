@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JsonConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import net.sf.json.JSONObject;
  * @author wjy
  * @date
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/api/user")
 public class ApiUserController {
@@ -148,6 +150,49 @@ public class ApiUserController {
 
     }
 
+
+    /**
+     * 更改用户信息,发红包需要完善此信息
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public JSONObject updateUserInfo(@RequestParam("userId") String userId,
+                                 @RequestParam(value = "gender")String gender,
+                                 @RequestParam(value = "age")Integer age,
+                                 @RequestParam(value = "nickname") String nickname
+
+    ) {
+        try {
+            AppUser appUser = appuserService.getUserByID(userId);
+            if (appUser != null) {
+                appUser.setAGE(age);
+                appUser.setGENDER(gender);
+                appUser.setNICKNAME(nickname);
+                int n = appuserService.updateAppUserInfo(appUser);
+                //头像上传
+                if (n >0 ) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("appUser", getAppUserInfoByID(userId));
+                    return RespStatus.successs().element("data", map);
+                } else {
+                    return RespStatus.fail("更新头像失败");
+                }
+
+            } else {
+                return RespStatus.fail("无此用户！");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespStatus.fail();
+        }
+
+
+    }
+
     /**
      * 更改用户昵称
      *
@@ -160,7 +205,7 @@ public class ApiUserController {
                                      @RequestParam("nickName") String name) {
 
         try {
-           // String phone = new String(Base64Util.decryptBASE64(aPhone));
+            // String phone = new String(Base64Util.decryptBASE64(aPhone));
             AppUser user = appuserService.getUserByID(userId);
             if (user == null) {
                 return RespStatus.fail("此用户没有注册！");

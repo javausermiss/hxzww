@@ -92,17 +92,32 @@ public class RewardGoldManagerController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		rewardgoldmanagerService.edit(pd);
+		new Thread(){
+			@Override
+			public void run() {
+				try {
+					//修改所有用户的点赞标签
+					AppUser appUser = new AppUser();
+					appUser.setSUPPORTTAG("1");
+					List<AppUser> list = appuserService.getUserRw(appUser);
+					if (list.size()!=0) {
+						for (int i = 0; i < list.size(); i++) {
+							AppUser appUser1 = list.get(i);
+							appUser1.setSUPPORTTAG("0");
+							appuserService.updateAppUserSupt(appUser1);
+							}
+						}
+						logger.info("子线程结束时间"+System.currentTimeMillis());
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
 
-		//修改所有用户的点赞标签
-		List<AppUser> list = appuserService.getAppUserList();
-		for (int i = 0; i < list.size(); i++) {
-			AppUser appUser = list.get(i);
-			appUser.setSUPPORTTAG("0");
-			appuserService.updateAppUserSupt(appUser);
-		}
+		}.start();
 
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
+		logger.info("主线程结束时间"+System.currentTimeMillis());
 		return mv;
 	}
 

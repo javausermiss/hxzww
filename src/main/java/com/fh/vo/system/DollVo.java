@@ -24,6 +24,15 @@ public class DollVo {
 	private String reward;//奖金
 	private String deviceType;//网关类型
 	private String machine_type;
+	private Integer toy_num;//娃娃总数
+
+	public Integer getToy_num() {
+		return toy_num;
+	}
+
+	public void setToy_num(Integer toy_num) {
+		this.toy_num = toy_num;
+	}
 
 	public String getMachine_type() {
 		return machine_type;

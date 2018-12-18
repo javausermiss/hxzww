@@ -23,6 +23,7 @@ public class Doll {
     private String MACHINE_TYPE;  //娃娃机类型：1、娃娃机 2、推币机 3、金币机
     private Integer COINPUSHER_REWORD;//推币机奖励金额
     private Integer SERIAL_NUMBER;//娃娃机序列号
+    private Integer TOY_NUM;
     
     public Doll() {
 
@@ -32,6 +33,14 @@ public class Doll {
         this.DOLL_ID = DOLL_ID;
         this.DOLL_SN = DOLL_SN;
         this.DEVICE_TYPE = DEVICE_TYPE;
+    }
+
+    public Integer getTOY_NUM() {
+        return TOY_NUM;
+    }
+
+    public void setTOY_NUM(Integer TOY_NUM) {
+        this.TOY_NUM = TOY_NUM;
     }
 
     public Integer getCOINPUSHER_REWORD() {

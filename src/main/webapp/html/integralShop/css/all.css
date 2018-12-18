@@ -3,12 +3,6 @@
 .shop-head{width: 100%;height: 1.1rem;line-height: 1.1rem; background-color: #fed201;text-align: center;color: #fff;font-size: 0.36rem;position: fixed;top: 0;right: 0;z-index: 999;}
 .shop-backout{width: 1.4rem;height: 1.1rem;position: absolute;top: 0;left: 0;}
 .shop-back{position: absolute;width: 0.23rem;height: 0.38rem;top: 0.37rem;left: 0.34rem;}
-/*.nav-bar{overflow: hidden;width: 2.6rem;margin: 0 auto;margin-top: 0.245rem;}
-.bar-integral{float: left;width: 1.29rem;height: 0.61rem;line-height: 0.61rem;text-align: center;background-color: #FDE15E;border-bottom-left-radius: 0.3rem;border-top-left-radius: 0.3rem;}
-.bar-coin{float: left;width: 1.29rem;height: 0.61rem;line-height: 0.61rem;text-align: center;background-color: #FDE15E;border-bottom-right-radius: 0.3rem;border-top-right-radius: 0.3rem;}
-.bar-integral a,.bar-coin a{color: #fff;font-size: 0.32rem;display: inline-block;height: 0.61rem;line-height: 0.61rem;margin-top: 0.02rem;}
-.bar-slect{background-color: #fff;}
-.bar-slect a{color: #fed201;}*/
 .shop-nav{width: 100%;height: 0.8rem;overflow: hidden;margin-top: 1.1rem;}
 .shop-nav div.shop-jifen{float: left;width: 50%;height: 0.8rem;line-height: 0.8rem;background: url(../img/2.png) 1.28rem 0.22rem no-repeat;background-size: 0.36rem 0.39rem;font-size: 0.26rem;border-right: 2px solid #e6e6e6;box-sizing: border-box}
 .shop-nav div.shop-jilu{float: left;width: 50%;height: 0.8rem;line-height: 0.8rem;background: url(../img/3.png) 1.17rem 0.22rem no-repeat;background-size: 0.30rem 0.38rem;font-size: 0.26rem;}

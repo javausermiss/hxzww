@@ -59,7 +59,7 @@ public interface SendGoodsManager {
      * @return
      * @throws Exception
      */
-    public JSONObject doSendGoods(String playId,String number,String consignee,String remark,String userId,String mode,String costNum) throws Exception;
+    public JSONObject doSendGoods(String playId,String number,String consignee,String remark,String userId,String mode,String costNum,String levels) throws Exception;
 
     /**
      * 兑换金币

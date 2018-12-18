@@ -127,7 +127,7 @@ public interface BetGameManager {
     public List<PageData> getGuessDetailTop10ByUserId(String userId) throws Exception;
 
 
-    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer multiple,Integer afterVoting,String flag) throws Exception;
+    public JSONObject doBet(String userId, String dollId, int wager, String guessId, String guessKey,Integer multiple,Integer afterVoting,String flag,int keysNum) throws Exception;
 
     /**
      *娃娃机复位执行结算逻辑（第二种结算逻辑）

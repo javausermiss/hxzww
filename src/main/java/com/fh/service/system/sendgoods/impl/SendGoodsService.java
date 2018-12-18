@@ -160,18 +160,85 @@ public class SendGoodsService implements SendGoodsManager {
      * @return
      * @throws Exception
      */
-    public JSONObject doSendGoods(String playId, String number, String consignee, String remark, String userId, String mode, String costNum) throws Exception {
+    public JSONObject doSendGoods(String playId, String number, String consignee, String remark, String userId, String mode, String costNum ,String levels) throws Exception {
+        AppUser appUser = appuserService.getUserByID(userId);
+        String[] s = consignee.split("\\,");
+        String name = s[0];
+        String phone = s[1];
+        String address = s[2];
         //增加发货记录
         SendGoods sendGoods = new SendGoods();
+        int level = appUser.getLEVEL();
+        String tag_16 = appUser.getLEVEL_16_TAG();
+        String tag_18 = appUser.getLEVEL_18_TAG();
+        if (levels.equals("16")){
+            if (level >= 16 && tag_16.equals("0")){
+                sendGoods.setCNEE_NAME(name);
+                sendGoods.setCNEE_ADDRESS(address);
+                sendGoods.setCNEE_PHONE(phone);
+                sendGoods.setPLAYBACK_ID(null);//抓取的娃娃编号
+                sendGoods.setGOODS_NUM("0");
+                sendGoods.setREMARK(remark);//留言
+                sendGoods.setUSER_ID(userId);
+                sendGoods.setPOST_REMARK("16级礼包免费赠送");
+                Date date = new Date();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String time = format.format(date);
+                sendGoods.setCREATE_TIME(time);
+                sendGoods.setTOY_NUM(playId);
+                sendGoods.setLEVELGIFT("16");
+                this.regSendGoods(sendGoods);
+                appUser.setLEVEL_16_TAG("1");
+                appuserService.updateAppUserBalanceById(appUser);
+                return RespStatus.successs().element("data",JSONObject.fromObject(appUser));
+            }else {
+                return RespStatus.fail("非法请求");
+            }
+       }
+
+       if (levels.equals("18")){
+           if (level >= 18 && tag_18.equals("0")){
+               sendGoods.setCNEE_NAME(name);
+               sendGoods.setCNEE_ADDRESS(address);
+               sendGoods.setCNEE_PHONE(phone);
+               sendGoods.setPLAYBACK_ID(null);//抓取的娃娃编号
+               sendGoods.setGOODS_NUM("0");
+               sendGoods.setREMARK(remark);//留言
+               sendGoods.setUSER_ID(userId);
+               sendGoods.setPOST_REMARK("18级礼包免费赠送");
+               Date date = new Date();
+               SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+               String time = format.format(date);
+               sendGoods.setCREATE_TIME(time);
+               sendGoods.setTOY_NUM(playId);
+               sendGoods.setLEVELGIFT("18");
+               this.regSendGoods(sendGoods);
+               appUser.setLEVEL_18_TAG("1");
+               appuserService.updateAppUserBalanceById(appUser);
+               return RespStatus.successs().element("data",JSONObject.fromObject(appUser));
+           }else {
+               return RespStatus.fail("非法请求");
+           }
+
+       }
+
         //免邮
 
         String[] pd = playId.split("\\,");
         if (pd.length < 3 && Integer.valueOf(number)>=3){
             return RespStatus.fail("数据不合法");
         }
-        if (mode.equals("0")) {
-            sendGoods.setMODE_DESPATCH("0");
+        //等级满13，两件包邮，此处安卓端需要新增参数作出改动---------------------------------------------------------------------------------------------------------------------------------------------
+
+        if (mode.equals("3")){
+            if (level >= 13  && pd.length == 2){
+                sendGoods.setMODE_DESPATCH("3");
+            }else {
+                return RespStatus.fail("数据不合法");
+            }
         }
+
+
         //货到付款
         if (mode.equals("2")) {
             sendGoods.setMODE_DESPATCH("2");
@@ -179,7 +246,6 @@ public class SendGoodsService implements SendGoodsManager {
         //金币抵扣
         if (mode.equals("1")) {
             //满2包邮 ，一个需要付运费
-            AppUser appUser = appuserService.getUserByID(userId);
             String balance = appUser.getBALANCE();
             Integer c;
             if (costNum == null) {
@@ -232,17 +298,23 @@ public class SendGoodsService implements SendGoodsManager {
             String toyName = dollToyVo.getToy_name();
             list1.add(toyName);
         }
+        int n = 0 ;
         List<String> list2 = new LinkedList<>();
         for (int i = 0; i < list1.size(); i++) {
-            int n = Collections.frequency(list1, list1.get(i));
+             n = Collections.frequency(list1, list1.get(i));
             String toyName = list1.get(i);
             list2.add(toyName + "数量为：" + n);
         }
+
+        if (mode.equals("0")) {
+            if ( n >= 3){
+                sendGoods.setMODE_DESPATCH("0");
+            }else {
+                return RespStatus.fail("数据不合法");
+            }
+        }
+
         List<String> newList = new LinkedList(new TreeSet(list2));
-        String[] s = consignee.split("\\,");
-        String name = s[0];
-        String phone = s[1];
-        String address = s[2];
         sendGoods.setCNEE_NAME(name);
         sendGoods.setCNEE_ADDRESS(address);
         sendGoods.setCNEE_PHONE(phone);
@@ -250,6 +322,7 @@ public class SendGoodsService implements SendGoodsManager {
         sendGoods.setGOODS_NUM(number);
         sendGoods.setREMARK(remark);//留言
         sendGoods.setUSER_ID(userId);
+        sendGoods.setSENDBOOLEAN("0");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < newList.size(); i++) {
             String ss = newList.get(i).toString();

@@ -295,6 +295,7 @@ public class AppLoginController extends BaseController {
      * @param userId
      * @return
      */
+    @CrossOrigin(origins = "*", maxAge = 3600)
     @RequestMapping(value = "/getDoll", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject getDoll(@RequestParam("userId") String userId, HttpServletRequest httpServletRequest) {

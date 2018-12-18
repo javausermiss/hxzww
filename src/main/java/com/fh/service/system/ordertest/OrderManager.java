@@ -57,4 +57,12 @@ public interface OrderManager {
      */
     public int doRegCallbackUpdateOrder(Order order)throws Exception;
 
+    /**
+     * 查询用户的充值成功记录
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> getpsUserCharge(PageData userId)throws Exception;
+
 }

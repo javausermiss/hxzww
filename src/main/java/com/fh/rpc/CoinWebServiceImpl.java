@@ -245,6 +245,33 @@ public class CoinWebServiceImpl extends BaseController implements CoinRpcService
             Integer newBalance = sessionMap.get("userBalance"+roomId+userId)+ incom;
             Integer userNewPoints = appUser.getPOINTS();
 
+            //计算用户等级
+
+            PageData pageData_ = new PageData();
+            pageData_.put("userId",userId);
+            PageData pageData1_ =  userpointsService.getCostGoldSumAll(pageData_);
+            String gm_ = "0";
+            if (pageData1_ != null) {
+                double aa = (double) pageData1_.get("godsum");
+                gm_ = new DecimalFormat("0").format(aa).substring(1);
+            }
+            int costSumGold =  Integer.valueOf(gm_) + sessionMap.get("exp"+roomId+userId) * rate;
+            int level = 0 ;
+            double levelGold = 0;
+            if (costSumGold >= 100 ){
+                for (int i = 1; i < 100 ; i++) {
+                    levelGold = 200 * ( Math.pow(1.5,i) - 1);
+                    if (levelGold >= costSumGold) {
+                        if (costSumGold < levelGold) {
+                            level = i - 1;
+                        } else {
+                            level = i;
+                        }
+                        break;
+                    }
+                }
+            }
+
             //消费金币记录
             Payment payment = new Payment();
             payment.setCOST_TYPE("0");
@@ -344,7 +371,6 @@ public class CoinWebServiceImpl extends BaseController implements CoinRpcService
                     if (map.get("newBalance")!=null){
                         newBalance = Integer.valueOf(map.get("newBalance").toString());
                     }
-
                 }
             }
             //总消费赠送的积分判断
@@ -356,6 +382,7 @@ public class CoinWebServiceImpl extends BaseController implements CoinRpcService
 
             appUser.setBALANCE(String.valueOf(newBalance));
             appUser.setPOINTS(userNewPoints);
+            appUser.setLEVEL(level);
             appuserService.updateAppUserBalanceById(appUser);
 
             userPoints.setPusherGame(newpg);

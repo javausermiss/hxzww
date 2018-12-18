@@ -198,7 +198,7 @@
             resultType="com.fh.entity.system.GuessDetailL">
 
         SELECT * from TB_DOLL_GUESS_DETAIL WHERE
-        GUESS_KEY  = #{GUESS_KEY}
+        GUESS_KEY like concat(concat('%',#{GUESS_KEY}),'%')
         AND
         PLAYBACK_ID = #{PLAYBACK_ID}
         AND
@@ -212,7 +212,7 @@
             resultType="com.fh.entity.system.GuessDetailL">
 
         SELECT * from TB_DOLL_GUESS_DETAIL WHERE
-        GUESS_KEY  != #{GUESS_KEY}
+        GUESS_KEY  not like concat(concat('%',#{GUESS_KEY}),'%')
         AND
         PLAYBACK_ID = #{PLAYBACK_ID}
         AND

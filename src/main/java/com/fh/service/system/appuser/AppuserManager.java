@@ -273,6 +273,14 @@ public interface AppuserManager {
     public List<AppUser> getAppUserList()throws Exception;
 
     /**
+     * 查询点赞过的用户
+     * @param appUser
+     * @return
+     * @throws Exception
+     */
+    public List<AppUser> getUserRw(AppUser appUser)throws Exception;
+
+    /**
      * 修改余额和标签
      * @param appUser
      * @return
@@ -450,6 +458,32 @@ public interface AppuserManager {
 
     public JSONObject dogetDoll(String appUser ,HttpServletRequest httpServletRequest)throws Exception;
 
+    public int updateAppUserListForLevelGift()throws Exception;
+
+    public int updateAppUserInfo(AppUser appUser)throws Exception;
+
+    /**
+     * 查询推广人员的下线用户
+      * @param userId
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> getpsUser (String userId)throws Exception;
+
+
+    public List<PageData> getcpUser (PageData userId)throws Exception;
+
+    /**
+     * 查询推广用户
+     * @param pageData
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> gettgUser(Page pageData)throws Exception;
+
+
+
+    public List<PageData> getxxUser(Page page)throws Exception;
 
 
 

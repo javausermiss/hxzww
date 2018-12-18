@@ -198,4 +198,10 @@ public interface PlayDetailManage {
      */
 	public List<PageData> getGameList(String dollId)throws Exception;
 
+
+  public List<PageData>  getPlayRecordForUserPicture(String userId)throws Exception;
+
+  public List<PageData> getPlayRecordForTgUser(PageData pageData)throws Exception;
+
+
 }

@@ -66,7 +66,24 @@ public class AppUser {
 
     private String SUPPORTTAG;
 
-    public AppUser() {
+    //用户升级经验等级
+    private Integer LEVEL;
+    //用户16级大礼包标签
+    private String LEVEL_16_TAG;
+    //用户18级大礼包标签
+    private String LEVEL_18_TAG;
+
+    private Integer AGE;
+    //推广者余额
+    private Integer PRO_BALANCE;
+    //推广者账号
+    private String PRO_WXACCOUNT;
+
+    private String PRO_ZFBACCOUNT;
+    //是否为推广者
+    private String PRO_TAG;
+
+      public AppUser() {
     }
 
     @Override
@@ -99,6 +116,72 @@ public class AppUser {
                 ", CNEE_ADDRESS='" + CNEE_ADDRESS + '\'' +
                 ", CNEE_PHONE='" + CNEE_PHONE + '\'' +
                 '}';
+    }
+
+
+    public String getPRO_WXACCOUNT() {
+        return PRO_WXACCOUNT;
+    }
+
+    public void setPRO_WXACCOUNT(String PRO_WXACCOUNT) {
+        this.PRO_WXACCOUNT = PRO_WXACCOUNT;
+    }
+
+    public String getPRO_ZFBACCOUNT() {
+        return PRO_ZFBACCOUNT;
+    }
+
+    public void setPRO_ZFBACCOUNT(String PRO_ZFBACCOUNT) {
+        this.PRO_ZFBACCOUNT = PRO_ZFBACCOUNT;
+    }
+
+    public String getPRO_TAG() {
+        return PRO_TAG;
+    }
+
+    public void setPRO_TAG(String PRO_TAG) {
+        this.PRO_TAG = PRO_TAG;
+    }
+
+    public Integer getPRO_BALANCE() {
+        return PRO_BALANCE;
+    }
+
+    public void setPRO_BALANCE(Integer PRO_BALANCE) {
+        this.PRO_BALANCE = PRO_BALANCE;
+    }
+
+    public Integer getAGE() {
+        return AGE;
+    }
+
+    public void setAGE(Integer AGE) {
+        this.AGE = AGE;
+    }
+
+    public String getLEVEL_16_TAG() {
+        return LEVEL_16_TAG;
+    }
+
+    public void setLEVEL_16_TAG(String LEVEL_16_TAG) {
+        this.LEVEL_16_TAG = LEVEL_16_TAG;
+    }
+
+    public String getLEVEL_18_TAG() {
+        return LEVEL_18_TAG;
+    }
+
+    public void setLEVEL_18_TAG(String LEVEL_18_TAG) {
+        this.LEVEL_18_TAG = LEVEL_18_TAG;
+
+    }
+
+    public Integer getLEVEL() {
+        return LEVEL;
+    }
+
+    public void setLEVEL(Integer LEVEL) {
+        this.LEVEL = LEVEL;
     }
 
     public String getSUPPORTTAG() {

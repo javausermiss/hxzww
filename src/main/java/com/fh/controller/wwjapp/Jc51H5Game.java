@@ -186,4 +186,16 @@ public class Jc51H5Game extends BaseController {
 
     }
 
+
+    public static void main(String[] a){
+
+
+
+
+
+
+
+
+
+    }
 }

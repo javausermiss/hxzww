@@ -52,7 +52,16 @@
 		TODAY_GUESS,
 		TODAY_POOH,
 		JCID,
-		SUPPORTTAG
+		SUPPORTTAG,
+		LEVEL,
+		LEVEL_16_TAG,
+		LEVEL_18_TAG,
+		AGE,
+		GENDER,
+		PRO_BALANCE,
+		PRO_WXACCOUNT,
+		PRO_ZFBACCOUNT,
+		PRO_TAG
 	</sql>
 
     <!-- 字段值 -->
@@ -99,7 +108,14 @@
 		#{TODAY_GUESS},
 		#{TODAY_POOH},
 		#{JCID},
-		#{SUPPORTTAG}
+		#{SUPPORTTAG},
+		#{LEVEL},
+		#{LEVEL_16_TAG},
+		#{LEVEL_18_TAG},
+		#{AGE},
+		#{GENDER},
+		#{PRO_BALANCE},
+		#{PRO_ACCOUNT}
 	</sql>
 
     <!-- 角色表 -->
@@ -140,7 +156,8 @@
         u.CREATETIME,
         u.IMAGE_URL,
         u.BALANCE,
-        u.CHANNEL_CODE
+        u.CHANNEL_CODE,
+        u.LEVEL
         FROM
         <include refid="tableName"/>
         u
@@ -209,6 +226,16 @@
         <if test="USERNAME != null and USERNAME != ''">
             and USERNAME != #{USERNAME}
         </if>
+    </select>
+
+    <select id="getUserRw" parameterType="com.fh.entity.system.AppUser" resultType="com.fh.entity.system.AppUser">
+
+        select
+        USER_ID,SUPPORTTAG
+        from
+        <include refid="tableName"/>
+        where
+        SUPPORTTAG = '1'
     </select>
 
     <!-- 通过编号获取数据 -->
@@ -432,6 +459,21 @@
         USER_ID = #{USER_ID}
     </update>
 
+
+    <update id="updateAppUserInfo" parameterType="com.fh.entity.system.AppUser">
+        update
+        <include refid="tableName"/>
+        set
+        AGE = #{AGE},
+        GENDER = #{GENDER},
+        NICKNAME = #{NICKNAME}
+        WHERE
+        USER_ID = #{USER_ID}
+    </update>
+
+
+
+
     <!--更改App用户昵称信息(废弃)-->
     <update id="updateAppUserName" parameterType="com.fh.entity.system.AppUser">
         update
@@ -484,6 +526,30 @@
         </if>
         <if test="SUPPORTTAG != null and SUPPORTTAG != ''">
             ,SUPPORTTAG = #{SUPPORTTAG}
+        </if>
+        <if test="LEVEL != null">
+            ,LEVEL = #{LEVEL}
+        </if>
+        <if test="LEVEL_16_TAG != null and LEVEL_16_TAG != ''">
+            ,LEVEL_16_TAG = #{LEVEL_16_TAG}
+        </if>
+        <if test="LEVEL_18_TAG != null and LEVEL_18_TAG != ''">
+            ,LEVEL_18_TAG = #{LEVEL_18_TAG}
+        </if>
+        <if test="PRO_USER_ID !=null and PRO_USER_ID != ''">
+            ,PRO_USER_ID = #{PRO_USER_ID}
+        </if>
+        <if test="PRO_BALANCE != null">
+            ,PRO_BALANCE = #{PRO_BALANCE}
+        </if>
+        <if test="PRO_WXACCOUNT != null and PRO_WXACCOUNT != ''">
+            ,PRO_WXACCOUNT = #{PRO_WXACCOUNT}
+        </if>
+        <if test="PRO_ZFBACCOUNT !=null and PRO_ZFBACCOUNT != ''">
+            ,PRO_ZFBACCOUNT = #{PRO_ZFBACCOUNT}
+        </if>
+        <if test="PRO_TAG != null and PRO_TAG != ''">
+            ,PRO_TAG = #{PRO_TAG}
         </if>
         WHERE
         USER_ID = #{USER_ID}
@@ -560,7 +626,8 @@
         IMAGE_URL,
 		OPEN_TYPE,
         CHANNEL_NUM,
-        BALANCE
+        BALANCE,
+        GENDER
         ) values (
         #{USER_ID},
         now(),
@@ -568,7 +635,8 @@
         #{IMAGE_URL},
         #{OPEN_TYPE},
         #{CHANNEL_NUM},
-        #{BALANCE}
+        #{BALANCE},
+        #{GENDER}
         )
     </insert>
 
@@ -901,6 +969,83 @@
         MONTH_CARD != 0
 
     </select>
+    <!--更新等级为16  或者 18 的领取礼包标签 -->
+    <update id="updateAppUserListForLevelGift" >
+        update
+        <include refid="tableName"/>
+        set
+        LEVEL_16_TAG = '0',
+        LEVEL_18_TAG = '0'
+        WHERE
+        LEVEL &gt;= 13
+    </update>
+
+    <select id="getpsUser" parameterType="String" resultType="pd">
+             SELECT
+            au.USER_ID,
+            au.NICKNAME,
+            au.IMAGE_URL,
+            SUM(o.REGAMOUNT) AS ALLREGAMOUNT
+        FROM
+            (
+                SELECT
+                    u.USER_ID,
+                    u.IMAGE_URL,
+                    u.NICKNAME
+                FROM
+                    sys_app_user AS u
+                WHERE
+                    PRO_USER_ID = #{PRO_USER_ID}
+            ) AS au
+        LEFT JOIN sys_app_order AS o ON (
+            o.USER_ID = au.USER_ID
+            AND o.`STATUS` = '1'
+        )
+        GROUP BY
+            au.USER_ID
+    </select>
+
+
+    <select id="getcpUser" parameterType="page" resultType="pd">
+        SELECT
+        au.USER_ID,
+        au.NICKNAME,
+        au.IMAGE_URL,
+        COUNT(t.ID) AS POOHNUM
+        FROM
+        (
+        SELECT
+        u.USER_ID,
+        u.IMAGE_URL,
+        u.NICKNAME
+        FROM
+        sys_app_user AS u
+        WHERE
+        PRO_USER_ID = #{PRO_USER_ID}
+        ) AS au
+        LEFT JOIN tb_doll_play_detail AS t ON (
+        t.USERID = au.USER_ID
+        AND t.STATE = '1'
+        )
+        GROUP BY
+        au.USER_ID
+
+    </select>
+    <!--查询推广用户的信息-->
+    <select id="gettgUser" parameterType="page" resultType="pd">
+        
+        select * from sys_app_user where PRO_TAG = '1';
+
+    </select>
+
+    <!--查询下线用户的信息-->
+    <select id="getxxUser" parameterType="page" resultType="pd">
+
+        select * from sys_app_user where PRO_USER_ID  = #{pd.PRO_USER_ID}
+
+    </select>
+
+
 
 
 

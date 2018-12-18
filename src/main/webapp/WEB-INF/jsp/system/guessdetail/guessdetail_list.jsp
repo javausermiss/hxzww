@@ -86,8 +86,8 @@
 											<td class='center'>${var.NICKNAME}</td>
 											<td class='center'>${var.DOLL_ID}</td>
 											<td class='center'>
-												<c:if test="${var.GUESS_KEY == var.GUESS_TYPE}">中</c:if>
-												<c:if test="${var.GUESS_KEY != var.GUESS_TYPE}">不中</c:if>
+												<c:if test="${var.SETTLEMENT_GOLD != 0}">中</c:if>
+												<c:if test="${var.SETTLEMENT_GOLD == 0}">不中</c:if>
 											</td>
 											<td class='center'>${var.GUESS_GOLD}</td>
 											<td class='center'>${var.CREATE_DATE}</td>

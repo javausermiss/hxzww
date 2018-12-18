@@ -14,10 +14,7 @@ import com.fh.util.PageData;
 import com.fh.util.wwjUtil.RespStatus;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -31,6 +28,7 @@ import java.util.Map;
  * @author wjy
  * @date 2018-09-27
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Controller
 @RequestMapping("/app/loginReward")
 public class AppLoginGetReward {
@@ -65,6 +63,15 @@ public class AppLoginGetReward {
             List<LoginRewardGold> list =  loginrewardgoldService.getAllInfo(loginRewardGold);
             List<PageData> list1 =  rewardgoldmanagerService.list(new Page());
             PageData p = list1.get(0);
+            double rate = Double.valueOf(p.get("GOLD").toString());
+            if (list.size()>0){
+                for (LoginRewardGold l:
+                        list) {
+                    int costGold =  l.getGold();
+                    int rewardGold = (int)Math.ceil(rate * costGold);
+                    l.setRewardGold(rewardGold);
+                }
+            }
             Map<String,Object> map = new HashMap<>();
             map.put("LoginRewardGold" ,list);
             map.put("RewardGoldManager",p);
@@ -101,8 +108,11 @@ public class AppLoginGetReward {
             }
             AppUser appUser = appuserService.getUserByID(userId);
             int ob = Integer.valueOf(appUser.getBALANCE()) ;
-            int reg =  ld.getGold();
-            appUser.setBALANCE(String.valueOf(ob+reg));
+            List<PageData> list1 =  rewardgoldmanagerService.list(new Page());
+            PageData p = list1.get(0);
+            double rate = Double.valueOf(p.get("GOLD").toString());
+            int rewardGold = (int)Math.ceil(rate * ld.getGold());
+            appUser.setBALANCE(String.valueOf(ob+rewardGold));
             appuserService.updateAppUserBalanceById(appUser);
 
             ld.setTag("Y");
@@ -111,7 +121,7 @@ public class AppLoginGetReward {
             //增加金币记录
             Payment payment = new Payment();
             payment.setREMARK(Const.PlayMentCostType.cost_type30.getName());
-            payment.setGOLD("+"+reg);
+            payment.setGOLD("+"+rewardGold);
             payment.setCOST_TYPE(Const.PlayMentCostType.cost_type30.getValue());
             payment.setUSERID(userId);
             paymentService.reg(payment);

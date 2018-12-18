@@ -76,19 +76,19 @@ public class OrderService  implements OrderManager{
      * @throws Exception
      */
     public int doRegCallbackUpdateOrder(Order order)throws Exception{
-    	try{
+    	/*try{
 	    	 //如果当前用户充值
 	    	 if(Const.OrderPayType.R_TYPE.getValue().equals(order.getPAY_TYPE())){
 	    		 //如果当前用户的上级，推广用户ID不为空，则为用户增加权益
 		    	 if(StringUtils.isNotEmpty(order.getPRO_USER_ID())){
 		    			//推广用户开户
 		    			TxnResp txnResp=accountOperService.openAccountInfByUser(order.getPRO_USER_ID());
-		    			
+
 		    			//购买的权益
 		    			PageData promotepd= promoteAppUserService.findByUserId(order.getPRO_USER_ID());
 		    			if(txnResp !=null && txnResp.isRespCode()){
-		    				
-		    				/***添加交易订单**/
+
+		    				*//***添加交易订单**//*
 		    				TransOrder transOrder=new TransOrder();
 		    				transOrder.setOrderSt("1"); //创建订单
 		    				transOrder.setUserId(order.getPRO_USER_ID());
@@ -100,8 +100,8 @@ public class OrderService  implements OrderManager{
 		    				transOrder.setOrgTransAmt(order.getREGAMOUNT()); //订单充值金额
 		    				transOrder.setResColumn1(order.getUserNickName()); //当前操作用户昵称
 		    				transOrderService.save(transOrder);
-			       		    
-		       		 		/***添加交易明细**/
+
+		       		 		*//***添加交易明细**//*
 			       		 	TransLog transLog=new TransLog();
 			       		 	transLog.setDmsRelatedKey(transOrder.getOrderId());  //
 			       		    transLog.setTransType(AccountTransType.TRANS_1001.getValue());
@@ -113,7 +113,7 @@ public class OrderService  implements OrderManager{
 			       		    transLog.setDmsUserId(order.getUSER_ID()); //当前操作的用户ID
 			       		    transLog.setDmsUserUnionId(order.getPRO_USER_ID()); //执行账户的USER_ID
 			       		 	translogService.save(transLog);
-			       		 	
+
 			       		 	//账户充值
 			       		  TxnResp regResp=accountOperService.rechargeAccountInf(transLog.getTransId());
 			       		  if(regResp ==null){
@@ -123,7 +123,7 @@ public class OrderService  implements OrderManager{
 			       		  transLog.setTransSt("1");
 			       		  transLog.setRespCode(regResp.getResultCode());
 			       		  translogService.editOrderLogResp(transLog);
-			       		  
+
 			       		  if("00".equals(txnResp.getResultCode())){
 				    			transOrder.setOrderSt("9"); //订单已处理完成
 				    			transOrderService.editTransOrderSt(transOrder);
@@ -137,7 +137,7 @@ public class OrderService  implements OrderManager{
     	}catch(Exception ex){
     		logger.error("doRegCallbackUpdateOrder Exception:", ex);
     	}
-    	
+    	*/
     	//修改订单
     	return (int)dao.update("OrderMapper.doRegCallbackUpdateOrder", order);
     }
@@ -165,4 +165,9 @@ public class OrderService  implements OrderManager{
     public PageData getOrderTotalByChannelCode(String channelCode) throws Exception{
     	  return (PageData)dao.findForObject("OrderMapper.getOrderTotalByChannelCode",channelCode);
     }
+
+	@Override
+	public List<PageData> getpsUserCharge(PageData userId) throws Exception {
+		return (List<PageData>)dao.findForList("OrderMapper.getpsUserCharge",userId);
+	}
 }

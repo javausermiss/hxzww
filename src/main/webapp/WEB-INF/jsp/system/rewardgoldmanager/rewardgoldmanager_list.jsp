@@ -67,7 +67,7 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">次日赠送金币数</th>
+									<th class="center">次日赠送金币倍率</th>
 									<th class="center">更新时间</th>
 									<th class="center">每日笑话</th>
 									<th class="center">点赞数</th>
@@ -102,7 +102,7 @@
 													</c:if>
 													<c:if test="${QX.edit == 1 }">
 														<a class="btn btn-xs btn-success" title="编辑" onclick="editGold('${var.REWARDGOLDMANAGER_ID}');">
-															<i class="ace-icon fa fa-pencil-square-o bigger-120" title="修改金币"></i>
+															<i class="ace-icon fa fa-pencil-square-o bigger-120" title="修改金币倍率"></i>
 														</a>
 													</c:if>
 													<c:if test="${QX.del == 1 }">

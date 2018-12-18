@@ -391,8 +391,24 @@ public class AppPointsMall extends BaseController {
         }
 
     }
-
+//100 150 225
     public static  void main(String[] A){
+        int b = 475;
+        int c  = 0;
+        double a = 0;
+        for (int i = 1; i < 1000 ; i++) {
+            a = 200 * ( Math.pow(1.5,i) - 1);
+            if (a >= b){
+                if (b < a ){
+                    c = i - 1 ;
+                }else {
+                    c = i ;
+                }
+                break ;
+            }
+        }
+        System.out.println(a);
+        System.out.println(c);
 
     }
 

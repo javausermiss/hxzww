@@ -16,20 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/app/goods")
 @Controller
 public class AppSendGoodController {
@@ -137,16 +132,18 @@ public class AppSendGoodController {
     @RequestMapping(value = "/sendGoods", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject sendGoods1(
-            @RequestParam("id") String playId,//抓取编号(用户抓取记录ID，逗号拼接)例：5411,2223,5623
-            @RequestParam("number") String number,//娃娃数量
-            @RequestParam("consignee") String consignee,//例：名字,地址,手机号码(逗号拼接)
-            @RequestParam("remark") String remark,//用户留言
-            @RequestParam("userId") String userId, //用户ID
+            @RequestParam(value = "id",required = false,defaultValue = "null") String playId,//抓取编号(用户抓取记录ID，逗号拼接)例：5411,2223,5623
+            @RequestParam(value = "number",required = false,defaultValue = "null") String number,//娃娃数量
+            @RequestParam(value = "consignee") String consignee,//例：名字,地址,手机号码(逗号拼接)
+            @RequestParam(value = "remark",required = false,defaultValue = "null") String remark,//用户留言
+            @RequestParam(value = "userId") String userId, //用户ID
             @RequestParam(value = "mode") String mode,//模式 0：免邮  1：金币抵扣
-            @RequestParam(value = "costNum",required = false) String costNum//省份编号
+            @RequestParam(value = "costNum",required = false,defaultValue = "0") String costNum,//省份编号
+            @RequestParam(value = "level" ,required = false,defaultValue = "0") String level//大礼包发货表1 16代表16级礼包 18代表18级礼包
+
     ) {
         try {
-            return sendGoodsService.doSendGoods(playId, number, consignee, remark, userId, mode,costNum);
+            return sendGoodsService.doSendGoods(playId, number, consignee, remark, userId, mode,costNum,level);
         } catch (Exception e) {
             e.printStackTrace();
             return RespStatus.fail();
@@ -154,6 +151,7 @@ public class AppSendGoodController {
     }
 
     /**
+     *
      * 兑换娃娃币
      *
      * @param id
@@ -236,10 +234,9 @@ public class AppSendGoodController {
 
     public static void main(String[] a) {
 
-        String catch_time = DateUtil.getTimeSSS();
-        log.info("下抓时间----------------->"+catch_time);
-        String reword = catch_time.substring(catch_time.length()-1,catch_time.length());
-        log.info(reword);
+
+
+
 
 
     }

@@ -3,6 +3,10 @@ package com.fh.util.wwjUtil;
 
 import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.log4j.Logger;
 import redis.clients.jedis.BinaryClient;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -991,7 +995,7 @@ public class RedisUtil {
      * @param key
      * @return
      */
-    synchronized public String lpop(String key) {
+    synchronized public static String lpop(String key) {
         Jedis jedis = null;
         String res = null;
         try {
@@ -1088,7 +1092,7 @@ public class RedisUtil {
      * @param key
      * @return
      */
-    public Long llen(String key) {
+    public static Long llen(String key) {
         Jedis jedis = null;
         Long res = null;
         try {

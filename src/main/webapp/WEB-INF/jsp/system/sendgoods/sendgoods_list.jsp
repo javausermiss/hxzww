@@ -62,6 +62,14 @@
 										<option value="9" <c:if test="${pd.SENDBOOLEAN == '9' }">selected</c:if>>异常订单</option>
 								  	</select>
 								</td>
+								<td style="vertical-align:top;padding-left:2px;">
+									<select class="chosen-select form-control" name="LEVELGIFT" id="LEVELGIFT" data-placeholder="请选择等级" style="vertical-align:top;width: 120px;">
+										<option value=""></option>
+										<option value="">全部</option>
+										<option value="16" <c:if test="${pd.LEVELGIFT == '16'}">selected</c:if>>16级礼包订单</option>
+										<option value="18" <c:if test="${pd.LEVELGIFT == '18'}">selected</c:if>>18级礼包订单</option>
+									</select>
+								</td>
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="检索"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
@@ -112,6 +120,7 @@
 												<c:if test="${var.MODE_DESPATCH == '0'}">满3包邮</c:if>
 												<c:if test="${var.MODE_DESPATCH == '1'}">金币抵扣</c:if>
 												<c:if test="${var.MODE_DESPATCH == '2'}">货到付款</c:if>
+												<c:if test="${var.MODE_DESPATCH == '3'}">满13级会员特权</c:if>
 													</td>
 											<td class='center'>${var.POST_REMARK}</td>
 											<td class='center'>${var.REMARK}</td>
