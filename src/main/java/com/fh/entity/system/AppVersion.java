@@ -14,6 +14,7 @@ public class AppVersion {
     private String UPDATE_TIME;
     private String ANDROID_DISPLAY;
     private String IOS_DISPLAY;
-    
+    private String ANDROID_INVITATION;
+    private String IOS_INVITATION;
     
 }
