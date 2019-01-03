@@ -90,14 +90,17 @@
                                         <c:if test="${QX.edit != 1 && QX.del != 1 }">
                                         <span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
                                         </c:if>
-
+                                        <c:if test="${QX.cha == 1 }">
+                                        <a class="btn btn-xs btn-success" title="下级用户" onclick="proUserListOrder('${var.USER_ID}');">
+                                            充值明细
+                                        </a>
+                                        </c:if>
                     </div>
                     <div class="hidden-md hidden-lg">
                         <div class="inline pos-rel">
                             <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
                                 <i class="ace-icon fa fa-cog icon-only bigger-110"></i>
                             </button>
-
                         </div>
                     </div>
                     </td>
@@ -207,8 +210,8 @@
         });
     });
 
-    function proUserList(userId){
-        var URL = "<%=basePath%>tgappuser/proUserList.do?PRO_USER_ID="+userId;
+    function proUserListOrder(userId){
+        var URL = "<%=basePath%>tgappuser/proUserListPay.do?USER_ID="+userId;
         window.location.href=URL;
     }
 

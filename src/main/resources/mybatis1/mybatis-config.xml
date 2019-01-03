@@ -29,6 +29,8 @@
 		<typeAlias type="com.fh.entity.system.UserPoints" alias="userPointsVo"/>
 		<typeAlias type="com.fh.entity.system.PusherGameDetail" alias="pusherGameVo"/>
 		<typeAlias type="com.fh.entity.system.LoginRewardGold" alias="loginRewardGoldVo"/>
+		<typeAlias type="com.fh.vo.system.RedVo" alias="RedVo"/>
+		<typeAlias type="com.fh.vo.system.UserInfoVo" alias="UserInfoVo"/>
 		<!-- 这里添加生成的实体类 -->
 		
 		<!-- 账户信息 -->

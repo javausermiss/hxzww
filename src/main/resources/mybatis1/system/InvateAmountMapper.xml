@@ -10,13 +10,17 @@
 	<!-- 字段 -->
 	<sql id="Field">
 		GOLD,	
-		INVATEAMOUNT_ID
+		INVATEAMOUNT_ID,
+		XXGOLD,
+		TOPINVITENUM
 	</sql>
 	
 	<!-- 字段值 -->
 	<sql id="FieldValue">
 		#{GOLD},	
-		#{INVATEAMOUNT_ID}
+		#{INVATEAMOUNT_ID},
+		#{XXGOLD},
+		#{TOPINVITENUM}
 	</sql>
 	
 	<!-- 新增-->
@@ -44,6 +48,8 @@
 		<include refid="tableName"></include>
 		set 
 			GOLD = #{GOLD},
+		XXGOLD = #{XXGOLD},
+		TOPINVITENUM = #{TOPINVITENUM},
 		INVATEAMOUNT_ID = INVATEAMOUNT_ID
 		where 
 		INVATEAMOUNT_ID = #{INVATEAMOUNT_ID}
@@ -96,6 +102,5 @@
                  #{item}
 		</foreach>
 	</delete>
-	
-	<!-- fh313596790qq(青苔) -->
+
 </mapper>

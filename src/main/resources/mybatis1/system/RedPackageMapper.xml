@@ -6,7 +6,29 @@
 	<sql id="tableName">
 		TB_REDPACKAGE
 	</sql>
-	
+
+	<resultMap id="RedVoResultMap" type="RedVo">
+		<result column="REDPACKAGE_ID" property="id"/>
+		<result column="USERID" property="userId"/>
+		<result column="REDGOLD" property="redGold"/>
+		<result column="REDNUM" property="redNum"/>
+		<result column="VERSION" property="version"/>
+		<result column="TAG" property="tag"/>
+		<result column="CREATETIME" property="createTime"/>
+		<result property="imgurl" column="P_IMAGE_URL"/>
+		<result property="nickname" column="P_NICKNAME"/>
+		<collection property="userInfo" column="REDPACKAGE_ID" ofType="UserInfoVo">
+			<id property="id" column="USERRECREDPINFO_ID"/>
+			<result property="redPackage_Id" column="REDPACKAGE_ID"/>
+			<result property="redUserId" column="REDUSERID"/>
+			<result property="userId" column="USER_ID"/>
+			<result property="gold" column="GOLD"/>
+			<result property="createtime" column="CREATE_TIME"/>
+			<result property="imgurl" column="IMAGE_URL"/>
+			<result property="nickname" column="NICKNAME"/>
+		</collection>
+	</resultMap>
+
 	<!-- 字段 -->
 	<sql id="Field">
 		USERID,	
@@ -136,19 +158,81 @@
 
 	</insert>
 
-	<select id="getRedPackageByGender" parameterType="String" resultType="com.fh.entity.system.RedPackage">
+	<select id="getRedPackageByGender" parameterType="String" resultMap="RedVoResultMap">
 
-		select
-		<include refid="Field"/>
-		from
-		<include refid="tableName"/>
-		where
-		TAG = #{TAG}
-		ORDER
-		CREATETIME
-		DESC
+			SELECT
+			r.REDPACKAGE_ID,
+			r.USERID,
+			r.REDGOLD,
+			r.REDNUM,
+			r.VERSION,
+			r.TAG,
+			r.CREATETIME,
+			r.UPDATETIME,
+			p.NICKNAME as P_NICKNAME,
+			p.IMAGE_URL as P_IMAGE_URL,
+			u.*
+		FROM
+			tb_redpackage AS r
+		LEFT JOIN sys_app_user AS p ON p.USER_ID = r.USERID
+		LEFT JOIN (
+			SELECT
+				uu.*, au.IMAGE_URL,
+				au.NICKNAME
+			FROM
+				tb_userrecredpinfo AS uu
+			LEFT JOIN sys_app_user AS au ON uu.USER_ID = au.USER_ID
+		) AS u ON r.REDPACKAGE_ID = u.REDPACKAGE_ID
+		WHERE
+			r.TAG = #{TAG}
+		ORDER BY
+			r.CREATETIME DESC
+	</select>
+
+	<select id="getRedPackageById" parameterType="String" resultType="com.fh.entity.system.RedPackage">
+
+		select VERSION from tb_redpackage where REDPACKAGE_ID = #{REDPACKAGE_ID}
 
 	</select>
 
+	<update id="updateInfo" parameterType="com.fh.entity.system.RedPackage">
+		update
+		tb_redpackage
+		set
+		VERSION = #{VERSION}
+		where
+		REDPACKAGE_ID = #{REDPACKAGE_ID}
+	</update>
+
+	<select id="getRedPackageInfo" parameterType="String" resultMap="RedVoResultMap">
+			SELECT
+			r.REDPACKAGE_ID,
+			r.USERID,
+			r.REDGOLD,
+			r.REDNUM,
+			r.VERSION,
+			r.TAG,
+			r.CREATETIME,
+			r.UPDATETIME,
+			p.NICKNAME as P_NICKNAME,
+			p.IMAGE_URL as P_IMAGE_URL,
+			u.*
+		FROM
+			tb_redpackage AS r
+		LEFT JOIN sys_app_user AS p ON p.USER_ID = r.USERID
+		LEFT JOIN (
+			SELECT
+				uu.*, au.IMAGE_URL,
+				au.NICKNAME
+			FROM
+				tb_userrecredpinfo AS uu
+			LEFT JOIN sys_app_user AS au ON uu.USER_ID = au.USER_ID
+		) AS u ON r.REDPACKAGE_ID = u.REDPACKAGE_ID
+		WHERE
+			r.REDPACKAGE_ID = #{REDPACKAGE_ID}
+		ORDER BY
+			r.CREATETIME DESC
+
+	</select>
 
 </mapper>

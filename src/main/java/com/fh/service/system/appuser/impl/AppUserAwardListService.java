@@ -149,17 +149,12 @@ public class AppUserAwardListService implements AppUserAwardListManager{
 	 * userId  当前提交邀请码的userId
 	 * @throws Exception
 	 */
-	public void doAwardByUserCode(PageData awarkPd,String userId,String IMEI_ID)throws Exception{
+	public void doAwardByUserCode(PageData awarkPd,String userId,String IMEI_ID,int awardNum,int invite_awardNum)throws Exception{
 		
 		
 		//邀请码兑换奖励
-		int awardNum=10;
-		try{
-			String awardNumStr =RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_AMOUNT.getValue());
-			awardNum=Integer.parseInt(awardNumStr);
-		}catch(Exception ex){
-			logger.info(ex.getMessage());
-		}
+		//int awardNum=10;
+
 		PageData appUserAwardList=new PageData();
 		appUserAwardList.put("USER_ID", userId);
 		appUserAwardList.put("CODE_ID", awarkPd.get("CODE_ID").toString()); //1：分享邀请人，2:兑换邀请码人
@@ -186,13 +181,7 @@ public class AppUserAwardListService implements AppUserAwardListManager{
 		
 		
 		//邀请码分享奖励
-		int invite_awardNum=10;
-		try{
-			String award_Invite_NumStr =RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_INVITE_AMOUNT.getValue());
-			invite_awardNum=Integer.parseInt(award_Invite_NumStr);
-		}catch(Exception ex){
-			logger.info(ex.getMessage());
-		}
+
 		appUserAwardList=new PageData();
 		appUserAwardList.put("USER_ID", awarkPd.getString("USER_ID"));
 		appUserAwardList.put("CODE_ID", awarkPd.get("CODE_ID").toString()); //1：分享邀请人，2:兑换邀请码人

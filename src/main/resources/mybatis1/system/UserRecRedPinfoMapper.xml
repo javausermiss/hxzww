@@ -11,7 +11,7 @@
 	<sql id="Field">
 		REDPACKAGE_ID,	
 		REDUSERID,	
-		USERID,	
+		USER_ID,
 		GOLD,	
 		CREATETIME,	
 		USERRECREDPINFO_ID
@@ -21,7 +21,7 @@
 	<sql id="FieldValue">
 		#{REDPACKAGE_ID},	
 		#{REDUSERID},	
-		#{USERID},	
+		#{USER_ID},
 		#{GOLD},	
 		#{CREATETIME},	
 		#{USERRECREDPINFO_ID}
@@ -116,14 +116,14 @@
 		(
 		REDPACKAGE_ID,
 		REDUSERID,
-		USERID,
+		USER_ID,
 		GOLD,
 		CREATETIME,
 		USERRECREDPINFO_ID
 		) values (
 		#{REDPACKAGE_ID},
 		#{REDUSERID},
-		#{USERID},
+		#{USER_ID},
 		#{GOLD},
 		now(),
 		#{USERRECREDPINFO_ID}
@@ -137,7 +137,7 @@
 		where
 		REDUSERID = #{REDUSERID}
 		and
-		USERID = #{USERID}
+		USER_ID = #{USER_ID}
 		and
 		REDUSERID = #{REDUSERID}
 	</select>

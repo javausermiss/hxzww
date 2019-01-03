@@ -9,5 +9,7 @@ import lombok.Data;
 public class InvateAmount {
     private String INVATEAMOUNT_ID;
     private Integer GOLD;
+    private Integer XXGOLD;
+    private Integer TOPINVITENUM;
 
 }

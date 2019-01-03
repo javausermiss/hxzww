@@ -60,4 +60,6 @@ public interface PaymentManager {
 	 
 	//月充值用户
 	List<PageData> findRegTotallistMonthPage(Page page)throws Exception;
+
+	List<PageData> getUserOrderList(Page page)throws Exception;
 }

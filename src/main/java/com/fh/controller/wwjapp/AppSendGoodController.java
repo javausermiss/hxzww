@@ -135,7 +135,7 @@ public class AppSendGoodController {
             @RequestParam(value = "id",required = false,defaultValue = "null") String playId,//抓取编号(用户抓取记录ID，逗号拼接)例：5411,2223,5623
             @RequestParam(value = "number",required = false,defaultValue = "null") String number,//娃娃数量
             @RequestParam(value = "consignee") String consignee,//例：名字,地址,手机号码(逗号拼接)
-            @RequestParam(value = "remark",required = false,defaultValue = "null") String remark,//用户留言
+            @RequestParam(value = "remark") String remark,//用户留言
             @RequestParam(value = "userId") String userId, //用户ID
             @RequestParam(value = "mode") String mode,//模式 0：免邮  1：金币抵扣
             @RequestParam(value = "costNum",required = false,defaultValue = "0") String costNum,//省份编号

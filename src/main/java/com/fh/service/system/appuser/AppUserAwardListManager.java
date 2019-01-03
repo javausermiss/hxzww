@@ -69,7 +69,7 @@ public interface AppUserAwardListManager{
 	 * userId  当前提交邀请码的userId
 	 * @throws Exception
 	 */
-	public void doAwardByUserCode(PageData awarkPd,String userId,String IMEI_ID)throws Exception;
+	public void doAwardByUserCode(PageData awarkPd,String userId,String IMEI_ID,int awardNum,int invite_awardNum)throws Exception;
 	
 	/**
 	 * 查询用户Id是否已经兑换

@@ -160,6 +160,7 @@ public class SendGoodsService implements SendGoodsManager {
      * @return
      * @throws Exception
      */
+    @Override
     public JSONObject doSendGoods(String playId, String number, String consignee, String remark, String userId, String mode, String costNum ,String levels) throws Exception {
         AppUser appUser = appuserService.getUserByID(userId);
         String[] s = consignee.split("\\,");
@@ -299,15 +300,17 @@ public class SendGoodsService implements SendGoodsManager {
             list1.add(toyName);
         }
         int n = 0 ;
+        int m = 0;
         List<String> list2 = new LinkedList<>();
         for (int i = 0; i < list1.size(); i++) {
              n = Collections.frequency(list1, list1.get(i));
             String toyName = list1.get(i);
             list2.add(toyName + "数量为：" + n);
+            m = m + n;
         }
 
         if (mode.equals("0")) {
-            if ( n >= 3){
+            if ( m >= 3){
                 sendGoods.setMODE_DESPATCH("0");
             }else {
                 return RespStatus.fail("数据不合法");
@@ -484,7 +487,7 @@ public class SendGoodsService implements SendGoodsManager {
 
 
     public static void main(String[] a){
-        String[] num = "asdasd,asdads,asdasd".split("\\,");
+        String[] num = "187719,187714,187718".split("\\,");
         System.out.println(num.length);
     }
 }

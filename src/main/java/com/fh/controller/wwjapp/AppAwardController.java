@@ -7,10 +7,12 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.fh.entity.Page;
 import com.fh.entity.system.AppUser;
 import com.fh.entity.system.Order;
 import com.fh.entity.system.Spreader;
 import com.fh.service.system.appuser.AppuserManager;
+import com.fh.service.system.invateamount.InvateAmountManager;
 import com.fh.service.system.ordertest.OrderManager;
 import com.fh.service.system.spreader.SpreaderManager;
 import com.fh.util.DateUtil;
@@ -54,6 +56,9 @@ public class AppAwardController extends BaseController {
 	@Resource(name="spreaderService")
 	private SpreaderManager spreaderService;
 
+	@Resource(name="invateamountService")
+	private InvateAmountManager invateamountService;
+
     
     
     /**
@@ -84,8 +89,8 @@ public class AppAwardController extends BaseController {
     			userCode=new PageData();
     			userCode.put("USER_ID", userId);
     			userCode.put("CODE_VALUE", randomCode);
-    			userCode.put("CODE_NUM", 10000);
-    			userCode.put("CODE_TYPE", "1");
+    			userCode.put("CODE_NUM", 100000);
+    			userCode.put("CODE_TYPE", "1" );
     			int oper=appUserCodeService.save(userCode); //保存用户兑换码
     			if(oper<1){
     				 return RespStatus.exception();
@@ -94,15 +99,24 @@ public class AppAwardController extends BaseController {
 			
 			//查询统计用户分享数 和 分享奖励金币数量
 			PageData awardPd=appUserAwardListService.findAwardCountByUserId(userId);
-			
+
+
+			//查询用户的推广金额和奖励金额以及可兑换次数
+			List<PageData> list =  invateamountService.list(new Page());
+			PageData  pageData =  list.get(0);
+			int inviteAmount = Integer.valueOf(pageData.get("GOLD").toString());
+			int exchangeAmount = Integer.valueOf(pageData.get("XXGOLD").toString());
+			int inviteTotalNum = Integer.valueOf(pageData.get("TOPINVITENUM").toString());
+
+
 			//兑换奖励限制
 			PageData setPd=new PageData();
 			//兑换金币数
-			setPd.put("exchangeAmount", RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_AMOUNT.getValue()));
+			setPd.put("exchangeAmount", exchangeAmount);
 			//邀请金币数量
-			setPd.put("inviteAmount", RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_INVITE_AMOUNT.getValue()));
+			setPd.put("inviteAmount", inviteAmount);
 			//邀请可兑换次数
-			setPd.put("inviteTotalNum", RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_NUM.getValue()));
+			setPd.put("inviteTotalNum", inviteTotalNum);
 			
 
 			
@@ -173,6 +187,13 @@ public class AppAwardController extends BaseController {
 			if(userId.equals(awarkPd.getString("USER_ID"))){
 				return RespStatus.fail("兑换码是当前用户");
 			}
+			//查询用户的推广金额和奖励金额以及可兑换次数
+			List<PageData> list =  invateamountService.list(new Page());
+			PageData  pageData =  list.get(0);
+			int inviteAmount = Integer.valueOf(pageData.get("GOLD").toString());
+			int exchangeAmount = Integer.valueOf(pageData.get("XXGOLD").toString());
+			int inviteTotalNum = Integer.valueOf(pageData.get("TOPINVITENUM").toString());
+
 			
 			//step5 查询兑换码已经兑换的次数
 			PageData awardTotal=appUserAwardListService.findAwardCountByUserId(awarkPd.getString("USER_ID"));
@@ -183,7 +204,7 @@ public class AppAwardController extends BaseController {
 			}
 			int invite_awardTotal=10000;
 			try{
-				String award_Total_NumStr =RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_NUM.getValue());
+				String award_Total_NumStr =pageData.get("TOPINVITENUM").toString();
 				invite_awardTotal=Integer.parseInt(award_Total_NumStr);
 			}catch(Exception ex){
 				logger.info(ex.getMessage());
@@ -192,16 +213,16 @@ public class AppAwardController extends BaseController {
 			if(awardCount>invite_awardTotal){
 				return RespStatus.fail("兑换码次数已经超过限制");
 			}
-			appUserAwardListService.doAwardByUserCode(awarkPd, userId, reqData.getString("sfId"));
-			
+			appUserAwardListService.doAwardByUserCode(awarkPd, userId, reqData.getString("sfId"),exchangeAmount,inviteAmount);
+
 			//兑换奖励限制
 			PageData setPd=new PageData();
 			//兑换金币数
-			setPd.put("exchangeAmount", RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_AMOUNT.getValue()));
+			setPd.put("exchangeAmount", exchangeAmount);
 			//邀请金币数量
-			setPd.put("inviteAmount", RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_INVITE_AMOUNT.getValue()));
+			setPd.put("inviteAmount", inviteAmount);
 			//邀请可兑换次数
-			setPd.put("inviteTotalNum", RedisUtil.hget(BaseDictRedisHsetKey.USER_AWARD_REDIS_HSET.getValue(),RedisDictKeyConst.USER_AWARD_CODE_NUM.getValue()));
+			setPd.put("inviteTotalNum", inviteTotalNum);
 			 
 			
 			Map<String, Object> dataMap = new HashMap<>();

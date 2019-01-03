@@ -121,7 +121,7 @@ public class UserRecRedPinfoService implements UserRecRedPinfoManager {
 			userRecRedPInfo.setREDPACKAGE_ID(redId);
 			userRecRedPInfo.setUSERRECREDPINFO_ID(MyUUID.getUUID32());
 			userRecRedPInfo.setREDUSERID(redUserId);
-			userRecRedPInfo.setUSERID(userId);
+			userRecRedPInfo.setUSER_ID(userId);
 			userRecRedPInfo.setGOLD(String.valueOf(redGold));
 			this.reg(userRecRedPInfo);
 		try {

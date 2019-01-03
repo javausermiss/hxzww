@@ -7,7 +7,7 @@ public class UserRecRedPInfo {
     private String USERRECREDPINFO_ID;
     private String REDPACKAGE_ID;
     private String REDUSERID;
-    private String USERID;
+    private String USER_ID;
     private String GOLD;
     private String CREATETIME;
 }

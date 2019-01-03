@@ -391,7 +391,7 @@
     <!-- 通过id获取用户信息 2017/10/12-->
     <select id="getUserByID" parameterType="String" resultType="com.fh.entity.system.AppUser">
         select
-        <include refid="Field"/>
+        *
         from
         <include refid="tableName"/>
         where

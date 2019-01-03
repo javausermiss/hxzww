@@ -67,7 +67,9 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<th class="center">奖励金币</th>
+									<th class="center">推广用户奖励金币</th>
+									<th class="center">下线用户奖励金币</th>
+									<th CLASS="center">下线奖励人数限制</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -84,6 +86,8 @@
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.GOLD}</td>
+											<td class="center">${var.XXGOLD}</td>
+											<td class="center">${var.TOPINVITENUM}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>

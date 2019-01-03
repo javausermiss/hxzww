@@ -89,5 +89,20 @@ public class RedPackageService implements RedPackageManager{
 	public List<RedPackage> getRedPackageByGender(String gender)throws Exception {
 		return (List<RedPackage>)dao.findForList("RedPackageMapper.getRedPackageByGender",gender);
 	}
+
+	@Override
+	public RedPackage getRedPackageById(String id) throws Exception {
+		return (RedPackage)dao.findForObject("RedPackageMapper.getRedPackageById",id);
+	}
+
+	@Override
+	public int updateInfo(RedPackage redPackage) throws Exception {
+		return (int)dao.update("RedPackageMapper.updateInfo",redPackage);
+	}
+
+	@Override
+	public List<RedPackage> getRedPackageInfo(String id) throws Exception {
+		return (List<RedPackage>)dao.findForList("RedPackageMapper.getRedPackageInfo",id);
+	}
 }
 

@@ -59,6 +59,12 @@ public interface RedPackageManager{
 
 	public List<RedPackage> getRedPackageByGender(String gender)throws Exception;
 
+	public RedPackage getRedPackageById(String id)throws Exception;
+
+	public int updateInfo(RedPackage redPackage)throws Exception;
+
+	public List<RedPackage> getRedPackageInfo(String id) throws Exception;
+
 
 	
 }

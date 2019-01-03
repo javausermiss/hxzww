@@ -98,4 +98,9 @@ public class PaymentService implements PaymentManager {
 	public List<PageData> findRegTotallistMonthPage(Page page) throws Exception {
 		 return (List<PageData>)dao.findForList("paymentMapper.findRegTotalMonthlistPage", page);
 	}
+
+	@Override
+	public List<PageData> getUserOrderList(Page page) throws Exception {
+		return (List<PageData>)dao.findForList("paymentMapper.getUserOrderList", page);
+	}
 }

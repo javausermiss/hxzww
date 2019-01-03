@@ -32,8 +32,16 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">奖励金币:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;">推广用户奖励金币:</td>
 								<td><input type="number" name="GOLD" id="GOLD" value="${pd.GOLD}" maxlength="32" placeholder="这里输入奖励金币" title="奖励金币" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">下线用户奖励金币:</td>
+								<td><input type="number" name="XXGOLD" id="XXGOLD" value="${pd.XXGOLD}" maxlength="32" placeholder="这里输入奖励金币" title="奖励金币" style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">下线用户人数奖励限制:</td>
+								<td><input type="number" name="TOPINVITENUM" id="TOPINVITENUM" value="${pd.TOPINVITENUM}" maxlength="32" placeholder="这里输入人数" title="奖励金币" style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">
@@ -71,15 +79,29 @@
 		//保存
 		function save(){
 			if($("#GOLD").val()==""){
-				$("#GOLD").tips({
-					side:3,
-		            msg:'请输入奖励金币',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#GOLD").focus();
-			return false;
-			}
+                $("#GOLD").tips({
+                    side:3,
+                    msg:'请输入奖励金币',
+                    bg:'#AE81FF',
+                    time:2
+                });
+                $("#GOLD").focus();
+                return false;
+            }
+
+            if($("#XXGOLD").val()==""){
+                $("#XXGOLD").tips({
+                    side:3,
+                    msg:'请输入奖励金币',
+                    bg:'#AE81FF',
+                    time:2
+                });
+                $("#XXGOLD").focus();
+                return false;
+            }
+
+
+
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

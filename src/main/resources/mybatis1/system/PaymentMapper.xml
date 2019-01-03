@@ -62,6 +62,29 @@
 		
 		ORDER BY P.CREATE_TIME desc
 	</select>
+
+	<select id="getUserOrderList" parameterType="page" resultType="pd">
+
+	   SELECT
+	o.ORDER_NO,
+	o.CTYPE,
+	o.REC_ID,
+	o.ORDER_ID,
+	o.CREATETIME,
+	o.REGMODE,
+	o.REGAMOUNT,
+	o.`STATUS`,
+	u.NICKNAME,
+	u. NAME
+FROM
+	sys_app_order o
+LEFT JOIN sys_app_user u ON u.USER_ID = o.USER_ID
+WHERE
+	u.USER_ID = #{pd.USER_ID}
+ORDER BY
+	o.CREATETIME DESC
+
+	</select>
 	
 	
 		<!-- 列表 -->
