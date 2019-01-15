@@ -8,6 +8,6 @@ public class UserRecRedPInfo {
     private String REDPACKAGE_ID;
     private String REDUSERID;
     private String USER_ID;
-    private String GOLD;
+    private Integer GOLD;
     private String CREATETIME;
 }

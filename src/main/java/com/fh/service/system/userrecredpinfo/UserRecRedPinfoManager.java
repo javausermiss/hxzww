@@ -69,6 +69,20 @@ public interface UserRecRedPinfoManager {
 	 * @return
 	 */
 	public  void doGetRedPackage(String num ,String userId,String redUserId,String redId )throws Exception;
+
+	/**
+	 * 查询每个红包中领取最大金币的用户
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> getSlideShow()throws Exception;
+
+
+	public PageData getUserGetRedpackageInfo(PageData pageData)throws Exception;
+
+
+
+	public List<PageData> getUserGetRedpackageList(PageData pageData)throws Exception;
 	
 }
 

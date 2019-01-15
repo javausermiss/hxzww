@@ -61,7 +61,9 @@
 		PRO_BALANCE,
 		PRO_WXACCOUNT,
 		PRO_ZFBACCOUNT,
-		PRO_TAG
+		PRO_TAG,
+		QQ_ACCOUNT,
+		WX_ACCOUNT
 	</sql>
 
     <!-- 字段值 -->
@@ -115,7 +117,9 @@
 		#{AGE},
 		#{GENDER},
 		#{PRO_BALANCE},
-		#{PRO_ACCOUNT}
+		#{PRO_ACCOUNT},
+		#{QQ_ACCOUNT},
+		#{WX_ACCOUNT}
 	</sql>
 
     <!-- 角色表 -->
@@ -466,7 +470,9 @@
         set
         AGE = #{AGE},
         GENDER = #{GENDER},
-        NICKNAME = #{NICKNAME}
+        NICKNAME = #{NICKNAME},
+        QQ_ACCOUNT = #{QQ_ACCOUNT},
+        WX_ACCOUNT = #{WX_ACCOUNT}
         WHERE
         USER_ID = #{USER_ID}
     </update>
@@ -550,6 +556,12 @@
         </if>
         <if test="PRO_TAG != null and PRO_TAG != ''">
             ,PRO_TAG = #{PRO_TAG}
+        </if>
+        <if test="QQ_ACCOUNT != null and QQ_ACCOUNT != ''">
+            ,QQ_ACCOUNT = #{QQ_ACCOUNT}
+        </if>
+        <if test="WX_ACCOUNT != null and WX_ACCOUNT != ''">
+            ,WX_ACCOUNT = #{WX_ACCOUNT}
         </if>
         WHERE
         USER_ID = #{USER_ID}

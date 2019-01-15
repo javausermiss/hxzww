@@ -104,5 +104,15 @@ public class RedPackageService implements RedPackageManager{
 	public List<RedPackage> getRedPackageInfo(String id) throws Exception {
 		return (List<RedPackage>)dao.findForList("RedPackageMapper.getRedPackageInfo",id);
 	}
+
+	@Override
+	public PageData getUserSendRedpackageInfo(PageData pd) throws Exception {
+		return (PageData)dao.findForObject("RedPackageMapper.getUserSendRedpackageInfo",pd);
+	}
+
+	@Override
+	public List<PageData> getUserAllSendInfo(String userId) throws Exception {
+		return (List<PageData>)dao.findForList("RedPackageMapper.getUserAllSendInfo",userId);
+	}
 }
 

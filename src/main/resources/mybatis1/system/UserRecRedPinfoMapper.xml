@@ -135,10 +135,61 @@
 		select * from
 		<include refid="tableName"/>
 		where
-		REDUSERID = #{REDUSERID}
+		REDPACKAGE_ID = #{REDPACKAGE_ID}
 		and
 		USER_ID = #{USER_ID}
 		and
 		REDUSERID = #{REDUSERID}
 	</select>
+
+	<select id="getSlideShow" resultType="pd">
+
+				SELECT
+			a.*, s.NICKNAME
+		FROM
+			tb_userrecredpinfo a
+		INNER JOIN (
+			SELECT
+				u.USERRECREDPINFO_ID,
+				u.REDPACKAGE_ID,
+				u.REDUSERID,
+				u.USER_ID,
+				MAX(u.GOLD) GOLD,
+				u.CREATETIME
+			FROM
+				tb_userrecredpinfo u
+			GROUP BY
+				u.REDPACKAGE_ID
+		) b ON a.REDPACKAGE_ID = b.REDPACKAGE_ID
+		AND a.GOLD = b.GOLD
+		LEFT JOIN sys_app_user s ON s.USER_ID = a.USER_ID
+		ORDER BY
+			a.CREATETIME DESC
+
+	</select>
+
+	<select id="getUserGetRedpackageInfo" parameterType="pd" resultType="pd">
+				SELECT
+			SUM(u.GOLD) SUMGOLD,
+			s.NICKNAME,
+			s.IMAGE_URL
+		FROM
+			tb_userrecredpinfo AS u
+		LEFT JOIN sys_app_user s ON u.USER_ID = s.USER_ID
+		WHERE
+			u.USER_ID = #{userId}
+		AND u.CREATETIME LIKE CONCAT(CONCAT('%', #{time}),'-%')
+	</select>
+	<select id="getUserGetRedpackageList" parameterType="pd" resultType="pd">
+		SELECT
+			u.*, s.NICKNAME
+		FROM
+			tb_userrecredpinfo AS u
+		LEFT JOIN sys_app_user s ON u.REDUSERID = s.USER_ID
+		WHERE
+			u.USER_ID = #{userId}
+		AND u.CREATETIME LIKE CONCAT(CONCAT('%', #{time}),'-%')
+	</select>
+
+
 </mapper>

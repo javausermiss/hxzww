@@ -532,6 +532,14 @@ public class AppuserService implements AppuserManager {
         } else {
             pd.put("BDPHONE", "");
         }
+
+        if (pd != null && StringUtils.isNotEmpty(pd.getString("QQ_ACCOUNT")) && StringUtils.isNotEmpty(pd.getString("WX_ACCOUNT"))){
+            pd.put("QQ_ACCOUNT",pd.getString("QQ_ACCOUNT"));
+            pd.put("WX_ACCOUNT",pd.getString("WX_ACCOUNT"));
+        }else {
+            pd.put("QQ_ACCOUNT","");
+            pd.put("WX_ACCOUNT","");
+        }
         return pd;
     }
 

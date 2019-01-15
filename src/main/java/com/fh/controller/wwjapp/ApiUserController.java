@@ -160,9 +160,11 @@ public class ApiUserController {
     @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public JSONObject updateUserInfo(@RequestParam("userId") String userId,
-                                 @RequestParam(value = "gender")String gender,
-                                 @RequestParam(value = "age")Integer age,
-                                 @RequestParam(value = "nickname") String nickname
+                                     @RequestParam(value = "gender")String gender,
+                                     @RequestParam(value = "age")Integer age,
+                                     @RequestParam(value = "nickname") String nickname,
+                                     @RequestParam(value = "wxaccount") String wxaccount,
+                                     @RequestParam(value = "qqaccount") String qqaccount
 
     ) {
         try {
@@ -171,8 +173,10 @@ public class ApiUserController {
                 appUser.setAGE(age);
                 appUser.setGENDER(gender);
                 appUser.setNICKNAME(nickname);
+                appUser.setWX_ACCOUNT(wxaccount);
+                appUser.setQQ_ACCOUNT(qqaccount);
                 int n = appuserService.updateAppUserInfo(appUser);
-                //头像上传
+
                 if (n >0 ) {
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("appUser", getAppUserInfoByID(userId));

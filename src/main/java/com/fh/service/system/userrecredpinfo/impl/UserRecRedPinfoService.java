@@ -122,7 +122,7 @@ public class UserRecRedPinfoService implements UserRecRedPinfoManager {
 			userRecRedPInfo.setUSERRECREDPINFO_ID(MyUUID.getUUID32());
 			userRecRedPInfo.setREDUSERID(redUserId);
 			userRecRedPInfo.setUSER_ID(userId);
-			userRecRedPInfo.setGOLD(String.valueOf(redGold));
+			userRecRedPInfo.setGOLD(redGold);
 			this.reg(userRecRedPInfo);
 		try {
 			Thread.sleep(50);
@@ -131,6 +131,22 @@ public class UserRecRedPinfoService implements UserRecRedPinfoManager {
 			log.info(i.getMessage());
 		}
 
+	}
+
+	@Override
+	public List<PageData> getSlideShow() throws Exception {
+		return (List<PageData>) dao.findForList("UserRecRedPinfoMapper.getSlideShow",null);
+	}
+
+
+	@Override
+	public PageData getUserGetRedpackageInfo(PageData pageData) throws Exception {
+		return (PageData) dao.findForObject("UserRecRedPinfoMapper.getUserGetRedpackageInfo",pageData);
+	}
+
+	@Override
+	public List<PageData> getUserGetRedpackageList(PageData pageData) throws Exception {
+		return (List<PageData>) dao.findForList("UserRecRedPinfoMapper.getUserGetRedpackageList",pageData);
 	}
 }
 

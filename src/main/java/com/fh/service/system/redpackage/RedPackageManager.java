@@ -65,6 +65,18 @@ public interface RedPackageManager{
 
 	public List<RedPackage> getRedPackageInfo(String id) throws Exception;
 
+	/**
+	 * 获取用户全年所发红包的统计信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public PageData getUserSendRedpackageInfo(PageData pd)throws Exception;
+
+
+	public List<PageData> getUserAllSendInfo(String userId)throws Exception;
+
+
 
 	
 }

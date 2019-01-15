@@ -83,6 +83,11 @@ public class AppUser {
     //是否为推广者
     private String PRO_TAG;
 
+    private String QQ_ACCOUNT;
+
+    private String WX_ACCOUNT;
+
+
       public AppUser() {
     }
 
@@ -118,6 +123,21 @@ public class AppUser {
                 '}';
     }
 
+    public String getQQ_ACCOUNT() {
+        return QQ_ACCOUNT;
+    }
+
+    public void setQQ_ACCOUNT(String QQ_ACCOUNT) {
+        this.QQ_ACCOUNT = QQ_ACCOUNT;
+    }
+
+    public String getWX_ACCOUNT() {
+        return WX_ACCOUNT;
+    }
+
+    public void setWX_ACCOUNT(String WX_ACCOUNT) {
+        this.WX_ACCOUNT = WX_ACCOUNT;
+    }
 
     public String getPRO_WXACCOUNT() {
         return PRO_WXACCOUNT;

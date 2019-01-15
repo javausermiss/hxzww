@@ -183,8 +183,6 @@
 				tb_userrecredpinfo AS uu
 			LEFT JOIN sys_app_user AS au ON uu.USER_ID = au.USER_ID
 		) AS u ON r.REDPACKAGE_ID = u.REDPACKAGE_ID
-		WHERE
-			r.TAG = #{TAG}
 		ORDER BY
 			r.CREATETIME DESC
 	</select>
@@ -234,5 +232,44 @@
 			r.CREATETIME DESC
 
 	</select>
+
+
+	<select id="getUserSendRedpackageInfo" parameterType="pd" resultType="pd">
+				SELECT
+			SUM(r.REDGOLD) SUMGOLD,
+			COUNT(r.REDPACKAGE_ID) COUNT,
+			u.NICKNAME,
+			u.IMAGE_URL
+		FROM
+			tb_redpackage AS r
+		LEFT JOIN sys_app_user u ON r.USERID = u.USER_ID
+		WHERE
+			r.USERID = #{userId}
+		AND r.CREATETIME LIKE CONCAT(CONCAT('%', #{time}),'-%')
+
+	</select>
+
+	<select id="getUserAllSendInfo" parameterType="String" resultType="pd">
+
+				SELECT
+			r.REDPACKAGE_ID,
+			r.USERID,
+			r.REDGOLD,
+			r.REDNUM,
+			r.VERSION,
+			r.TAG,
+			r.CREATETIME,
+			COUNT(u.USERRECREDPINFO_ID) REDCOUNT
+		FROM
+			tb_redpackage AS r
+		LEFT JOIN tb_userrecredpinfo AS u ON r.REDPACKAGE_ID = u.REDPACKAGE_ID
+		WHERE
+			r.USERID = #{userId}
+		GROUP BY
+			r.REDPACKAGE_ID
+		ORDER BY
+			r.CREATETIME DESC
+	</select>
+
 
 </mapper>
