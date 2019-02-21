@@ -4,8 +4,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.fh.entity.system.AppUser;
+import com.fh.entity.system.Payment;
 import com.fh.entity.system.UserRecRedPInfo;
 import com.fh.service.system.appuser.AppuserManager;
+import com.fh.service.system.payment.PaymentManager;
+import com.fh.util.Const;
 import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RedisUtil;
 import lombok.extern.log4j.Log4j;
@@ -30,6 +33,9 @@ public class UserRecRedPinfoService implements UserRecRedPinfoManager {
 
 	@Resource(name = "appuserService")
 	private AppuserManager appuserService;
+
+	@Resource(name = "paymentService")
+	private PaymentManager paymentService;
 	
 	/**新增
 	 * @param pd
@@ -124,6 +130,15 @@ public class UserRecRedPinfoService implements UserRecRedPinfoManager {
 			userRecRedPInfo.setUSER_ID(userId);
 			userRecRedPInfo.setGOLD(redGold);
 			this.reg(userRecRedPInfo);
+
+		//更新收支表
+		Payment payment = new Payment();
+		payment.setGOLD("+"+String.valueOf(redGold));
+		payment.setUSERID(userId);
+		payment.setDOLLID("");
+		payment.setCOST_TYPE(Const.PlayMentCostType.cost_type32.getValue());
+		payment.setREMARK(Const.PlayMentCostType.cost_type32.getName());
+		paymentService.reg(payment);
 		try {
 			Thread.sleep(50);
 		} catch (InterruptedException i) {

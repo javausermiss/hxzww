@@ -2,11 +2,14 @@ package com.fh.controller.wwjapp;
 
 import com.fh.entity.Page;
 import com.fh.entity.system.AppUser;
+import com.fh.entity.system.Payment;
 import com.fh.entity.system.RedPackage;
 import com.fh.entity.system.UserRecRedPInfo;
 import com.fh.service.system.appuser.AppuserManager;
+import com.fh.service.system.payment.PaymentManager;
 import com.fh.service.system.redpackage.RedPackageManager;
 import com.fh.service.system.userrecredpinfo.UserRecRedPinfoManager;
+import com.fh.util.Const;
 import com.fh.util.PageData;
 import com.fh.util.wwjUtil.MyUUID;
 import com.fh.util.wwjUtil.RedPacketUtil;
@@ -37,6 +40,10 @@ public class AppRedPackage {
 
     @Resource(name = "userrecredpinfoService")
     private UserRecRedPinfoManager userrecredpinfoService;
+
+    @Resource(name = "paymentService")
+    private PaymentManager paymentService;
+
 
     /**
      * 用户发红包
@@ -81,6 +88,16 @@ public class AppRedPackage {
             redPackage.setTAG(gender);
             redPackage.setUSERID(userId);
             redpackageService.inset(redPackage);
+
+            //更新收支表
+            Payment payment = new Payment();
+            payment.setGOLD("-"+String.valueOf(gold));
+            payment.setUSERID(userId);
+            payment.setDOLLID("");
+            payment.setCOST_TYPE(Const.PlayMentCostType.cost_type31.getValue());
+            payment.setREMARK(Const.PlayMentCostType.cost_type31.getName());
+            paymentService.reg(payment);
+
 
             RedPacketUtil rp = new RedPacketUtil();
             List<Integer> list = rp.splitRedPackets(gold, num);
@@ -139,15 +156,13 @@ public class AppRedPackage {
                                     @RequestParam("redId") String redId
     ) {
         try {
-            AppUser redUser = appuserService.getUserByID(redUserId);
-            String redGender = redUser.getGENDER();
-
             AppUser appUser = appuserService.getUserByID(userId);
             String gender = appUser.getGENDER();
 
-            //判断性别是否一致
-            if (gender.equals(redGender)) {
-                return RespStatus.fail("性别相同，领取失败");
+            //判断性别是否为女性
+            String gen  =  "男";
+            if (gen.equals(gender)) {
+                return RespStatus.fail("性别为男，无法领取");
             }
 
             String num = RedisUtil.getRu().get("red:" + redUserId + ":" + redId);
